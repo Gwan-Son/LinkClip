@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct LinkToMeApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            viewController()
         }
+        .modelContainer(for: [LinkItem.self, Tag.self])
     }
 }

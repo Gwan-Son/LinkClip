@@ -6,9 +6,48 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		9F28524E2D647C7D0001803F /* ShareViewController.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 9F2852442D647C7D0001803F /* ShareViewController.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		9F28524C2D647C7D0001803F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9F28520F2D646B720001803F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 9F2852432D647C7D0001803F;
+			remoteInfo = ShareViewController;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		9F2852532D647C7D0001803F /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				9F28524E2D647C7D0001803F /* ShareViewController.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		9F2852172D646B720001803F /* LinkToMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LinkToMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9F2852442D647C7D0001803F /* ShareViewController.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareViewController.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9F28524F2D647C7D0001803F /* Exceptions for "ShareViewController" folder in "ShareViewController" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9F2852432D647C7D0001803F /* ShareViewController */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9F2852192D646B720001803F /* LinkToMe */ = {
@@ -16,10 +55,25 @@
 			path = LinkToMe;
 			sourceTree = "<group>";
 		};
+		9F2852452D647C7D0001803F /* ShareViewController */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9F28524F2D647C7D0001803F /* Exceptions for "ShareViewController" folder in "ShareViewController" target */,
+			);
+			path = ShareViewController;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		9F2852142D646B720001803F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9F2852412D647C7D0001803F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				9F2852192D646B720001803F /* LinkToMe */,
+				9F2852452D647C7D0001803F /* ShareViewController */,
 				9F2852182D646B720001803F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				9F2852172D646B720001803F /* LinkToMe.app */,
+				9F2852442D647C7D0001803F /* ShareViewController.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -55,10 +111,12 @@
 				9F2852132D646B720001803F /* Sources */,
 				9F2852142D646B720001803F /* Frameworks */,
 				9F2852152D646B720001803F /* Resources */,
+				9F2852532D647C7D0001803F /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				9F28524D2D647C7D0001803F /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				9F2852192D646B720001803F /* LinkToMe */,
@@ -69,6 +127,28 @@
 			productName = LinkToMe;
 			productReference = 9F2852172D646B720001803F /* LinkToMe.app */;
 			productType = "com.apple.product-type.application";
+		};
+		9F2852432D647C7D0001803F /* ShareViewController */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9F2852502D647C7D0001803F /* Build configuration list for PBXNativeTarget "ShareViewController" */;
+			buildPhases = (
+				9F2852402D647C7D0001803F /* Sources */,
+				9F2852412D647C7D0001803F /* Frameworks */,
+				9F2852422D647C7D0001803F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				9F2852452D647C7D0001803F /* ShareViewController */,
+			);
+			name = ShareViewController;
+			packageProductDependencies = (
+			);
+			productName = ShareViewController;
+			productReference = 9F2852442D647C7D0001803F /* ShareViewController.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -81,6 +161,9 @@
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					9F2852162D646B720001803F = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					9F2852432D647C7D0001803F = {
 						CreatedOnToolsVersion = 16.2;
 					};
 				};
@@ -100,12 +183,20 @@
 			projectRoot = "";
 			targets = (
 				9F2852162D646B720001803F /* LinkToMe */,
+				9F2852432D647C7D0001803F /* ShareViewController */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		9F2852152D646B720001803F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		9F2852422D647C7D0001803F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +213,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9F2852402D647C7D0001803F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		9F28524D2D647C7D0001803F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 9F2852432D647C7D0001803F /* ShareViewController */;
+			targetProxy = 9F28524C2D647C7D0001803F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		9F2852232D646B730001803F /* Debug */ = {
@@ -249,6 +355,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = LinkToMe/LinkToMe.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkToMe/Preview Content\"";
@@ -278,6 +385,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = LinkToMe/LinkToMe.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkToMe/Preview Content\"";
@@ -302,6 +410,58 @@
 			};
 			name = Release;
 		};
+		9F2852512D647C7D0001803F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ShareViewController/ShareViewController.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7P5U4N4C5Z;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShareViewController/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ShareViewController;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.gwanson.LinkToMe.ShareViewController;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		9F2852522D647C7D0001803F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ShareViewController/ShareViewController.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 7P5U4N4C5Z;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShareViewController/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ShareViewController;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.gwanson.LinkToMe.ShareViewController;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -319,6 +479,15 @@
 			buildConfigurations = (
 				9F2852262D646B730001803F /* Debug */,
 				9F2852272D646B730001803F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		9F2852502D647C7D0001803F /* Build configuration list for PBXNativeTarget "ShareViewController" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9F2852512D647C7D0001803F /* Debug */,
+				9F2852522D647C7D0001803F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

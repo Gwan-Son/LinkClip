@@ -14,8 +14,7 @@ import Social
 class ShareViewController: SLComposeServiceViewController {
 
     override func isContentValid() -> Bool {
-        // Do validation of contentText and/or NSExtensionContext attachments here
-        return true
+        return self.textView.text.isEmpty == false
     }
 
     override func didSelectPost() {

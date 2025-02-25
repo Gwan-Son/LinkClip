@@ -9,9 +9,7 @@ import SwiftUI
 import SwiftData
 
 struct viewController: View {
-    @Query(sort: \LinkItem.createdDate, order: .reverse)
-    private var links: [LinkItem]
-    
+    @Query(sort: \LinkItem.createdDate, order: .reverse) private var links: [LinkItem]
     @Environment(\.modelContext) private var context
     @State private var showingAddLink = false
     
@@ -28,6 +26,9 @@ struct viewController: View {
                             }
                         }
                 }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: Notification.Name("NewLinkAdded"))) { _ in
+//                refreshData()
             }
             .navigationTitle("Links")
             .toolbar {

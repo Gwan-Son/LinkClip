@@ -47,11 +47,21 @@
 			);
 			target = 9F2852432D647C7D0001803F /* ShareViewController */;
 		};
+		9F572BAD2D6D66F400EDBB4A /* Exceptions for "LinkToMe" folder in "ShareViewController" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				LinkItem.swift,
+			);
+			target = 9F2852432D647C7D0001803F /* ShareViewController */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		9F2852192D646B720001803F /* LinkToMe */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				9F572BAD2D6D66F400EDBB4A /* Exceptions for "LinkToMe" folder in "ShareViewController" target */,
+			);
 			path = LinkToMe;
 			sourceTree = "<group>";
 		};

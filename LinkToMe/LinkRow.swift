@@ -13,18 +13,20 @@ struct LinkRow: View {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(link.title)
+//                Text(link.title)
+//                    .font(.headline)
+//                Text(link.url.host ?? "")
+//                    .font(.subheadline)
+//                    .foregroundStyle(.secondary)
+                Text(link.data.description)
                     .font(.headline)
-                Text(link.url.host ?? "")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
             }
             Spacer()
-            AsyncImage(url: link.url) { image in
-                image.resizable().scaledToFit().frame(width: 60)
-            } placeholder: {
-                ProgressView()
-            }
+//            AsyncImage(url: link.url) { image in
+//                image.resizable().scaledToFit().frame(width: 60)
+//            } placeholder: {
+//                ProgressView()
+//            }
         }
     }
 }

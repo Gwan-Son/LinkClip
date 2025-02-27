@@ -13,7 +13,7 @@ struct AddLinkView: View {
     
     @State private var urlString = ""
     @State private var title = ""
-    @State private var selectedTags: Set<Tag> = []
+//    @State private var selectedTags: Set<Tag> = []
     
     var body: some View {
         NavigationStack {
@@ -25,7 +25,7 @@ struct AddLinkView: View {
                     TextField("제목",text: $title)
                 }
                 
-                TagSelectionView(selectedTags: $selectedTags)
+//                TagSelectionView(selectedTags: $selectedTags)
             }
             .navigationTitle("새 링크 추가")
             .toolbar {
@@ -41,10 +41,10 @@ struct AddLinkView: View {
     }
     
     private func saveLink() {
-        guard let url = URL(string: urlString) else { return }
-        let newLink = LinkItem(url: url, title: title, tags: Array(selectedTags))
-        context.insert(newLink)
-        dismiss()
+//        guard let url = URL(string: urlString) else { return }
+//        let newLink = LinkItem(url: url, title: title, tags: Array(selectedTags))
+//        context.insert(newLink)
+//        dismiss()
     }
 }
 

@@ -11,18 +11,9 @@ import SwiftData
 import UniformTypeIdentifiers
 
 class ShareViewController: UIViewController {
-//    private var modelContext: ModelContext!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-//        let container = try! ModelContainer(
-//            for: LinkItem.self,
-//            configurations: ModelConfiguration(groupContainer: ModelConfiguration.GroupContainer.identifier("group.kr.gwanson.LinkToMe"))
-//        )
-//        
-//        modelContext = ModelContext(container)
-//        processSharedContent()
         
         isModalInPresentation = true
         
@@ -33,34 +24,6 @@ class ShareViewController: UIViewController {
         }
         
     }
-    
-//    private func processSharedContent() {
-//        guard let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem,
-//              let itemProvider = extensionItem.attachments?.first else {
-//            extensionContext?.completeRequest(returningItems: nil)
-//            return
-//        }
-//        
-//        // URL 추출
-//        if itemProvider.hasItemConformingToTypeIdentifier(UTType.url.identifier) {
-//            itemProvider.loadItem(forTypeIdentifier: UTType.url.identifier) { [weak self] item, error in
-//                guard let self = self, let url = item as? URL else { return }
-//                
-//                let newLink = LinkItem(url: url, title: url.host ?? "Untitled")
-//                self.modelContext.insert(newLink)
-//                 self.notifyMainApp()
-//                DispatchQueue.main.async {
-//                    self.extensionContext?.completeRequest(returningItems: nil)
-//                }
-//            }
-//        }
-//    }
-//    
-//    private func notifyMainApp() {
-//        let userDefaults = UserDefaults(suiteName: "group.kr.gwanson.LinkToMe")
-//        userDefaults?.set(true, forKey: "newLinkAdded")
-//        userDefaults?.synchronize()
-//    }
 
 }
 
@@ -68,6 +31,7 @@ fileprivate struct ShareView: View {
     var itemProvider: [NSItemProvider]
     var extenstionContext: NSExtensionContext?
     
+    @State private var items: [Item] = []
     var body: some View {
         VStack(spacing: 15) {
             Text("Add to Link")
@@ -79,7 +43,7 @@ fileprivate struct ShareView: View {
                 }
                 .padding(.bottom, 10)
             
-            Button(action: {}) {
+            Button(action: saveItems) {
                 Text("Save")
                     .font(.title3)
                     .fontWeight(.semibold)
@@ -92,12 +56,54 @@ fileprivate struct ShareView: View {
             Spacer(minLength: 0)
         }
         .padding(15)
+        .onAppear {
+            extractURL()
+        }
         
     }
     
+    func saveItems() {
+        print("Save!!")
+        do {
+            let context = try ModelContext(.init(for: LinkItem.self))
+            print(items)
+            for item in items {
+                context.insert(LinkItem(data: item.url))
+                print(item.url)
+            }
+            
+            try context.save()
+            dismiss()
+        } catch {
+            print(error.localizedDescription)
+            dismiss()
+        }
+    }
     
+    func extractURL() {
+        guard items.isEmpty else { return }
+        DispatchQueue.global(qos: .userInteractive).async{
+            for provider in itemProvider {
+                let _ = provider.loadDataRepresentation(for: .url) { data, error in
+                    if let data, let url = URL(dataRepresentation: data, relativeTo: nil) {
+                        DispatchQueue.main.async {
+                            items.append(.init(url: data))
+                            // DEBUG
+                            print(url, data)
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     func dismiss() {
         extenstionContext?.completeRequest(returningItems: [])
+    }
+    
+    private struct Item: Identifiable {
+        let id: UUID = .init()
+        var url: Data
+//        var title: String
     }
 }

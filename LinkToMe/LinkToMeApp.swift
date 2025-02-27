@@ -15,6 +15,7 @@ struct LinkToMeApp: App {
         WindowGroup {
             viewController()
         }
-        .modelContainer(for: [LinkItem.self, Tag.self])
+        .modelContainer(for: LinkItem.self)
+        //        .modelContainer(for: [LinkItem.self, Tag.self])
     }
 }

@@ -68,7 +68,7 @@ fileprivate struct ShareView: View {
             let context = try ModelContext(.init(for: LinkItem.self))
             print(items)
             for item in items {
-                context.insert(LinkItem(data: item.url))
+                context.insert(LinkItem(url: item.url))
                 print(item.url)
             }
             
@@ -87,7 +87,7 @@ fileprivate struct ShareView: View {
                 let _ = provider.loadDataRepresentation(for: .url) { data, error in
                     if let data, let url = URL(dataRepresentation: data, relativeTo: nil) {
                         DispatchQueue.main.async {
-                            items.append(.init(url: data))
+                            items.append(.init(url: url))
                             // DEBUG
                             print("URL")
                             print(url)
@@ -108,7 +108,7 @@ fileprivate struct ShareView: View {
     
     private struct Item: Identifiable {
         let id: UUID = .init()
-        var url: Data
+        var url: URL
 //        var title: String
     }
 }

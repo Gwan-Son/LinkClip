@@ -18,7 +18,7 @@ struct LinkRow: View {
 //                Text(link.url.host ?? "")
 //                    .font(.subheadline)
 //                    .foregroundStyle(.secondary)
-                Text(link.data.description)
+                Text(link.url.description)
                     .font(.headline)
             }
             Spacer()

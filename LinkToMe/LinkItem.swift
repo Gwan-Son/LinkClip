@@ -12,9 +12,9 @@ import Foundation
 final class LinkItem {
 //    @Attribute(.unique) var id: UUID
     @Attribute(.externalStorage)
-    var data: Data
-    init(data: Data) {
-        self.data = data
+    var url: URL
+    init(url: URL) {
+        self.url = url
     }
 //    var id: UUID
 //    var url: URL

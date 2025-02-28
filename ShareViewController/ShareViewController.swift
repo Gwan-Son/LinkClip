@@ -89,7 +89,12 @@ fileprivate struct ShareView: View {
                         DispatchQueue.main.async {
                             items.append(.init(url: data))
                             // DEBUG
-                            print(url, data)
+                            print("URL")
+                            print(url)
+                            print(type(of: url))
+                            print("DATA")
+                            print(data)
+                            print(type(of: data))
                         }
                     }
                 }

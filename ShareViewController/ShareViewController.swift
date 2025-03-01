@@ -82,19 +82,16 @@ fileprivate struct ShareView: View {
     
     func extractURL() {
         guard items.isEmpty else { return }
-        DispatchQueue.global(qos: .userInteractive).async{
-            for provider in itemProvider {
-                let _ = provider.loadDataRepresentation(for: .url) { data, error in
-                    if let data, let url = URL(dataRepresentation: data, relativeTo: nil) {
-                        DispatchQueue.main.async {
-                            items.append(.init(url: url))
-                            // DEBUG
-                            print("URL")
-                            print(url)
-                            print(type(of: url))
-                            print("DATA")
-                            print(data)
-                            print(type(of: data))
+        if let item = extenstionContext?.inputItems.first as? NSExtensionItem,
+           let itemProviders = item.attachments {
+            itemProviders.forEach { itemProvider in
+                if itemProvider.hasItemConformingToTypeIdentifier("public.url") {
+                    itemProvider.loadItem(forTypeIdentifier: "public.url") { (url, error) in
+                        if let sharedURL = url as? URL {
+                            // Save the URL to your database
+                            print(sharedURL)
+                        } else {
+                            print("Error loading URL: \(error?.localizedDescription ?? "")")
                         }
                     }
                 }

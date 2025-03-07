@@ -10,163 +10,92 @@ import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
 
-// TODO: - UIKit에서 SwiftUI로 변경
-// TODO: - 텍스트 추출 및 URL 추출
+// TODO: - UIKit에서 SwiftUI로 변경 - 완
+// TODO: - 텍스트 추출 및 URL 추출 - 완
 // TODO: - SwiftData로 메인 앱에 데이터 저장
 
 class ShareViewController: UIViewController {
-    private var navigationBar: UINavigationBar!
-    private var itemLabel: UILabel!
-    private var itemText: String?
-    
-    override func loadView() {
-        super.loadView()
-        guard let extensionContext = extensionContext else { return }
-        guard let extensionItems = extensionContext.inputItems as? [NSExtensionItem] else { return }
-        guard let extensionItem = extensionItems.first else { return }
-        
-        itemText = extensionItem.attributedContentText?.string
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureView()
-        itemLabel.text = itemText
         
-//        isModalInPresentation = true
-//        
-//        if let itemProviders = (extensionContext!.inputItems.first as? NSExtensionItem)?.attachments {
-//            let hostingView = UIHostingController(rootView: ShareView(itemProvider: itemProviders, extenstionContext: extensionContext))
-//            hostingView.view.frame = view.frame
-//            view.addSubview(hostingView.view)
-//        }
+        isModalInPresentation = true
+        
+        if let extensionContext = extensionContext {
+            let hostingView = UIHostingController(rootView: ShareView(extensionContext: extensionContext))
+            hostingView.view.frame = view.frame
+            view.addSubview(hostingView.view)
+        }
         
     }
 
 }
 
-extension ShareViewController {
-    private func configureView() {
-        view.backgroundColor = .systemBackground
-        configureNavigationBar()
-        configureItemLabel()
+fileprivate struct ShareView: View {
+    var extensionContext: NSExtensionContext?
+    
+    @State var titleText: String?
+    @State var urlText: String?
+    
+    var body: some View {
+        VStack(spacing: 15) {
+            Text("Link To Me")
+                .font(.title3).bold()
+                .frame(maxWidth: .infinity)
+                .overlay(alignment: .leading) {
+                    Button("취소", action: dismiss)
+                        .tint(.red)
+                }
+                .overlay(alignment: .trailing) {
+                    Button("저장", action: dismiss)
+                        .tint(.blue)
+                }
+                .padding(.bottom, 10)
+            Text(titleText ?? "No Item Selected")
+                .font(.title)
+                .lineLimit(0)
+                .frame(maxWidth: .infinity, maxHeight: 50)
+            Text(urlText ?? "No Item Selected")
+                .font(.title2)
+                .frame(maxWidth: .infinity, maxHeight: 50)
+            
+            Spacer(minLength: 0)
+        }
+        .padding(15)
+        .onAppear {
+            // 화면이 나타날 때 아이템 가져오기
+            getItems()
+        }
     }
     
-    private func configureNavigationBar() {
-        navigationBar = UINavigationBar()
-        navigationBar.translatesAutoresizingMaskIntoConstraints = false
+    func getItems() {
+        // Title
+        guard let extensionItems = extensionContext?.inputItems as? [NSExtensionItem] else { return }
+        guard let extensionItem = extensionItems.first else { return }
+        titleText = extensionItem.attributedContentText?.string
         
-        let navItem = UINavigationItem(title: "Share")
-        navItem.leftBarButtonItem = UIBarButtonItem(systemItem: .cancel)
-        navItem.rightBarButtonItem = UIBarButtonItem(systemItem: .done)
-        navigationBar.setItems([navItem], animated: false)
+        // URL
+        guard let extensionItemProvider = extensionItem.attachments?.first else { return }
         
-        view.addSubview(navigationBar)
-        
-        NSLayoutConstraint.activate([
-            navigationBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            navigationBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            navigationBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-        ])
+        if extensionItemProvider.hasItemConformingToTypeIdentifier(UTType.url.identifier) {
+            extensionItemProvider.loadItem(forTypeIdentifier: UTType.url.identifier) { (url, error) in
+                if let url = url as? URL {
+                    DispatchQueue.main.async {
+                        urlText = url.absoluteString
+                    }
+                } else {
+                    print("Error loading URL: \(error?.localizedDescription ?? "")")
+                }
+            }
+        }
     }
     
-    private func configureItemLabel() {
-        itemLabel = UILabel()
-        itemLabel.translatesAutoresizingMaskIntoConstraints = false
-        itemLabel.backgroundColor = .black
-        itemLabel.textColor = .white
-        itemLabel.text = "No Item Selected"
-        
-        view.addSubview(itemLabel)
-        
-        NSLayoutConstraint.activate([
-            itemLabel.widthAnchor.constraint(equalToConstant: 300),
-            itemLabel.heightAnchor.constraint(equalToConstant: 50),
-            itemLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            itemLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-        ])
+    func saveItems() {
+        // SwiftData로 저장
+        print("Save!!")
+    }
+    
+    func dismiss() {
+        extensionContext?.completeRequest(returningItems: [])
     }
 }
-
-//fileprivate struct ShareView: View {
-//    var itemProvider: [NSItemProvider]
-//    var extenstionContext: NSExtensionContext?
-//    
-//    @State private var items: [Item] = []
-//    var body: some View {
-//        VStack(spacing: 15) {
-//            Text("Add to Link")
-//                .font(.title3.bold())
-//                .frame(maxWidth: .infinity)
-//                .overlay(alignment: .leading) {
-//                    Button("Cancel", action: dismiss)
-//                        .tint(.red)
-//                }
-//                .padding(.bottom, 10)
-//            
-//            Button(action: saveItems) {
-//                Text("Save")
-//                    .font(.title3)
-//                    .fontWeight(.semibold)
-//                    .padding(.vertical, 10)
-//                    .foregroundColor(.white)
-//                    .background(.blue, in: .rect(cornerRadius: 10))
-//                    .contentShape(.rect)
-//            }
-//            
-//            Spacer(minLength: 0)
-//        }
-//        .padding(15)
-//        .onAppear {
-//            extractURL()
-//        }
-//        
-//    }
-//    
-//    func saveItems() {
-//        print("Save!!")
-//        do {
-//            let context = try ModelContext(.init(for: LinkItem.self))
-//            print(items)
-//            for item in items {
-//                context.insert(LinkItem(url: item.url))
-//                print(item.url)
-//            }
-//            
-//            try context.save()
-//            dismiss()
-//        } catch {
-//            print(error.localizedDescription)
-//            dismiss()
-//        }
-//    }
-//    
-//    func extractURL() {
-//        guard items.isEmpty else { return }
-//        if let item = extenstionContext?.inputItems.first as? NSExtensionItem,
-//           let itemProviders = item.attachments {
-//            itemProviders.forEach { itemProvider in
-//                if itemProvider.hasItemConformingToTypeIdentifier("public.url") {
-//                    itemProvider.loadItem(forTypeIdentifier: "public.url") { (url, error) in
-//                        if let sharedURL = url as? URL {
-//                            // Save the URL to your database
-//                            print("가져온 URL: \(sharedURL)")
-//                        } else {
-//                            print("Error loading URL: \(error?.localizedDescription ?? "")")
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//    }
-//    
-//    func dismiss() {
-//        extenstionContext?.completeRequest(returningItems: [])
-//    }
-//    
-//    private struct Item: Identifiable {
-//        let id: UUID = .init()
-//        var url: URL
-////        var title: String
-//    }
-//}

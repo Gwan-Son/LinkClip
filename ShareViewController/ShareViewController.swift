@@ -10,9 +10,6 @@ import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
 
-// TODO: - UIKit에서 SwiftUI로 변경 - 완
-// TODO: - 텍스트 추출 및 URL 추출 - 완
-// TODO: - SwiftData로 메인 앱에 데이터 저장
 
 class ShareViewController: UIViewController {
     
@@ -31,6 +28,7 @@ class ShareViewController: UIViewController {
 
 }
 
+// TODO: - UI 개선(제목과 URL을 사용자가 보기 좋게 카드 형식으로 만들어줄 예정)
 fileprivate struct ShareView: View {
     var extensionContext: NSExtensionContext?
     
@@ -90,6 +88,7 @@ fileprivate struct ShareView: View {
         }
     }
     
+    // TODO: - SwiftData로 메인 앱에 데이터 저장
     func saveItems() {
         // SwiftData로 저장
         print("Save!!")

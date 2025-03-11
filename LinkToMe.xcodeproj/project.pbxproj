@@ -40,6 +40,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9F0E4EFC2D8002CC00B318CD /* Exceptions for "ShareViewController" folder in "LinkToMe" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				ShareViewController.swift,
+			);
+			target = 9F2852162D646B720001803F /* LinkToMe */;
+		};
 		9F28524F2D647C7D0001803F /* Exceptions for "ShareViewController" folder in "ShareViewController" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -51,6 +58,8 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				LinkItem.swift,
+				Shared/ShareError.swift,
+				Shared/ShareView.swift,
 			);
 			target = 9F2852432D647C7D0001803F /* ShareViewController */;
 		};
@@ -68,6 +77,7 @@
 		9F2852452D647C7D0001803F /* ShareViewController */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				9F0E4EFC2D8002CC00B318CD /* Exceptions for "ShareViewController" folder in "LinkToMe" target */,
 				9F28524F2D647C7D0001803F /* Exceptions for "ShareViewController" folder in "ShareViewController" target */,
 			);
 			path = ShareViewController;

@@ -12,10 +12,11 @@ import SwiftData
 struct LinkToMeApp: App {
     @UIApplicationDelegateAdaptor var delegate: AppDelegate
     var body: some Scene {
+        
         WindowGroup {
-            viewController()
+//            viewController()
+            ShareView()
         }
-        .modelContainer(for: LinkItem.self)
         //        .modelContainer(for: [LinkItem.self, Tag.self])
     }
 }

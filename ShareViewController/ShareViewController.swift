@@ -16,85 +16,40 @@ class ShareViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        isModalInPresentation = true
-        
-        if let extensionContext = extensionContext {
-            let hostingView = UIHostingController(rootView: ShareView(extensionContext: extensionContext))
-            hostingView.view.frame = view.frame
-            view.addSubview(hostingView.view)
+        guard let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem else {
+            return
         }
         
+        let hostingView = UIHostingController(
+            rootView:
+                ShareView(
+                    extensionItem: extensionItem,
+                    completeRequest: completeRequest,
+                    cancelRequest: cancelRequest
+                )
+        )
+        
+        self.addChild(hostingView)
+        self.view.addSubview(hostingView.view)
+        hostingView.view.translatesAutoresizingMaskIntoConstraints = false
+        
+        hostingView.view.topAnchor
+            .constraint(equalTo: view.topAnchor).isActive = true
+        hostingView.view.leadingAnchor
+            .constraint(equalTo: view.leadingAnchor).isActive = true
+        hostingView.view.trailingAnchor
+            .constraint(equalTo: view.trailingAnchor).isActive = true
+        hostingView.view.bottomAnchor
+            .constraint(equalTo: view.bottomAnchor).isActive = true
+    }
+    
+    private func completeRequest() {
+        self.extensionContext?
+            .completeRequest(returningItems: [], completionHandler: nil)
+    }
+    
+    private func cancelRequest(_ error: ShareError) {
+        self.extensionContext?.cancelRequest(withError: error)
     }
 
-}
-
-// TODO: - UI 개선(제목과 URL을 사용자가 보기 좋게 카드 형식으로 만들어줄 예정)
-fileprivate struct ShareView: View {
-    var extensionContext: NSExtensionContext?
-    
-    @State var titleText: String?
-    @State var urlText: String?
-    
-    var body: some View {
-        VStack(spacing: 15) {
-            Text("Link To Me")
-                .font(.title3).bold()
-                .frame(maxWidth: .infinity)
-                .overlay(alignment: .leading) {
-                    Button("취소", action: dismiss)
-                        .tint(.red)
-                }
-                .overlay(alignment: .trailing) {
-                    Button("저장", action: dismiss)
-                        .tint(.blue)
-                }
-                .padding(.bottom, 10)
-            Text(titleText ?? "No Item Selected")
-                .font(.title)
-                .lineLimit(0)
-                .frame(maxWidth: .infinity, maxHeight: 50)
-            Text(urlText ?? "No Item Selected")
-                .font(.title2)
-                .frame(maxWidth: .infinity, maxHeight: 50)
-            
-            Spacer(minLength: 0)
-        }
-        .padding(15)
-        .onAppear {
-            // 화면이 나타날 때 아이템 가져오기
-            getItems()
-        }
-    }
-    
-    func getItems() {
-        // Title
-        guard let extensionItems = extensionContext?.inputItems as? [NSExtensionItem] else { return }
-        guard let extensionItem = extensionItems.first else { return }
-        titleText = extensionItem.attributedContentText?.string
-        
-        // URL
-        guard let extensionItemProvider = extensionItem.attachments?.first else { return }
-        
-        if extensionItemProvider.hasItemConformingToTypeIdentifier(UTType.url.identifier) {
-            extensionItemProvider.loadItem(forTypeIdentifier: UTType.url.identifier) { (url, error) in
-                if let url = url as? URL {
-                    DispatchQueue.main.async {
-                        urlText = url.absoluteString
-                    }
-                } else {
-                    print("Error loading URL: \(error?.localizedDescription ?? "")")
-                }
-            }
-        }
-    }
-    
-    // TODO: - SwiftData로 메인 앱에 데이터 저장
-    func saveItems() {
-        // SwiftData로 저장
-        print("Save!!")
-    }
-    
-    func dismiss() {
-        extensionContext?.completeRequest(returningItems: [])
-    }
 }

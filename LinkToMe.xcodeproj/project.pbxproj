@@ -60,6 +60,7 @@
 				LinkItem.swift,
 				Shared/ShareError.swift,
 				Shared/ShareView.swift,
+				Shared/swiftDataContainer.swift,
 			);
 			target = 9F2852432D647C7D0001803F /* ShareViewController */;
 		};

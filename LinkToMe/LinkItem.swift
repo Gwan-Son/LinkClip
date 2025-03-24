@@ -10,26 +10,15 @@ import Foundation
 
 @Model
 final class LinkItem {
-//    @Attribute(.unique) var id: UUID
     @Attribute(.externalStorage)
     var url: URL
-    init(url: URL) {
+    var title: String?
+    var savedDate: Date
+    init(url: URL, title: String? = nil) {
         self.url = url
+        self.title = title
+        self.savedDate = Date()
     }
-//    var id: UUID
-//    var url: URL
-//    var title: String
-//    var createdDate: Date
-//    var previewImage: Data?
-//    @Relationship var tags: [Tag]
-//    
-//    init(url: URL, title: String, tags: [Tag] = []) {
-//        self.id = UUID()
-//        self.url = url
-//        self.title = title
-//        self.createdDate = Date()
-//        self.tags = tags
-//    }
 }
 
 //@Model

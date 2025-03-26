@@ -8,5 +8,6 @@
 enum ShareError: Error {
     case itemNotFound
     case loadItemError
+    case saveError
     case unknown
 }

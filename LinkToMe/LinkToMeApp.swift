@@ -11,12 +11,16 @@ import SwiftData
 @main
 struct LinkToMeApp: App {
     @UIApplicationDelegateAdaptor var delegate: AppDelegate
+    
+    let sharedModelContainer = createSharedModelContainer()
+    
     var body: some Scene {
         
         WindowGroup {
-//            viewController()
-            ShareView()
+            viewController()
+//            ShareView()
         }
+        .modelContainer(sharedModelContainer)
         //        .modelContainer(for: [LinkItem.self, Tag.self])
     }
 }

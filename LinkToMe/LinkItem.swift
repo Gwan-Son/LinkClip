@@ -11,12 +11,14 @@ import Foundation
 @Model
 final class LinkItem {
     @Attribute(.externalStorage)
-    var url: URL
-    var title: String?
+    var url: String
+    var title: String
+    var personalMemo: String?
     var savedDate: Date
-    init(url: URL, title: String? = nil) {
+    init(url: String, title: String, personalMemo: String? = nil) {
         self.url = url
         self.title = title
+        self.personalMemo = personalMemo
         self.savedDate = Date()
     }
 }

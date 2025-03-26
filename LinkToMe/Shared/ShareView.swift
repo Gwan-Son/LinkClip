@@ -74,11 +74,17 @@ struct ShareView: View {
             try context.save()
             
 //            showSavedAlert(url: url)
-        } catch {
+        } catch(let error) {
             print("URL 저장 중 오류 발생: \(error)")
+            if error is ShareError {
+                extensionContext?.cancelRequest(withError: error as! ShareError)
+            } else {
+                extensionContext?.cancelRequest(withError: ShareError.unknown)
+            }
         }
     }
     
+    //TODO: - 저장 완료 시 Alert 띄우기
     private func showSavedAlert(url: URL) {
         let alert = UIAlertController(
             title: "URL 저장됨",

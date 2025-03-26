@@ -57,10 +57,10 @@
 		9F572BAD2D6D66F400EDBB4A /* Exceptions for "LinkToMe" folder in "ShareViewController" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				LinkItem.swift,
+				Components/LinkItem.swift,
 				Shared/ShareError.swift,
 				Shared/ShareView.swift,
-				Shared/swiftDataContainer.swift,
+				Shared/SwiftDataContainer.swift,
 			);
 			target = 9F2852432D647C7D0001803F /* ShareViewController */;
 		};

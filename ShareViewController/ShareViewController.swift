@@ -17,7 +17,7 @@ class ShareViewController: UIViewController {
         
         guard let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem,
             let itemProvider = extensionItem.attachments?.first else {
-            self.completeRequest()
+            self.cancelRequest(.itemNotFound)
             return
         }
         
@@ -27,7 +27,7 @@ class ShareViewController: UIViewController {
                     if let url = url as? URL {
                         self?.showURLSaveView(url: url, extensionContext: self?.extensionContext)
                     } else {
-                        self?.completeRequest()
+                        self?.cancelRequest(.loadItemError)
                     }
                 }
             }
@@ -37,12 +37,12 @@ class ShareViewController: UIViewController {
                     if let urlString = text as? String, let url = URL(string: urlString) {
                         self?.showURLSaveView(url: url, extensionContext: self?.extensionContext)
                     } else {
-                        self?.completeRequest()
+                        self?.cancelRequest(.loadItemError)
                     }
                 }
             }
         } else {
-            self.completeRequest()
+            self.cancelRequest(.unknown)
         }
 
     }
@@ -55,19 +55,19 @@ class ShareViewController: UIViewController {
         self.present(hostingController, animated: true, completion: nil)
     }
     
-    private func showSavedAlert(url: URL) {
-        let alert = UIAlertController(
-            title: "URL 저장됨",
-            message: "URL이 성공적으로 저장되었습니다.",
-            preferredStyle: .alert
-        )
-        
-        alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in
-            self.completeRequest()
-        })
-        
-        self.present(alert, animated: true)
-    }
+//    private func showSavedAlert(url: URL) {
+//        let alert = UIAlertController(
+//            title: "URL 저장됨",
+//            message: "URL이 성공적으로 저장되었습니다.",
+//            preferredStyle: .alert
+//        )
+//        
+//        alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in
+//            self.completeRequest()
+//        })
+//        
+//        self.present(alert, animated: true)
+//    }
     
     private func completeRequest() {
         self.extensionContext?

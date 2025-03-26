@@ -9,35 +9,58 @@ import SwiftUI
 import SwiftData
 
 struct viewController: View {
-//    @Query(sort: \LinkItem.createdDate, order: .reverse) private var links: [LinkItem]
-    @Query private var links: [LinkItem]
-    @Environment(\.modelContext) private var context
+    @Environment(\.modelContext) private var modelContext
+    @Query(sort: \LinkItem.savedDate, order: .reverse)
+    private var links: [LinkItem]
     @State private var showingAddLink = false
     
     var body: some View {
         NavigationStack {
             List {
                 ForEach(links) { link in
-                    LinkRow(link: link)
-                        .swipeActions {
-                            Button(role: .destructive) {
-                                deleteLink(link)
-                            } label: {
-                                Label("삭제", systemImage: "trash")
-                            }
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(link.title)
+                            .font(.headline)
+                        
+                        Text(link.url)
+                            .font(.subheadline)
+                            .foregroundColor(.blue)
+                        
+                        if let memo = link.personalMemo, !memo.isEmpty {
+                            Text(memo)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                                .padding(.top, 4)
                         }
+                    }
+                    .contextMenu {
+                        Button {
+                            if let url = URL(string: link.url) {
+                                UIApplication.shared.open(url)
+                            }
+                        } label: {
+                            Label("열기", systemImage: "safari")
+                        }
+                        
+                        Button(role: .destructive) {
+                            modelContext.delete(link)
+                            try? modelContext.save()
+                        } label: {
+                            Label("삭제", systemImage: "trash")
+                        }
+                    }
+                    
+//                    LinkRow(link: link)
+//                        .swipeActions {
+//                            Button(role: .destructive) {
+//                                deleteLink(link)
+//                            } label: {
+//                                Label("삭제", systemImage: "trash")
+//                            }
+//                        }
                 }
             }
             .navigationTitle("Links")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        showingAddLink.toggle()
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                }
-            }
             .sheet(isPresented: $showingAddLink) {
                 AddLinkView()
             }
@@ -45,22 +68,10 @@ struct viewController: View {
     }
     
     private func deleteLink(_ link: LinkItem) {
-        context.delete(link)
+        modelContext.delete(link)
     }
 }
 
-//#Preview {
-//    let config = ModelConfiguration(isStoredInMemoryOnly: true)
-//    let container = try! ModelContainer(for: LinkItem.self, configurations: config)
-//    
-//    for i in 1...10 {
-//        let link = LinkItem(
-//            url: URL(string: "https://www.dogdrip.net/61536450\(i)")!,
-//            title: "Sample Link \(i)"
-//        )
-//        container.mainContext.insert(link)
-//    }
-//    
-//    return viewController()
-//        .modelContainer(container)
-//}
+#Preview {
+    viewController()
+}

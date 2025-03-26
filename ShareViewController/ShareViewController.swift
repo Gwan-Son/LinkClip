@@ -10,37 +10,63 @@ import SwiftUI
 import SwiftData
 import UniformTypeIdentifiers
 
-
 class ShareViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        guard let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem else {
+        guard let extensionItem = extensionContext?.inputItems.first as? NSExtensionItem,
+            let itemProvider = extensionItem.attachments?.first else {
+            self.completeRequest()
             return
         }
         
-        let hostingView = UIHostingController(
-            rootView:
-                ShareView(
-                    extensionItem: extensionItem,
-                    completeRequest: completeRequest,
-                    cancelRequest: cancelRequest
-                )
+        if itemProvider.hasItemConformingToTypeIdentifier(UTType.url.identifier) {
+            itemProvider.loadItem(forTypeIdentifier: UTType.url.identifier, options: nil) { [weak self] (url, error) in
+                DispatchQueue.main.async {
+                    if let url = url as? URL {
+                        self?.showURLSaveView(url: url, extensionContext: self?.extensionContext)
+                    } else {
+                        self?.completeRequest()
+                    }
+                }
+            }
+        } else if itemProvider.hasItemConformingToTypeIdentifier("public.plain-txt") {
+            itemProvider.loadItem(forTypeIdentifier: "public.plain-txt", options: nil) { [weak self] (text, error) in
+                DispatchQueue.main.async {
+                    if let urlString = text as? String, let url = URL(string: urlString) {
+                        self?.showURLSaveView(url: url, extensionContext: self?.extensionContext)
+                    } else {
+                        self?.completeRequest()
+                    }
+                }
+            }
+        } else {
+            self.completeRequest()
+        }
+
+    }
+    
+    private func showURLSaveView(url: URL, extensionContext: NSExtensionContext? = nil) {
+        let shareView = ShareView(url: url, extensionContext: extensionContext)
+        let hostingController = UIHostingController(rootView: shareView)
+        
+        hostingController.modalPresentationStyle = .formSheet
+        self.present(hostingController, animated: true, completion: nil)
+    }
+    
+    private func showSavedAlert(url: URL) {
+        let alert = UIAlertController(
+            title: "URL 저장됨",
+            message: "URL이 성공적으로 저장되었습니다.",
+            preferredStyle: .alert
         )
         
-        self.addChild(hostingView)
-        self.view.addSubview(hostingView.view)
-        hostingView.view.translatesAutoresizingMaskIntoConstraints = false
+        alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in
+            self.completeRequest()
+        })
         
-        hostingView.view.topAnchor
-            .constraint(equalTo: view.topAnchor).isActive = true
-        hostingView.view.leadingAnchor
-            .constraint(equalTo: view.leadingAnchor).isActive = true
-        hostingView.view.trailingAnchor
-            .constraint(equalTo: view.trailingAnchor).isActive = true
-        hostingView.view.bottomAnchor
-            .constraint(equalTo: view.bottomAnchor).isActive = true
+        self.present(alert, animated: true)
     }
     
     private func completeRequest() {

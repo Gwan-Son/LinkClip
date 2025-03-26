@@ -7,194 +7,93 @@
 
 import SwiftUI
 import UniformTypeIdentifiers
+import SwiftData
 
-enum ViewMode {
-    case view
-    case edit
-}
-// TODO: - SwiftData 적용
 struct ShareView: View {
-    private static let groupId = "group.kr.gwanson.LinkToMe"
-    @AppStorage("title", store: UserDefaults(suiteName: Self.groupId)) private var savedTitle: String = ""
-    @AppStorage("url", store: UserDefaults(suiteName: Self.groupId)) private var savedUrl: String = ""
-    @AppStorage("extraNote", store: UserDefaults(suiteName: Self.groupId)) private var savedNote: String = ""
-    
-    private let extensionItem: NSExtensionItem
-    private let completeRequest: (() -> Void)?
-    private let cancelRequest: ((ShareError) -> Void)?
-    
-    private let urlType = UTType.url.identifier
-    
-    @State private var title: String?
+    @State private var title: String = ""
+    @State private var personalMemo: String = ""
     @State private var url: URL?
-    @State private var entry: String = ""
-    @State private var viewMode: ViewMode
+    
+    // Extension Context를 전달받기 위한 프로퍼티
+    var extensionContext: NSExtensionContext?
+    
+    // 이 뷰를 ShareExtension에서 사용할 수 있도록 초기화
+    init(url: URL, extensionContext: NSExtensionContext?) {
+        self._url = State(initialValue: url)
+        self.extensionContext = extensionContext
+        // URL의 호스트를 기본 제목으로 설정
+        self._title = State(initialValue: url.host ?? "")
+    }
     
     var body: some View {
-        VStack(spacing: 24) {
-            if viewMode == .view && savedUrl.isEmpty && savedNote.isEmpty {
-                VStack(spacing: 16) {
-                    Text("No Previous Saved Info Available!")
-                        .font(.title2)
-                        .fontWeight(.bold)
-                        .multilineTextAlignment(.center)
-                    Text("Head to Safari and try to share a URL or some text!")
-                        .multilineTextAlignment(.center)
-                }
-                .frame(maxHeight: .infinity, alignment: .center)
-
-                
-            } else {
-                if viewMode == .view {
-                    Text("Previous Saved Info")
-                        .font(.title2)
-                        .fontWeight(.bold)
+        NavigationView {
+            Form {
+                Section(header: Text("URL 정보")) {
+                    Text(url?.absoluteString ?? "")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
                 }
                 
-                if let title {
-                    VStack(spacing: 16) {
-                        Text("Title")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                        Text(title)
-                            .multilineTextAlignment(.leading)
-                    }
+                Section(header: Text("제목")) {
+                    TextField("URL 제목", text: $title)
                 }
                 
-                if let url {
-                    VStack(spacing: 16) {
-                        Text("URL")
-                            .font(.title3)
-                            .fontWeight(.bold)
-                        Text(LocalizedStringKey(url.absoluteString))
-                            .multilineTextAlignment(.leading)
-                    }
-                }
-                
-                if title != nil || url != nil {
-                    Divider()
-                        .background(.black)
-                }
-                
-                VStack(spacing: 16) {
-                    Text("Some Extra Notes")
-                    TextField("", text: $entry, axis: .vertical)
-                        .textFieldStyle(.roundedBorder)
-                        .lineLimit(5, reservesSpace: true)
-                        .shadow(radius: 1)
-                        .lineSpacing(4)
-                        .disabled(viewMode == .view)
+                Section(header: Text("개인 메모")) {
+                    TextEditor(text: $personalMemo)
+                        .frame(height: 100)
                 }
             }
+            .navigationTitle("URL 저장")
+            .navigationBarItems(
+                leading: Button("취소") {
+                    // 취소 시 ExtensionContext 완료 처리
+                    extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+                },
+                trailing: Button("저장") {
+                    saveURL()
+                    extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+                }
+            )
         }
-        .padding(.horizontal, 8)
-        .padding(.top, 64)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .overlay(alignment: .topTrailing, content: {
-            if let completeRequest {
-                Button(action: {
-                    savedTitle = title ?? ""
-                    savedUrl = url?.absoluteString ?? ""
-                    savedNote = entry
-                    completeRequest()
-                }, label: {
-                    Text("Save")
-                })
-            }
-        })
-        .overlay(alignment: .topLeading, content: {
-            if let completeRequest {
-                Button(action: {
-                    completeRequest()
-                }, label: {
-                    Text("Cancel")
-                        .foregroundStyle(.red)
-                })
-            }
-        })
-        .padding()
-        .onAppear {
-            if viewMode == .view {
-                self.title = savedTitle
-                self.url = URL(string: savedUrl)
-                self.entry = savedNote
-                return
-            }
-            do {
-                try processItems(extensionItem)
-            } catch (let error) {
-                print(error)
-                if error is ShareError {
-                    cancelRequest?(error as! ShareError)
-                } else {
-                    cancelRequest?(.unknown)
-                }
-            }
-        }
-        .onChange(of: [savedTitle, savedUrl, savedNote], {
-            self.title = savedTitle
-            self.url = URL(string: savedUrl)
-            self.entry = savedNote
-
-        })
     }
     
-    nonisolated private func processItems(_ extensionItem: NSExtensionItem) throws {
-        var title: String?
-        var url: URL?
-        Task {
-            title = extensionItem.attributedContentText?.string ?? "No title"
+    private func saveURL() {
+        guard let url = url else { return }
+        
+        let container = createSharedModelContainer()
+        
+        do {
+            let context = container.mainContext
+            let savedURL = LinkItem(
+                url: url.absoluteString,
+                title: title.isEmpty ? (url.host ?? "제목 없음") : title,
+                personalMemo: personalMemo.isEmpty ? nil : personalMemo
+            )
             
-            guard let itemProviders = extensionItem.attachments else {
-                print("item not found!")
-                throw ShareError.itemNotFound
-            }
+            context.insert(savedURL)
+            try context.save()
             
-            for itemProvider in itemProviders {
-                if itemProvider.hasItemConformingToTypeIdentifier(urlType) {
-                    let data = try await itemProvider.loadItem(forTypeIdentifier: urlType)
-                    print("url", data)
-                    
-                    guard let urlData = data as? NSURL as? URL else {
-                        print("error getting url data")
-                        throw ShareError.loadItemError
-                    }
-                    
-                    url = urlData
-                    
-                    continue
-                }
-            }
-            
-            if url == nil {
-                print("ShareError.itemNotFound")
-                throw ShareError.itemNotFound
-            }
-            
-            DispatchQueue.main.async { [url, title] in
-                self.url = url
-                self.title = title
-            }
+//            showSavedAlert(url: url)
+        } catch {
+            print("URL 저장 중 오류 발생: \(error)")
         }
     }
-}
-
-extension ShareView {
-    init(extensionItem: NSExtensionItem, completeRequest: @escaping () -> Void, cancelRequest: @escaping (ShareError) -> Void) {
-        self.extensionItem = extensionItem
-        self.completeRequest = completeRequest
-        self.cancelRequest = cancelRequest
-        self.viewMode = .edit
-    }
     
-    init() {
-        self.extensionItem = NSExtensionItem()
-        self.completeRequest = nil
-        self.cancelRequest = nil
-        self.viewMode = .view
+    private func showSavedAlert(url: URL) {
+        let alert = UIAlertController(
+            title: "URL 저장됨",
+            message: "URL이 성공적으로 저장되었습니다.",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in
+            self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+        })
+        
+//        self.present(alert, animated: true)
     }
 }
 
 #Preview {
-    ShareView()
+    ShareView(url: URL(string: "https://www.google.com")!, extensionContext: NSExtensionContext())
 }

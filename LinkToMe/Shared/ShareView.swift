@@ -14,6 +14,10 @@ struct ShareView: View {
     @State private var personalMemo: String = ""
     @State private var url: URL?
     
+    // 저장완료 시 alert를 띄우기 위한 상태
+    @State private var isSaved: Bool = false
+    
+    
     // Extension Context를 전달받기 위한 프로퍼티
     var extensionContext: NSExtensionContext?
     
@@ -51,9 +55,17 @@ struct ShareView: View {
                 },
                 trailing: Button("저장") {
                     saveURL()
-                    extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
                 }
             )
+            .alert(isPresented: $isSaved) {
+                Alert(
+                    title: Text("URL 저장됨"),
+                    message: Text("URL이 성공적으로 저장되었습니다."),
+                    dismissButton: .default(Text("확인"), action: {
+                        extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
+                    })
+                )
+            }
         }
     }
     
@@ -73,7 +85,7 @@ struct ShareView: View {
             context.insert(savedURL)
             try context.save()
             
-//            showSavedAlert(url: url)
+            isSaved = true
         } catch(let error) {
             print("URL 저장 중 오류 발생: \(error)")
             if error is ShareError {
@@ -82,21 +94,6 @@ struct ShareView: View {
                 extensionContext?.cancelRequest(withError: ShareError.unknown)
             }
         }
-    }
-    
-    //TODO: - 저장 완료 시 Alert 띄우기
-    private func showSavedAlert(url: URL) {
-        let alert = UIAlertController(
-            title: "URL 저장됨",
-            message: "URL이 성공적으로 저장되었습니다.",
-            preferredStyle: .alert
-        )
-        
-        alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in
-            self.extensionContext?.completeRequest(returningItems: [], completionHandler: nil)
-        })
-        
-//        self.present(alert, animated: true)
     }
 }
 

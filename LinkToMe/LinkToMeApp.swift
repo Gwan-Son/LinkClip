@@ -10,7 +10,6 @@ import SwiftData
 
 @main
 struct LinkToMeApp: App {
-    @UIApplicationDelegateAdaptor var delegate: AppDelegate
     
     let sharedModelContainer = createSharedModelContainer()
     
@@ -18,9 +17,7 @@ struct LinkToMeApp: App {
         
         WindowGroup {
             viewController()
-//            ShareView()
         }
         .modelContainer(sharedModelContainer)
-        //        .modelContainer(for: [LinkItem.self, Tag.self])
     }
 }

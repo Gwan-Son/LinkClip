@@ -33,6 +33,14 @@ struct viewController: View {
                                 .padding(.top, 4)
                         }
                     }
+                    .swipeActions(content: {
+                        Button(role: .destructive) {
+                            deleteLink(link)
+                        } label: {
+                            Label("삭제", systemImage: "trash")
+                        }
+                    })
+                    //TODO: - contextMenu에 수정, 공유 기능 추가
                     .contextMenu {
                         Button {
                             if let url = URL(string: link.url) {
@@ -49,15 +57,6 @@ struct viewController: View {
                             Label("삭제", systemImage: "trash")
                         }
                     }
-                    
-//                    LinkRow(link: link)
-//                        .swipeActions {
-//                            Button(role: .destructive) {
-//                                deleteLink(link)
-//                            } label: {
-//                                Label("삭제", systemImage: "trash")
-//                            }
-//                        }
                 }
             }
             .navigationTitle("Links")

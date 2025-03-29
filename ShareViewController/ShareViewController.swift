@@ -20,7 +20,7 @@ class ShareViewController: UIViewController {
             self.cancelRequest(.itemNotFound)
             return
         }
-        
+        // TODO: - 제목 뜯어오기
         if itemProvider.hasItemConformingToTypeIdentifier(UTType.url.identifier) {
             itemProvider.loadItem(forTypeIdentifier: UTType.url.identifier, options: nil) { [weak self] (url, error) in
                 DispatchQueue.main.async {

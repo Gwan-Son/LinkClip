@@ -17,16 +17,23 @@ struct ShareView: View {
     // 저장완료 시 alert를 띄우기 위한 상태
     @State private var isSaved: Bool = false
     
+    // Title
+    var extensionTitle: String?
     
     // Extension Context를 전달받기 위한 프로퍼티
     var extensionContext: NSExtensionContext?
     
     // 이 뷰를 ShareExtension에서 사용할 수 있도록 초기화
-    init(url: URL, extensionContext: NSExtensionContext?) {
+    init(url: URL, extensionContext: NSExtensionContext?, extensionTitle: String?) {
         self._url = State(initialValue: url)
         self.extensionContext = extensionContext
-        // URL의 호스트를 기본 제목으로 설정
-        self._title = State(initialValue: url.host ?? "")
+        if extensionTitle != nil {
+            // title이 존재하면 제목으로 설정
+            self._title = State(initialValue: extensionTitle ?? "No title")
+        } else {
+            // URL의 호스트를 기본 제목으로 설정
+            self._title = State(initialValue: url.host ?? "No title")
+        }
     }
     
     var body: some View {
@@ -98,5 +105,5 @@ struct ShareView: View {
 }
 
 #Preview {
-    ShareView(url: URL(string: "https://www.google.com")!, extensionContext: NSExtensionContext())
+    ShareView(url: URL(string: "https://www.google.com")!, extensionContext: NSExtensionContext(), extensionTitle: nil)
 }

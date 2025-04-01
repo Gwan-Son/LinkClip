@@ -20,12 +20,14 @@ class ShareViewController: UIViewController {
             self.cancelRequest(.itemNotFound)
             return
         }
-        // TODO: - 제목 뜯어오기
+        let title = extensionItem.attributedContentText?.string ?? "No title"
+        print(title)
+        print(type(of: title))
         if itemProvider.hasItemConformingToTypeIdentifier(UTType.url.identifier) {
             itemProvider.loadItem(forTypeIdentifier: UTType.url.identifier, options: nil) { [weak self] (url, error) in
                 DispatchQueue.main.async {
                     if let url = url as? URL {
-                        self?.showURLSaveView(url: url, extensionContext: self?.extensionContext)
+                        self?.showURLSaveView(url: url, extensionContext: self?.extensionContext, title: title)
                     } else {
                         self?.cancelRequest(.loadItemError)
                     }
@@ -47,27 +49,13 @@ class ShareViewController: UIViewController {
 
     }
     
-    private func showURLSaveView(url: URL, extensionContext: NSExtensionContext? = nil) {
-        let shareView = ShareView(url: url, extensionContext: extensionContext)
+    private func showURLSaveView(url: URL, extensionContext: NSExtensionContext? = nil, title: String? = nil) {
+        let shareView = ShareView(url: url, extensionContext: extensionContext, extensionTitle: title)
         let hostingController = UIHostingController(rootView: shareView)
         
         hostingController.modalPresentationStyle = .formSheet
         self.present(hostingController, animated: true, completion: nil)
     }
-    
-//    private func showSavedAlert(url: URL) {
-//        let alert = UIAlertController(
-//            title: "URL 저장됨",
-//            message: "URL이 성공적으로 저장되었습니다.",
-//            preferredStyle: .alert
-//        )
-//        
-//        alert.addAction(UIAlertAction(title: "확인", style: .default) { _ in
-//            self.completeRequest()
-//        })
-//        
-//        self.present(alert, animated: true)
-//    }
     
     private func completeRequest() {
         self.extensionContext?

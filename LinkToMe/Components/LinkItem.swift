@@ -22,13 +22,3 @@ final class LinkItem {
         self.savedDate = Date()
     }
 }
-
-//@Model
-//final class Tag {
-//    @Attribute(.unique) var name: String
-//    @Relationship var links: [LinkItem] = []
-//    
-//    init(name: String, links: [LinkItem] = []) {
-//        self.name = name
-//    }
-//}

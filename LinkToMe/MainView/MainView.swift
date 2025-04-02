@@ -17,15 +17,39 @@ struct MainView: View {
     @State private var selectedURLForEditing: LinkItem?
     
     // 온보딩 표시 여부 상태
-    @State private var showOnboarding = false
+    @State private var showOnboarding: Bool = false
     
     // UserDefaults를 사용하여 앱이 처음 실행되었는지 확인
-    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding: Bool = false
+    
+    // 검색어를 저장할 상태 변수
+    @State private var searchText: String = ""
+    @State private var searchScope: SearchScope = .all
+    
+    var filteredLinks: [LinkItem] {
+        if searchText.isEmpty {
+            return links
+        } else {
+            return links.filter { link in
+                switch searchScope {
+                case .all:
+                    return link.title.localizedCaseInsensitiveContains(searchText) || link.url.localizedCaseInsensitiveContains(searchText) || (link.personalMemo ?? "").localizedCaseInsensitiveContains(searchText)
+                case .title:
+                    return link.title.localizedCaseInsensitiveContains(searchText)
+                case .url:
+                    return link.url.localizedCaseInsensitiveContains(searchText)
+                case .memo:
+                    return (link.personalMemo ?? "").localizedCaseInsensitiveContains(searchText)
+                }
+                
+            }
+        }
+    }
     
     var body: some View {
         NavigationStack {
             Group {
-                if links.isEmpty {
+                if filteredLinks.isEmpty {
                     VStack(spacing: 20) {
                         Image(systemName: "link.circle")
                             .resizable()
@@ -52,67 +76,29 @@ struct MainView: View {
                 } else {
                     // 저장된 URL이 있을 때 리스트 표시
                     List {
-                        ForEach(links) { link in
-                            VStack(alignment: .leading, spacing: 8) {
-                                Text(link.title)
-                                    .font(.headline)
-                                
-                                Text(link.url)
-                                    .font(.subheadline)
-                                    .foregroundColor(.blue)
-                                
-                                if let memo = link.personalMemo, !memo.isEmpty {
-                                    Text(memo)
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                        .padding(.top, 4)
-                                }
-                            }
-                            .swipeActions(content: {
-                                Button(role: .destructive) {
-                                    deleteLink(link)
-                                } label: {
-                                    Label("삭제", systemImage: "trash")
-                                }
-                                
-                                Button {
-                                    selectedURLForEditing = link
-                                } label: {
-                                    Label("수정", systemImage: "pencil")
-                                }
-                            })
-                            // 저장된 URL 터치 시 해당 URL로 이동 - safari
-                            .onTapGesture {
-                                if let url = URL(string: link.url) {
-                                    UIApplication.shared.open(url)
-                                }
-                            }
-                            .contextMenu {
-                                // 해당 URL이 정상적이면 공유 기능 활성화
-                                if let url = URL(string: link.url) {
-                                    ShareLink(item: url) {
-                                        Label("공유", systemImage: "square.and.arrow.up")
+                        ForEach(filteredLinks) { link in
+                            LinkRowView(
+                                link: link,
+                                onTap: {
+                                    if let url = URL(string: link.url) {
+                                        UIApplication.shared.open(url)
                                     }
-                                }
-                                
-                                Button {
+                                }, onEdit: {
                                     selectedURLForEditing = link
-                                } label: {
-                                    Label("수정", systemImage: "pencil")
-                                }
-                                
-                                Button(role: .destructive) {
-                                    modelContext.delete(link)
-                                    try? modelContext.save()
-                                } label: {
-                                    Label("삭제", systemImage: "trash")
-                                }
-                            }
+                                }, onDelete: {
+                                    deleteLink(link)
+                                })
                         }
                     }
                 }
             }
             .navigationTitle("저장된 URL")
+            .searchable(text: $searchText, prompt: "URL 또는 제목 검색")
+            .searchScopes($searchScope, scopes: {
+                ForEach(SearchScope.allCases, id: \.self) { scope in
+                    Text(scope.rawValue).tag(scope)
+                }
+            })
             .sheet(item: $selectedURLForEditing) { item in
                 EditView(savedURL: item)
             }
@@ -125,7 +111,6 @@ struct MainView: View {
                     hasSeenOnboarding = true
                 }
             }
-            
         }
     }
     

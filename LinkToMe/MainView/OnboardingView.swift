@@ -20,37 +20,37 @@ struct OnboardingView: View {
     
     var body: some View {
         VStack {
-            HStack {
+            TabView(selection: $currentPage) {
                 ForEach(0..<pages.count, id: \.self) { index in
-                    Circle()
-                        .fill(currentPage == index ? Color.blue : Color.gray.opacity(0.4))
-                        .frame(width: 8, height: 8)
+                    VStack {
+                        Spacer()
+                        
+                        // 현재 페이지 내용
+                        Image(systemName: pages[currentPage].image)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 120, height: 120)
+                            .foregroundColor(.blue)
+                            .padding()
+                        
+                        Text(pages[currentPage].title)
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .padding(.top)
+                        
+                        Text(pages[currentPage].description)
+                            .font(.body)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 32)
+                            .padding(.top, 8)
+                        
+                        Spacer()
+                    }
+                    .tag(index)
                 }
             }
-            .padding(.top, 24)
-            
-            Spacer()
-            
-            // 현재 페이지 내용
-            Image(systemName: pages[currentPage].image)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 120, height: 120)
-                .foregroundColor(.blue)
-                .padding()
-            
-            Text(pages[currentPage].title)
-                .font(.title)
-                .fontWeight(.bold)
-                .padding(.top)
-            
-            Text(pages[currentPage].description)
-                .font(.body)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 32)
-                .padding(.top, 8)
-            
-            Spacer()
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
+            .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
             
             // 버튼
             HStack {

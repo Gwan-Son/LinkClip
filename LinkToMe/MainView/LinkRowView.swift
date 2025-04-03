@@ -29,7 +29,6 @@ struct LinkRowView: View {
                     .padding(.top, 4)
             }
         }
-        .contentShape(Rectangle())
         .onTapGesture(perform: onTap)
         .swipeActions {
             Button(role: .destructive, action: onDelete) {

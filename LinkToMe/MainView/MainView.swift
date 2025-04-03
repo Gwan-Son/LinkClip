@@ -26,6 +26,9 @@ struct MainView: View {
     @State private var searchText: String = ""
     @State private var searchScope: SearchScope = .all
     
+    // 정렬 옵션 상태
+    @State private var sortOption: SortOption = .dateNewest
+    
     var filteredLinks: [LinkItem] {
         if searchText.isEmpty {
             return links
@@ -43,6 +46,21 @@ struct MainView: View {
                 }
                 
             }
+        }
+    }
+    
+    var sortedLinks: [LinkItem] {
+        let filtered = filteredLinks
+        
+        switch sortOption {
+        case .dateNewest:
+            return filtered.sorted { $0.savedDate > $1.savedDate }
+        case .dateOldest:
+            return filtered.sorted { $0.savedDate < $1.savedDate }
+        case .titleAtoZ:
+            return filtered.sorted { $0.title < $1.title }
+        case .titleZtoA:
+            return filtered.sorted { $0.title > $1.title }
         }
     }
     
@@ -76,7 +94,7 @@ struct MainView: View {
                 } else {
                     // 저장된 URL이 있을 때 리스트 표시
                     List {
-                        ForEach(filteredLinks) { link in
+                        ForEach(sortedLinks) { link in
                             LinkRowView(
                                 link: link,
                                 onTap: {
@@ -93,6 +111,18 @@ struct MainView: View {
                 }
             }
             .navigationTitle("저장된 URL")
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Menu {
+                        Button("최신순") { sortOption = .dateNewest }
+                        Button("오래된순") { sortOption = .dateOldest }
+                        Button("제목 (A-Z)") { sortOption = .titleAtoZ }
+                        Button("제목 (Z-A)") { sortOption = .titleZtoA }
+                    } label: {
+                        Label("정렬", systemImage: "arrow.up.arrow.down")
+                    }
+                }
+            }
             .searchable(text: $searchText, prompt: "URL 또는 제목 검색")
             .searchScopes($searchScope, scopes: {
                 ForEach(SearchScope.allCases, id: \.self) { scope in

@@ -127,6 +127,7 @@ struct MainView: View {
             .searchScopes($searchScope, scopes: {
                 ForEach(SearchScope.allCases, id: \.self) { scope in
                     Text(scope.rawValue).tag(scope)
+                    
                 }
             })
             .sheet(item: $selectedURLForEditing) { item in

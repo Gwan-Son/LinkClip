@@ -29,6 +29,9 @@ struct MainView: View {
     // 정렬 옵션 상태
     @State private var sortOption: SortOption = .dateNewest
     
+    // 설정 화면 표시 여부 상태
+    @State private var showSetting: Bool = false
+    
     var filteredLinks: [LinkItem] {
         if searchText.isEmpty {
             return links
@@ -68,28 +71,9 @@ struct MainView: View {
         NavigationStack {
             Group {
                 if filteredLinks.isEmpty {
-                    VStack(spacing: 20) {
-                        Image(systemName: "link.circle")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 80, height: 80)
-                            .foregroundColor(.gray)
-                        
-                        Text("저장된 URL이 없습니다.")
-                            .font(.title2)
-                            .fontWeight(.medium)
-                        
-                        Text("웹에서 공유 버튼을 눌러 URL을 저장해보세요.")
-                            .font(.body)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 32)
-                        
-                        Button("온보딩 다시보기") {
-                            showOnboarding = true
-                        }
-                        .padding(.top, 16)
-                    }
+                    NothingView(onTap: {
+                        showOnboarding = true
+                    })
                     .padding()
                 } else {
                     // 저장된 URL이 있을 때 리스트 표시
@@ -111,15 +95,25 @@ struct MainView: View {
                 }
             }
             .navigationTitle("저장된 URL")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Menu {
-                        Button("최신순") { sortOption = .dateNewest }
-                        Button("오래된순") { sortOption = .dateOldest }
-                        Button("제목 (A-Z)") { sortOption = .titleAtoZ }
-                        Button("제목 (Z-A)") { sortOption = .titleZtoA }
+                        Picker("정렬 옵션", selection: $sortOption) {
+                            Text("최신순").tag(SortOption.dateNewest)
+                            Text("오래된순").tag(SortOption.dateOldest)
+                            Text("제목 (A-Z)").tag(SortOption.titleAtoZ)
+                            Text("제목 (Z-A)").tag(SortOption.titleZtoA)
+                        }
                     } label: {
-                        Label("정렬", systemImage: "arrow.up.arrow.down")
+                        Image(systemName: "arrow.up.arrow.down.circle")
+                    }
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        showSetting = true
+                    } label: {
+                        Image(systemName: "gearshape")
                     }
                 }
             }
@@ -135,6 +129,9 @@ struct MainView: View {
             .sheet(isPresented: $showOnboarding) {
                 OnboardingView()
             }
+            .sheet(isPresented: $showSetting, content: {
+                SettingView()
+            })
             .onAppear {
                 if !hasSeenOnboarding {
                     showOnboarding = true

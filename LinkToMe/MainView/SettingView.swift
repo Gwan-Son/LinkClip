@@ -82,50 +82,93 @@ struct SettingView: View {
                             }
                         }
                     }
-                    
+                    // TODO: - 개인정보 처리방침 페이지 추가하기
                     Link(destination: URL(string: "https://example.com")!) {
                         HStack {
                             Image(systemName: "hand.raised")
                                 .foregroundColor(.blue)
                             Text("개인정보 처리방침")
                             Spacer()
-                            Image(systemName: "arrow.and.right.square")
+                            Image(systemName: "arrow.up.right.square")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                     }
-                    
+                    // TODO: - 이용약관 페이지 추가하기
                     Link(destination: URL(string: "https://example.com")!) {
                         HStack {
                             Image(systemName: "doc.text")
                                 .foregroundColor(.blue)
                             Text("이용약관")
                             Spacer()
-                            Image(systemName: "arrow.and.right.square")
+                            Image(systemName: "arrow.up.right.square")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                     }
                 }
+                
+                // 앱 정보 섹션
+                // TODO: - 앱 등록되면 정보탭 추가
+                Section(header: Text("정보")) {
+                    Link(destination: URL(string: "https://apps.apple.com/app/id")!) {
+                        HStack {
+                            Image(systemName: "star")
+                                .foregroundColor(.yellow)
+                            Text("앱 평가하기")
+                            Spacer()
+                            Image(systemName: "arrow.up.right.square")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+                
+                // 푸터 정보
+                Section {
+                    Text("@ 2025 LinkToMe. All rights reserved.")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .listRowBackground(Color.clear)
+                }
+            }
+            .navigationTitle("설정")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("완료") {
+                        dismiss()
+                    }
+                }
+            }
+            .alert("모든 URL을 삭제하시겠습니까?", isPresented: $showingResetAlert) {
+                Button("취소", role: .cancel) { }
+                Button("삭제", role: .destructive) {
+                    resetAllData()
+                }
+            } message: {
+                Text("이 작업은 되돌릴 수 없습니다.")
+            }
+            .sheet(isPresented: $showingMailView) {
+                //TODO: - 메일 뷰 만들기
+                // MailView()
             }
         }
-        
-        VStack {
-            Button("초기화", role: .destructive) {
-                // 모든 Link 가져오기
-                let fetchDescriptor = FetchDescriptor<LinkItem>()
-                if let item = try? modelContext.fetch(fetchDescriptor) {
-                    // 모든 항목 삭제
-                    for item in item {
-                        modelContext.delete(item)
-                    }
-                    
-                    // 변경 사항 저장
-                    try? modelContext.save()
-                }
-                // TODO: - Alert 추가하기.
-                // TODO: - 보기 좋게 만들기.
+    }
+    
+    private func resetAllData() {
+        do {
+            let fetchDescriptor = FetchDescriptor<LinkItem>()
+            let items = try modelContext.fetch(fetchDescriptor)
+            
+            for item in items {
+                modelContext.delete(item)
             }
+            
+            try modelContext.save()
+        } catch {
+            print("데이터 초기화 중 오류 발생: \(error.localizedDescription)")
         }
     }
 }

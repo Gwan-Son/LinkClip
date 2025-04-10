@@ -13,6 +13,10 @@ struct MainView: View {
     @Query(sort: \LinkItem.savedDate, order: .reverse)
     private var links: [LinkItem]
     
+    // 토스트 메시지 표시 상태
+    @State private var showingToast: Bool = false
+    @State private var toastMessage: String = ""
+    
     // 현재 편집 중인 URL을 추적하기 위한 상태
     @State private var selectedURLForEditing: LinkItem?
     
@@ -85,6 +89,14 @@ struct MainView: View {
                                     if let url = URL(string: link.url) {
                                         UIApplication.shared.open(url)
                                     }
+                                }, onCopy: {
+                                    if let url = URL(string: link.url) {
+                                        UIPasteboard.general.string = url.absoluteString
+                                        toastMessage = "URL이 복사되었습니다."
+                                        withAnimation {
+                                            showingToast = true
+                                        }
+                                    }
                                 }, onEdit: {
                                     selectedURLForEditing = link
                                 }, onDelete: {
@@ -138,6 +150,7 @@ struct MainView: View {
                     hasSeenOnboarding = true
                 }
             }
+            .toast(isShowing: $showingToast, message: toastMessage)
         }
     }
     

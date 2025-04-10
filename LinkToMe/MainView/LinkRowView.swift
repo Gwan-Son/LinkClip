@@ -10,6 +10,7 @@ import SwiftUI
 struct LinkRowView: View {
     let link: LinkItem
     let onTap: () -> Void
+    let onCopy: () -> Void
     let onEdit: () -> Void
     let onDelete: () -> Void
     
@@ -46,6 +47,12 @@ struct LinkRowView: View {
                 }
             }
             
+            if let url = URL(string: link.url) {
+                Button(action: onCopy) {
+                    Label("복사", systemImage: "link")
+                }
+            }
+            
             Button(action: onEdit) {
                 Label("수정", systemImage: "pencil")
             }
@@ -58,5 +65,5 @@ struct LinkRowView: View {
 }
 
 #Preview {
-    LinkRowView(link: LinkItem(url: "google.com", title: "구글"), onTap: {}, onEdit: {}, onDelete: {})
+    LinkRowView(link: LinkItem(url: "google.com", title: "구글"), onTap: {}, onCopy: {}, onEdit: {}, onDelete: {})
 }

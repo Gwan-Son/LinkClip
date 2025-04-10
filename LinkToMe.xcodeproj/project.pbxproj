@@ -60,6 +60,7 @@
 				Components/LinkItem.swift,
 				Components/SearchScope.swift,
 				Components/SortOption.swift,
+				Components/ToastModifier.swift,
 				Shared/ShareError.swift,
 				Shared/ShareView.swift,
 				Shared/SwiftDataContainer.swift,

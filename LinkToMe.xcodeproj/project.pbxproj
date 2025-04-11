@@ -57,6 +57,7 @@
 		9F572BAD2D6D66F400EDBB4A /* Exceptions for "LinkToMe" folder in "ShareViewController" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Components/Category.swift,
 				Components/LinkItem.swift,
 				Components/SearchScope.swift,
 				Components/SortOption.swift,

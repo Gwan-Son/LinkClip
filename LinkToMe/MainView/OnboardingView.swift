@@ -11,81 +11,155 @@ struct OnboardingView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var currentPage = 0
     
+    // 애니메이션 상태 변수
+    @State private var isAnimating: Bool = false
+    @Namespace private var namespace
+    
     // 온보딩 페이지 데이터
     private let pages = [
         (image: "link.circle.fill", title: "URL 저장하기", description: "웹에서 흥미로운 컨텐츠를 발견하면 공유 버튼을 통해 바로 저장하세요."),
-        (image: "square.and.pencil", title: "메모 추가하기", description: "각 URL에 제목과 개인 메모를 추가하여 나중에 쉽게 찾을 수 있습니다."),
-        (image: "square.and.arrow.up", title: "언제든지 공유하기", description: "저장한 URL을 친구들과 쉽게 공유할 수 있습니다.")
+        (image: "square.and.pencil.circle.fill", title: "메모 추가하기", description: "각 URL에 제목과 개인 메모를 추가하여 나중에 쉽게 찾을 수 있습니다."),
+        (image: "square.and.arrow.up.circle.fill", title: "언제든지 공유하기", description: "저장한 URL을 친구들과 쉽게 공유할 수 있습니다.")
     ]
     
     var body: some View {
-        VStack {
-            TabView(selection: $currentPage) {
-                ForEach(0..<pages.count, id: \.self) { index in
-                    VStack {
-                        Spacer()
-                        
-                        // 현재 페이지 내용
-                        Image(systemName: pages[currentPage].image)
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 120, height: 120)
-                            .foregroundColor(.blue)
-                            .padding()
-                        
-                        Text(pages[currentPage].title)
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .padding(.top)
-                        
-                        Text(pages[currentPage].description)
-                            .font(.body)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 32)
-                            .padding(.top, 8)
-                        
-                        Spacer()
-                    }
-                    .tag(index)
-                }
-            }
-            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .always))
-            .indexViewStyle(PageIndexViewStyle(backgroundDisplayMode: .always))
+        ZStack {
+            // 배경 그라데이션
+            LinearGradient(
+                gradient: Gradient(colors: [Color.white, Color.blue.opacity(0.1)]),
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
             
-            // 버튼
-            HStack {
-                if currentPage > 0 {
-                    Button("이전") {
-                        withAnimation {
-                            currentPage -= 1
+            VStack {
+                // 페이지 인디케이터
+                HStack(spacing: 8) {
+                    ForEach(0..<pages.count, id: \.self) { index in
+                        Capsule()
+                            .fill(currentPage == index ? Color.blue : Color.gray.opacity(0.3))
+                            .frame(width: currentPage == index ? 20 : 8, height: 8)
+                            .animation(.spring(response: 0.3), value: currentPage)
+                    }
+                }
+                .padding(.top, 20)
+                
+                // 페이지 컨텐츠
+                TabView(selection: $currentPage) {
+                    ForEach(0..<pages.count, id: \.self) { index in
+                        VStack(spacing: 30) {
+                            Spacer()
+                            
+                            // 아이콘
+                            ZStack {
+                                Circle()
+                                    .fill(Color.blue.opacity(0.1))
+                                    .frame(width: 180, height: 180)
+                                
+                                Image(systemName: pages[index].image)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 100, height: 100)
+                                    .foregroundColor(.blue)
+                                    .transition(.opacity)
+                            }
+                            .shadow(color: .blue.opacity(0.2), radius: 10, x: 0, y: 5)
+                            .transition(.scale.combined(with: .opacity))
+                            
+                            // 제목
+                            Text(pages[index].title)
+                                .font(.system(size: 28, weight: .bold))
+                                .transition(.move(edge: .trailing).combined(with: .opacity))
+                            
+                            // 설명
+                            Text(pages[index].description)
+                                .font(.body)
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(.secondary)
+                                .padding(.horizontal, 32)
+                                .transition(.move(edge: .trailing).combined(with: .opacity))
+                            
+                            Spacer()
+                        }
+                        .tag(index)
+                    }
+                }
+                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                .animation(.easeInOut, value: currentPage)
+                
+                // 버튼 영역
+                HStack {
+                    if currentPage > 0 {
+                        Button {
+                            withAnimation {
+                                currentPage -= 1
+                            }
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: "chevron.left")
+                                    .font(.system(size: 14, weight: .semibold))
+                                Text("이전")
+                            }
+                            .foregroundColor(.blue)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(Color.blue.opacity(0.1))
+                            .cornerRadius(20)
                         }
                     }
-                    .padding()
-                }
-                
-                Spacer()
-                
-                if currentPage < pages.count - 1 {
-                    Button("다음") {
-                        withAnimation {
-                            currentPage += 1
+                    
+                    Spacer()
+                    
+                    if currentPage < pages.count - 1 {
+                        Button {
+                            withAnimation {
+                                currentPage += 1
+                            }
+                        } label: {
+                            HStack(spacing: 4) {
+                                Text("다음")
+                                Image(systemName: "chevron.right")
+                                    .font(.system(size: 14, weight: .semibold))
+                            }
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 8)
+                            .background(Color.blue)
+                            .cornerRadius(20)
                         }
+                    } else {
+                        Button {
+                            dismiss()
+                        } label: {
+                            Text("시작하기")
+                                .fontWeight(.bold)
+                                .foregroundColor(.white)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                .background(Color.blue)
+                                .cornerRadius(20)
+                                .shadow(color: .blue.opacity(0.3), radius: 5, x: 0, y: 3)
+                        }
+                        .buttonStyle(PressableButtonStyle())
                     }
-                    .fontWeight(.bold)
-                    .padding()
-                } else {
-                    Button("시작하기") {
-                        dismiss()
-                    }
-                    .fontWeight(.bold)
-                    .padding()
                 }
+                .padding(.horizontal, 24)
+                .padding(.bottom, 40)
             }
-            .padding(.horizontal)
-            .padding(.bottom, 32)
         }
     }
 }
+
+// 버튼 눌렀을 때 효과
+struct PressableButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.96 : 1)
+            .opacity(configuration.isPressed ? 0.9 : 1)
+            .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
+    }
+}
+
 
 #Preview {
     OnboardingView()

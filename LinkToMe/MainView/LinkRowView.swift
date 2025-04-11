@@ -47,7 +47,7 @@ struct LinkRowView: View {
                 }
             }
             
-            if let url = URL(string: link.url) {
+            if let _ = URL(string: link.url) {
                 Button(action: onCopy) {
                     Label("복사", systemImage: "link")
                 }

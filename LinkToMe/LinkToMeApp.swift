@@ -16,7 +16,7 @@ struct LinkToMeApp: App {
     var body: some Scene {
         
         WindowGroup {
-            MainView()
+            HomeView()
         }
         .modelContainer(sharedModelContainer)
     }

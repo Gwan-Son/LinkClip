@@ -1,5 +1,5 @@
 //
-//  LinkToMeApp.swift
+//  LinkClip.swift
 //  LinkToMe
 //
 //  Created by 심관혁 on 2/18/25.
@@ -9,7 +9,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct LinkToMeApp: App {
+struct LinkClip: App {
     
     let sharedModelContainer = createSharedModelContainer()
     

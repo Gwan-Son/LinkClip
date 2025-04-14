@@ -54,7 +54,7 @@
 			);
 			target = 9F2852432D647C7D0001803F /* ShareViewController */;
 		};
-		9F572BAD2D6D66F400EDBB4A /* Exceptions for "LinkToMe" folder in "ShareViewController" target */ = {
+		9F572BAD2D6D66F400EDBB4A /* Exceptions for "LinkClip" folder in "ShareViewController" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Components/Category.swift,
@@ -71,12 +71,12 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		9F2852192D646B720001803F /* LinkToMe */ = {
+		9F2852192D646B720001803F /* LinkClip */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				9F572BAD2D6D66F400EDBB4A /* Exceptions for "LinkToMe" folder in "ShareViewController" target */,
+				9F572BAD2D6D66F400EDBB4A /* Exceptions for "LinkClip" folder in "ShareViewController" target */,
 			);
-			path = LinkToMe;
+			path = LinkClip;
 			sourceTree = "<group>";
 		};
 		9F2852452D647C7D0001803F /* ShareViewController */ = {
@@ -111,7 +111,7 @@
 		9F28520E2D646B720001803F = {
 			isa = PBXGroup;
 			children = (
-				9F2852192D646B720001803F /* LinkToMe */,
+				9F2852192D646B720001803F /* LinkClip */,
 				9F2852452D647C7D0001803F /* ShareViewController */,
 				9F2852182D646B720001803F /* Products */,
 			);
@@ -144,7 +144,7 @@
 				9F28524D2D647C7D0001803F /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				9F2852192D646B720001803F /* LinkToMe */,
+				9F2852192D646B720001803F /* LinkClip */,
 			);
 			name = LinkToMe;
 			packageProductDependencies = (

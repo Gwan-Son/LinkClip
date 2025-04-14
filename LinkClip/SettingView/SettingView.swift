@@ -137,7 +137,7 @@ struct SettingView: View {
                 
                 // 푸터 정보
                 Section {
-                    Text("@ 2025 Linkle. All rights reserved.")
+                    Text("@ 2025 Linkclip. All rights reserved.")
                         .font(.footnote)
                         .foregroundColor(.secondary)
                         .frame(maxWidth: .infinity, alignment: .center)

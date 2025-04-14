@@ -1,6 +1,6 @@
 //
 //  OnboardingView.swift
-//  LinkToMe
+//  LinkClip
 //
 //  Created by 심관혁 on 4/1/25.
 //

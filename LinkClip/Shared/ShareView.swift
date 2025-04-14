@@ -1,6 +1,6 @@
 //
 //  ShareView.swift
-//  LinkToMe
+//  LinkClip
 //
 //  Created by 심관혁 on 3/11/25.
 //

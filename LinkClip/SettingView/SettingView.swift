@@ -1,6 +1,6 @@
 //
 //  SettingView.swift
-//  LinkToMe
+//  LinkClip
 //
 //  Created by 심관혁 on 4/8/25.
 //
@@ -39,7 +39,7 @@ struct SettingView: View {
                             .padding(.trailing, 10)
                         
                         VStack(alignment: .leading) {
-                            Text("LinkToMe")
+                            Text("LinkClip")
                                 .font(.headline)
                             
                             Text("버전 \(appVersion) \(buildNumber)")
@@ -162,7 +162,7 @@ struct SettingView: View {
                 Text("이 작업은 되돌릴 수 없습니다.")
             }
             .sheet(isPresented: $showingMailView) {
-                MailView(result: $mailResult, subjects: "LinkToMe 앱 문의", messageBody: "앱 버전: \(appVersion)")
+                MailView(result: $mailResult, subjects: "LinkClip 앱 문의", messageBody: "앱 버전: \(appVersion)")
             }
             .toast(isShowing: $showingToast, message: toastMessage)
         }

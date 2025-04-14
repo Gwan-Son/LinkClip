@@ -1,6 +1,6 @@
 //
 //  LinkRowView.swift
-//  LinkToMe
+//  LinkClip
 //
 //  Created by 심관혁 on 4/2/25.
 //

@@ -1,6 +1,6 @@
 //
 //  SwiftDataContainer.swift
-//  LinkToMe
+//  LinkClip
 //
 //  Created by 심관혁 on 3/23/25.
 //
@@ -16,7 +16,7 @@ class SharedModelContainer {
     private init() {
         let schema = Schema([LinkItem.self, CategoryItem.self])
         
-        let groupID = "group.kr.gwanson.LinkToMe"
+        let groupID = "group.kr.gwanson.LinkClip"
         
         guard let url = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupID) else {
             fatalError("App Group 설정에 문제가 있습니다.")

@@ -1,6 +1,6 @@
 //
 //  CategoryView.swift
-//  LinkToMe
+//  LinkClip
 //
 //  Created by 심관혁 on 4/11/25.
 //

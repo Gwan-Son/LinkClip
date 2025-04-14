@@ -35,17 +35,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		9F2852172D646B720001803F /* LinkToMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LinkToMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		9F2852172D646B720001803F /* LinkClip.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LinkClip.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F2852442D647C7D0001803F /* ShareViewController.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ShareViewController.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		9F0E4EFC2D8002CC00B318CD /* Exceptions for "ShareViewController" folder in "LinkToMe" target */ = {
+		9F0E4EFC2D8002CC00B318CD /* Exceptions for "ShareViewController" folder in "LinkClip" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				ShareViewController.swift,
 			);
-			target = 9F2852162D646B720001803F /* LinkToMe */;
+			target = 9F2852162D646B720001803F /* LinkClip */;
 		};
 		9F28524F2D647C7D0001803F /* Exceptions for "ShareViewController" folder in "ShareViewController" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -82,7 +82,7 @@
 		9F2852452D647C7D0001803F /* ShareViewController */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				9F0E4EFC2D8002CC00B318CD /* Exceptions for "ShareViewController" folder in "LinkToMe" target */,
+				9F0E4EFC2D8002CC00B318CD /* Exceptions for "ShareViewController" folder in "LinkClip" target */,
 				9F28524F2D647C7D0001803F /* Exceptions for "ShareViewController" folder in "ShareViewController" target */,
 			);
 			path = ShareViewController;
@@ -120,7 +120,7 @@
 		9F2852182D646B720001803F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				9F2852172D646B720001803F /* LinkToMe.app */,
+				9F2852172D646B720001803F /* LinkClip.app */,
 				9F2852442D647C7D0001803F /* ShareViewController.appex */,
 			);
 			name = Products;
@@ -129,9 +129,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		9F2852162D646B720001803F /* LinkToMe */ = {
+		9F2852162D646B720001803F /* LinkClip */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9F2852252D646B730001803F /* Build configuration list for PBXNativeTarget "LinkToMe" */;
+			buildConfigurationList = 9F2852252D646B730001803F /* Build configuration list for PBXNativeTarget "LinkClip" */;
 			buildPhases = (
 				9F2852132D646B720001803F /* Sources */,
 				9F2852142D646B720001803F /* Frameworks */,
@@ -146,11 +146,11 @@
 			fileSystemSynchronizedGroups = (
 				9F2852192D646B720001803F /* LinkClip */,
 			);
-			name = LinkToMe;
+			name = LinkClip;
 			packageProductDependencies = (
 			);
 			productName = LinkToMe;
-			productReference = 9F2852172D646B720001803F /* LinkToMe.app */;
+			productReference = 9F2852172D646B720001803F /* LinkClip.app */;
 			productType = "com.apple.product-type.application";
 		};
 		9F2852432D647C7D0001803F /* ShareViewController */ = {
@@ -183,7 +183,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1620;
-				LastUpgradeCheck = 1620;
+				LastUpgradeCheck = 1630;
 				TargetAttributes = {
 					9F2852162D646B720001803F = {
 						CreatedOnToolsVersion = 16.2;
@@ -207,7 +207,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				9F2852162D646B720001803F /* LinkToMe */,
+				9F2852162D646B720001803F /* LinkClip */,
 				9F2852432D647C7D0001803F /* ShareViewController */,
 			);
 		};
@@ -291,6 +291,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 7P5U4N4C5Z;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -354,6 +355,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 7P5U4N4C5Z;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -380,11 +382,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = LinkToMe/LinkToMe.entitlements;
+				CODE_SIGN_ENTITLEMENTS = LinkClip/LinkClip.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"LinkToMe/Preview Content\"";
-				DEVELOPMENT_TEAM = 7P5U4N4C5Z;
+				DEVELOPMENT_ASSET_PATHS = "\"LinkClip/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -397,7 +398,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = kr.gwanson.LinkToMe;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.gwanson.LinkClip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -410,11 +411,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = LinkToMe/LinkToMe.entitlements;
+				CODE_SIGN_ENTITLEMENTS = LinkClip/LinkClip.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"LinkToMe/Preview Content\"";
-				DEVELOPMENT_TEAM = 7P5U4N4C5Z;
+				DEVELOPMENT_ASSET_PATHS = "\"LinkClip/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -427,7 +427,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = kr.gwanson.LinkToMe;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.gwanson.LinkClip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -441,7 +441,6 @@
 				CODE_SIGN_ENTITLEMENTS = ShareViewController/ShareViewController.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7P5U4N4C5Z;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShareViewController/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShareViewController;
@@ -452,7 +451,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = kr.gwanson.LinkToMe.ShareViewController;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.gwanson.LinkClip.ShareViewController;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -467,7 +466,6 @@
 				CODE_SIGN_ENTITLEMENTS = ShareViewController/ShareViewController.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7P5U4N4C5Z;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ShareViewController/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = ShareViewController;
@@ -478,7 +476,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = kr.gwanson.LinkToMe.ShareViewController;
+				PRODUCT_BUNDLE_IDENTIFIER = kr.gwanson.LinkClip.ShareViewController;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -499,7 +497,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9F2852252D646B730001803F /* Build configuration list for PBXNativeTarget "LinkToMe" */ = {
+		9F2852252D646B730001803F /* Build configuration list for PBXNativeTarget "LinkClip" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9F2852262D646B730001803F /* Debug */,

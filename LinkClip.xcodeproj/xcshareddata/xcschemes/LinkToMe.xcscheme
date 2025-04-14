@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "1620"
+   LastUpgradeVersion = "1630"
    version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -16,8 +16,8 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "9F2852162D646B720001803F"
-               BuildableName = "LinkToMe.app"
-               BlueprintName = "LinkToMe"
+               BuildableName = "LinkClip.app"
+               BlueprintName = "LinkClip"
                ReferencedContainer = "container:LinkClip.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -45,8 +45,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9F2852162D646B720001803F"
-            BuildableName = "LinkToMe.app"
-            BlueprintName = "LinkToMe"
+            BuildableName = "LinkClip.app"
+            BlueprintName = "LinkClip"
             ReferencedContainer = "container:LinkClip.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -62,8 +62,8 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "9F2852162D646B720001803F"
-            BuildableName = "LinkToMe.app"
-            BlueprintName = "LinkToMe"
+            BuildableName = "LinkClip.app"
+            BlueprintName = "LinkClip"
             ReferencedContainer = "container:LinkClip.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

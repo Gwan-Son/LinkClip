@@ -19,7 +19,7 @@
                BlueprintIdentifier = "9F2852432D647C7D0001803F"
                BuildableName = "ShareViewController.appex"
                BlueprintName = "ShareViewController"
-               ReferencedContainer = "container:LinkToMe.xcodeproj">
+               ReferencedContainer = "container:LinkClip.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
          <BuildActionEntry
@@ -33,7 +33,7 @@
                BlueprintIdentifier = "9F2852162D646B720001803F"
                BuildableName = "LinkToMe.app"
                BlueprintName = "LinkToMe"
-               ReferencedContainer = "container:LinkToMe.xcodeproj">
+               ReferencedContainer = "container:LinkClip.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -68,7 +68,7 @@
             BlueprintIdentifier = "9F2852162D646B720001803F"
             BuildableName = "LinkToMe.app"
             BlueprintName = "LinkToMe"
-            ReferencedContainer = "container:LinkToMe.xcodeproj">
+            ReferencedContainer = "container:LinkClip.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </LaunchAction>
@@ -87,7 +87,7 @@
             BlueprintIdentifier = "9F2852162D646B720001803F"
             BuildableName = "LinkToMe.app"
             BlueprintName = "LinkToMe"
-            ReferencedContainer = "container:LinkToMe.xcodeproj">
+            ReferencedContainer = "container:LinkClip.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

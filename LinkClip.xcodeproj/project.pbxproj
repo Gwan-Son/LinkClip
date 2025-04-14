@@ -193,7 +193,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 9F2852122D646B720001803F /* Build configuration list for PBXProject "LinkToMe" */;
+			buildConfigurationList = 9F2852122D646B720001803F /* Build configuration list for PBXProject "LinkClip" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -490,7 +490,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		9F2852122D646B720001803F /* Build configuration list for PBXProject "LinkToMe" */ = {
+		9F2852122D646B720001803F /* Build configuration list for PBXProject "LinkClip" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9F2852232D646B730001803F /* Debug */,

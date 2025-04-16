@@ -78,9 +78,9 @@ struct MainView: View {
             .sheet(item: $viewModel.selectedURLForEditing) { item in
                 EditView(savedURL: item)
             }
-            .sheet(isPresented: $viewModel.showOnboarding) {
+            .fullScreenCover(isPresented: $viewModel.showOnboarding, content: {
                 OnboardingView()
-            }
+            })
             .sheet(isPresented: $viewModel.showSetting, content: {
                 SettingView()
             })

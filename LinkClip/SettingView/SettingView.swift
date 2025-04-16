@@ -32,12 +32,13 @@ struct SettingView: View {
                 // 앱 정보 섹션
                 Section {
                     HStack {
-                        Image(systemName: "link.circle.fill")
+                        Image(.setting)
                             .resizable()
+                            .cornerRadius(20)
                             .frame(width: 50, height: 50)
                             .foregroundColor(.blue)
                             .padding(.trailing, 10)
-                        
+
                         VStack(alignment: .leading) {
                             Text("LinkClip")
                                 .font(.headline)

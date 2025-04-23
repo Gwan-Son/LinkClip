@@ -94,8 +94,8 @@ struct SettingView: View {
                             }
                         }
                     }
-                    // TODO: - 개인정보 처리방침 페이지 추가하기
-                    Link(destination: URL(string: "https://example.com")!) {
+                    
+                    Link(destination: URL(string: "https://raw.githubusercontent.com/Gwan-Son/LinkToMe/refs/heads/main/privacy/privacy.md?token=GHSAT0AAAAAADBEVSW3NJUWO3XXIY7PK4342AILEVQ")!) {
                         HStack {
                             Image(systemName: "hand.raised")
                                 .foregroundColor(.blue)
@@ -106,8 +106,8 @@ struct SettingView: View {
                                 .foregroundColor(.secondary)
                         }
                     }
-                    // TODO: - 이용약관 페이지 추가하기
-                    Link(destination: URL(string: "https://example.com")!) {
+
+                    Link(destination: URL(string: "https://raw.githubusercontent.com/Gwan-Son/LinkToMe/refs/heads/main/privacy/service.md?token=GHSAT0AAAAAADBEVSW2G4DHQIRIQUYAFFHE2AILFEA")!) {
                         HStack {
                             Image(systemName: "doc.text")
                                 .foregroundColor(.blue)
@@ -145,6 +145,7 @@ struct SettingView: View {
                         .listRowBackground(Color.clear)
                 }
             }
+            .tint(.blue)
             .navigationTitle("설정")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

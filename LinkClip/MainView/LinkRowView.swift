@@ -35,10 +35,12 @@ struct LinkRowView: View {
             Button(role: .destructive, action: onDelete) {
                 Label("삭제", systemImage: "trash")
             }
-            
+            .tint(.red)
+
             Button(action: onEdit) {
                 Label("수정", systemImage: "pencil")
             }
+            .tint(.gray)
         }
         .contextMenu {
             if let url = URL(string: link.url) {

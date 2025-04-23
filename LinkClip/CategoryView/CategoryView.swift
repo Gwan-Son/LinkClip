@@ -26,8 +26,8 @@ struct CategoryView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 80, height: 80)
-                            .foregroundColor(.blue)
-                        
+                            .foregroundColor(.gray)
+
                         Text("카테고리가 없습니다")
                             .font(.title2)
                             .fontWeight(.medium)
@@ -45,8 +45,8 @@ struct CategoryView: View {
                                 .fontWeight(.medium)
                                 .padding(.horizontal, 20)
                                 .padding(.vertical, 10)
-                                .background(Color.blue)
                                 .foregroundColor(.white)
+                                .background(Color.main)
                                 .cornerRadius(8)
                         }
                         .padding(.top, 10)
@@ -197,6 +197,7 @@ struct CategoryView: View {
                     }
                 }
             }
+            .tint(.main)
             .sheet(isPresented: $showAddCategory) {
                 AddCategoryView(
                     categories: categories,

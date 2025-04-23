@@ -17,12 +17,13 @@ struct HomeView: View {
                 .tabItem {
                     Label("URL 목록", systemImage: "link")
                 }
-            
+
             CategoryView(viewModel: viewModel)
                 .tabItem {
                     Label("카테고리", systemImage: "folder")
                 }
         }
+        .tint(.main)
     }
 }
 

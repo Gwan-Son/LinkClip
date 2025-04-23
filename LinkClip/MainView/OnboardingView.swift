@@ -21,12 +21,12 @@ struct OnboardingView: View {
         (image: "square.and.pencil.circle.fill", title: "메모 추가하기", description: "각 URL에 제목과 개인 메모를 추가하여 나중에 쉽게 찾을 수 있습니다."),
         (image: "square.and.arrow.up.circle.fill", title: "언제든지 공유하기", description: "저장한 URL을 친구들과 쉽게 공유할 수 있습니다.")
     ]
-    
+
     var body: some View {
         ZStack {
             // 배경 그라데이션
             LinearGradient(
-                gradient: Gradient(colors: [Color.white, Color.blue.opacity(0.1)]),
+                gradient: Gradient(colors: [Color.white, Color.background.opacity(0.1)]),
                 startPoint: .top,
                 endPoint: .bottom
             )
@@ -53,19 +53,22 @@ struct OnboardingView: View {
                             // 아이콘
                             ZStack {
                                 Circle()
-                                    .fill(Color.blue.opacity(0.1))
-                                    .frame(width: 180, height: 180)
-                                
+                                    .fill(Color.background.opacity(0.3))
+                                    .frame(width: 130, height: 130)
+
+								Circle()
+                                    .fill(Color.white)
+                                    .frame(width: 100, height: 100)
+
                                 Image(systemName: pages[index].image)
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 100, height: 100)
-                                    .foregroundColor(.blue)
-                                    .transition(.opacity)
+                                    .foregroundColor(.background)
+									.symbolEffect(.breathe.plain.byLayer, options: .repeat(.continuous))
                             }
                             .shadow(color: .blue.opacity(0.2), radius: 10, x: 0, y: 5)
-                            .transition(.scale.combined(with: .opacity))
-                            
+
                             // 제목
                             Text(pages[index].title)
                                 .font(.system(size: 28, weight: .bold))
@@ -85,7 +88,6 @@ struct OnboardingView: View {
                     }
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                .animation(.easeInOut, value: currentPage)
                 
                 // 버튼 영역
                 HStack {
@@ -100,10 +102,10 @@ struct OnboardingView: View {
                                     .font(.system(size: 14, weight: .semibold))
                                 Text("이전")
                             }
-                            .foregroundColor(.blue)
+                            .foregroundColor(.background)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
-                            .background(Color.blue.opacity(0.1))
+                            .background(Color.white.opacity(1.0))
                             .cornerRadius(20)
                         }
                     }
@@ -124,7 +126,7 @@ struct OnboardingView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
-                            .background(Color.blue)
+                            .background(Color.background)
                             .cornerRadius(20)
                         }
                     } else {
@@ -136,7 +138,7 @@ struct OnboardingView: View {
                                 .foregroundColor(.white)
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 8)
-                                .background(Color.blue)
+                                .background(Color.background)
                                 .cornerRadius(20)
                                 .shadow(color: .blue.opacity(0.3), radius: 5, x: 0, y: 3)
                         }

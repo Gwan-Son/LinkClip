@@ -94,8 +94,8 @@ struct SettingView: View {
                             }
                         }
                     }
-                    
-                    Link(destination: URL(string: "https://raw.githubusercontent.com/Gwan-Son/LinkToMe/refs/heads/main/privacy/privacy.md?token=GHSAT0AAAAAADBEVSW3NJUWO3XXIY7PK4342AILEVQ")!) {
+
+                    Link(destination: URL(string: "https://raw.githubusercontent.com/Gwan-Son/LinkClip/refs/heads/main/privacy/privacy.md")!) {
                         HStack {
                             Image(systemName: "hand.raised")
                                 .foregroundColor(.blue)
@@ -107,7 +107,7 @@ struct SettingView: View {
                         }
                     }
 
-                    Link(destination: URL(string: "https://raw.githubusercontent.com/Gwan-Son/LinkToMe/refs/heads/main/privacy/service.md?token=GHSAT0AAAAAADBEVSW2G4DHQIRIQUYAFFHE2AILFEA")!) {
+                    Link(destination: URL(string: "https://raw.githubusercontent.com/Gwan-Son/LinkClip/refs/heads/main/privacy/service.md")!) {
                         HStack {
                             Image(systemName: "doc.text")
                                 .foregroundColor(.blue)

@@ -30,3 +30,91 @@
 
 
 # 📁 파일 구조
+```
+.
+├── LinkClip
+│   ├── Assets.xcassets
+│   │   ├── AccentColor.colorset
+│   │   │   └── Contents.json
+│   │   ├── AppIcon.appiconset
+│   │   │   ├── 1024.png
+│   │   │   ├── 114.png
+│   │   │   ├── 120 1.png
+│   │   │   ├── 120.png
+│   │   │   ├── 180.png
+│   │   │   ├── 40.png
+│   │   │   ├── 58.png
+│   │   │   ├── 60.png
+│   │   │   ├── 80.png
+│   │   │   ├── 87.png
+│   │   │   └── Contents.json
+│   │   ├── BackgroundColor.colorset
+│   │   │   └── Contents.json
+│   │   ├── Contents.json
+│   │   ├── MainColor.colorset
+│   │   │   └── Contents.json
+│   │   └── SettingImage.imageset
+│   │       ├── 58.png
+│   │       └── Contents.json
+│   ├── CategoryView
+│   │   ├── AddCategoryView.swift
+│   │   ├── CategoryManagementView.swift
+│   │   └── CategoryView.swift
+│   ├── Components
+│   │   ├── Category.swift
+│   │   ├── LinkItem.swift
+│   │   ├── SearchScope.swift
+│   │   ├── SortOption.swift
+│   │   └── ToastModifier.swift
+│   ├── LinkClip.entitlements
+│   ├── LinkClip.swift
+│   ├── MainView
+│   │   ├── EditView.swift
+│   │   ├── HomeView.swift
+│   │   ├── LinkRowView.swift
+│   │   ├── MainView.swift
+│   │   ├── MainViewModel.swift
+│   │   ├── NothingView.swift
+│   │   └── OnboardingView.swift
+│   ├── Preview Content
+│   │   └── Preview Assets.xcassets
+│   │       └── Contents.json
+│   ├── SettingView
+│   │   ├── MailView.swift
+│   │   └── SettingView.swift
+│   └── Shared
+│       ├── ShareError.swift
+│       ├── ShareView.swift
+│       └── SwiftDataContainer.swift
+├── LinkClip.xcodeproj
+│   ├── project.pbxproj
+│   ├── project.xcworkspace
+│   │   ├── contents.xcworkspacedata
+│   │   ├── xcshareddata
+│   │   │   └── swiftpm
+│   │   │       └── configuration
+│   │   └── xcuserdata
+│   │       └── simgwanhyeok.xcuserdatad
+│   │           └── UserInterfaceState.xcuserstate
+│   ├── xcshareddata
+│   │   └── xcschemes
+│   │       ├── LinkToMe.xcscheme
+│   │       └── ShareViewController.xcscheme
+│   └── xcuserdata
+│       └── simgwanhyeok.xcuserdatad
+│           ├── xcdebugger
+│           │   └── Breakpoints_v2.xcbkptlist
+│           └── xcschemes
+│               └── xcschememanagement.plist
+├── privacy
+│   ├── privacy.md
+│   └── service.md
+├── README.md
+└── ShareViewController
+    ├── Base.lproj
+    ├── Info.plist
+    ├── ShareViewController.entitlements
+    └── ShareViewController.swift
+
+31 directories, 53 files
+```

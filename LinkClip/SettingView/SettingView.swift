@@ -182,7 +182,7 @@ struct SettingView: View {
             try modelContext.save()
             
             // 초기화 완료 토스트 메시지
-            toastMessage = "모든 URL이 초기화되었습니다."
+            toastMessage = "모든 URL이 초기화되었습니다.".localized()
             withAnimation {
                 showingToast = true
             }

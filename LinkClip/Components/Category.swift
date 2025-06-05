@@ -17,23 +17,23 @@ struct Category: Identifiable, Hashable {
     static func sampleCategories() -> [Category] {
         return [
             Category(
-                name: "업무",
+                name: "업무".localized(),
                 icon: "briefcase",
                 subCategories: [
-                    Category(name: "회의", icon: "person.3"),
-                    Category(name: "프로젝트", icon: "list.clipboard")
+                    Category(name: "회의".localized(), icon: "person.3"),
+                    Category(name: "프로젝트".localized(), icon: "list.clipboard")
                 ]
             ),
             Category(
-                name: "학습",
+                name: "학습".localized(),
                 icon: "book",
                 subCategories: [
-                    Category(name: "프로그래밍", icon: "laptopcomputer"),
-                    Category(name: "언어", icon: "text.bubble")
+                    Category(name: "프로그래밍".localized(), icon: "laptopcomputer"),
+                    Category(name: "언어".localized(), icon: "text.bubble")
                 ]
             ),
             Category(
-                name: "개인",
+                name: "개인".localized(),
                 icon: "person"
             )
         ]

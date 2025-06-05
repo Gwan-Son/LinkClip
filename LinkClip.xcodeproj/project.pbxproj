@@ -59,8 +59,10 @@
 			membershipExceptions = (
 				Components/Category.swift,
 				Components/LinkItem.swift,
+				Components/Localizable.xcstrings,
 				Components/SearchScope.swift,
 				Components/SortOption.swift,
+				"Components/String+Extension.swift",
 				Components/ToastModifier.swift,
 				Shared/ShareError.swift,
 				Shared/ShareView.swift,
@@ -194,11 +196,12 @@
 				};
 			};
 			buildConfigurationList = 9F2852122D646B720001803F /* Build configuration list for PBXProject "LinkClip" */;
-			developmentRegion = en;
+			developmentRegion = ko;
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				ko,
 			);
 			mainGroup = 9F28520E2D646B720001803F;
 			minimizedProjectReferenceProxies = 1;
@@ -316,6 +319,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -373,6 +377,7 @@
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

@@ -17,8 +17,8 @@ struct NothingView: View {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 80, height: 80)
                 .foregroundColor(.gray)
-            
-            Text("저장된 URL이 없습니다.")
+
+            Text("저장된 URL이 없습니다")
                 .font(.title2)
                 .fontWeight(.medium)
             

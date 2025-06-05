@@ -8,8 +8,8 @@
 import Foundation
 
 enum SearchScope: String, CaseIterable {
-    case all = "전체"
-    case title = "제목"
+    case all = "All"
+    case title = "Title"
     case url = "URL"
-    case memo = "메모"
+    case memo = "Memo"
 }

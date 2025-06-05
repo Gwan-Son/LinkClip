@@ -17,9 +17,9 @@ struct OnboardingView: View {
     
     // 온보딩 페이지 데이터
     private let pages = [
-        (image: "link.circle.fill", title: "URL 저장하기", description: "웹에서 흥미로운 컨텐츠를 발견하면 공유 버튼을 통해 바로 저장하세요."),
-        (image: "square.and.pencil.circle.fill", title: "메모 추가하기", description: "각 URL에 제목과 개인 메모를 추가하여 나중에 쉽게 찾을 수 있습니다."),
-        (image: "square.and.arrow.up.circle.fill", title: "언제든지 공유하기", description: "저장한 URL을 친구들과 쉽게 공유할 수 있습니다.")
+        (image: "link.circle.fill", title: "URL 저장하기".localized(), description: "웹에서 흥미로운 컨텐츠를 발견하면 공유 버튼을 통해 바로 저장하세요.".localized()),
+        (image: "square.and.pencil.circle.fill", title: "메모 추가하기".localized(), description: "각 URL에 제목과 개인 메모를 추가하여 나중에 쉽게 찾을 수 있습니다.".localized()),
+        (image: "square.and.arrow.up.circle.fill", title: "언제든지 공유하기".localized(), description: "저장한 URL을 친구들과 쉽게 공유할 수 있습니다.".localized())
     ]
 
     var body: some View {

@@ -5,23 +5,23 @@
 //  Created by 심관혁 on 2/18/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct MainView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: \LinkItem.savedDate, order: .reverse)
     private var links: [LinkItem]
-    
+
     // ViewModel 추가
     @ObservedObject var viewModel: MainViewModel
-    
+
     var body: some View {
         NavigationStack {
             Group {
                 // 필터링 및 정렬된 링크 계산
                 let processedLinks = viewModel.sortLinks(viewModel.filterLinks(links))
-                
+
                 if processedLinks.isEmpty {
                     NothingView(onTap: {
                         viewModel.showOnboarding = true
@@ -35,27 +35,32 @@ struct MainView: View {
                                 link: link,
                                 onTap: {
                                     viewModel.openURL(link.url)
-                                }, onCopy: {
+                                },
+                                onCopy: {
                                     viewModel.copyURL(link.url)
-                                }, onEdit: {
+                                },
+                                onEdit: {
                                     viewModel.selectedURLForEditing = link
-                                }, onDelete: {
+                                },
+                                onDelete: {
                                     viewModel.deleteLink(link)
                                 })
                         }
                     }
                 }
             }
-            .navigationTitle("저장된 URL")
+            .navigationTitle(LocalizedStringResource("nav_saved_urls", defaultValue: "저장된 URL"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Menu {
-                        Picker("정렬 옵션", selection: $viewModel.sortOption) {
-                            Text("최신순").tag(SortOption.dateNewest)
-                            Text("오래된순").tag(SortOption.dateOldest)
-                            Text("제목 (A-Z)").tag(SortOption.titleAtoZ)
-                            Text("제목 (Z-A)").tag(SortOption.titleZtoA)
+                        Picker(
+                            LocalizedStringResource("sort_options", defaultValue: "정렬 옵션"),
+                            selection: $viewModel.sortOption
+                        ) {
+                            ForEach(SortOption.allCases) { option in
+                                Text(option.displayName).tag(option)
+                            }
                         }
                     } label: {
                         Image(systemName: "arrow.up.arrow.down.circle")
@@ -69,24 +74,33 @@ struct MainView: View {
                     }
                 }
             }
-            .searchable(text: $viewModel.searchText, prompt: "URL 또는 제목 검색")
-            .searchScopes($viewModel.searchScope, scopes: {
-                ForEach(SearchScope.allCases, id: \.self) { scope in
-                    Text(scope.rawValue).tag(scope)
+            .searchable(
+                text: $viewModel.searchText,
+                prompt: LocalizedStringResource("search_prompt", defaultValue: "URL 또는 제목 검색")
+            )
+            .searchScopes(
+                $viewModel.searchScope,
+                scopes: {
+                    ForEach(SearchScope.allCases, id: \.self) { scope in
+                        Text(scope.displayName).tag(scope)
+                    }
                 }
-            })
-            .sheet(item: $viewModel.selectedURLForEditing) { item in
-                EditView(savedURL: item)
-            }
-            .fullScreenCover(isPresented: $viewModel.showOnboarding, content: {
-                OnboardingView()
-            })
-            .sheet(isPresented: $viewModel.showSetting, content: {
-                SettingView()
-            })
-            .onAppear {
-                // ModelContext에 뷰모델 주입
-                viewModel.modelContext = modelContext
+            )
+            .fullScreenCover(
+                isPresented: $viewModel.showOnboarding,
+                content: {
+                    OnboardingView()
+                }
+            )
+            .sheet(
+                isPresented: $viewModel.showSetting,
+                content: {
+                    SettingView()
+                }
+            )
+            .task {
+                // ModelContext에 뷰모델 단발 주입 및 온보딩 체크
+                viewModel.setContextIfNeeded(modelContext)
                 viewModel.checkOnboarding()
             }
             .toast(isShowing: $viewModel.showToast, message: viewModel.toastMessage)

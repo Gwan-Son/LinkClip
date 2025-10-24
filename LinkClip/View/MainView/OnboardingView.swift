@@ -10,16 +10,25 @@ import SwiftUI
 struct OnboardingView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var currentPage = 0
-    
+
     // 애니메이션 상태 변수
     @State private var isAnimating: Bool = false
     @Namespace private var namespace
-    
+
     // 온보딩 페이지 데이터
     private let pages = [
-        (image: "link.circle.fill", title: "URL 저장하기".localized(), description: "웹에서 흥미로운 컨텐츠를 발견하면 공유 버튼을 통해 바로 저장하세요.".localized()),
-        (image: "square.and.pencil.circle.fill", title: "메모 추가하기".localized(), description: "각 URL에 제목과 개인 메모를 추가하여 나중에 쉽게 찾을 수 있습니다.".localized()),
-        (image: "square.and.arrow.up.circle.fill", title: "언제든지 공유하기".localized(), description: "저장한 URL을 친구들과 쉽게 공유할 수 있습니다.".localized())
+        (
+            image: "link.circle.fill", title: String(localized: "URL 저장하기"),
+            description: String(localized: "웹에서 흥미로운 컨텐츠를 발견하면 공유 버튼을 통해 바로 저장하세요.")
+        ),
+        (
+            image: "square.and.pencil.circle.fill", title: String(localized: "메모 추가하기"),
+            description: String(localized: "각 URL에 제목과 개인 메모를 추가하여 나중에 쉽게 찾을 수 있습니다.")
+        ),
+        (
+            image: "square.and.arrow.up.circle.fill", title: String(localized: "언제든지 공유하기"),
+            description: String(localized: "저장한 URL을 친구들과 쉽게 공유할 수 있습니다.")
+        ),
     ]
 
     var body: some View {
@@ -31,7 +40,7 @@ struct OnboardingView: View {
                 endPoint: .bottom
             )
             .ignoresSafeArea()
-            
+
             VStack {
                 // 페이지 인디케이터
                 HStack(spacing: 8) {
@@ -43,20 +52,20 @@ struct OnboardingView: View {
                     }
                 }
                 .padding(.top, 20)
-                
+
                 // 페이지 컨텐츠
                 TabView(selection: $currentPage) {
                     ForEach(0..<pages.count, id: \.self) { index in
                         VStack(spacing: 30) {
                             Spacer()
-                            
+
                             // 아이콘
                             ZStack {
                                 Circle()
                                     .fill(Color.background.opacity(0.3))
                                     .frame(width: 130, height: 130)
 
-								Circle()
+                                Circle()
                                     .fill(Color.white)
                                     .frame(width: 100, height: 100)
 
@@ -65,7 +74,7 @@ struct OnboardingView: View {
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 100, height: 100)
                                     .foregroundColor(.background)
-									.symbolEffect(.breathe.plain.byLayer, options: .repeat(.continuous))
+                                    .symbolEffect(.breathe.plain.byLayer, options: .repeat(.continuous))
                             }
                             .shadow(color: .blue.opacity(0.2), radius: 10, x: 0, y: 5)
 
@@ -73,7 +82,7 @@ struct OnboardingView: View {
                             Text(pages[index].title)
                                 .font(.system(size: 28, weight: .bold))
                                 .transition(.move(edge: .trailing).combined(with: .opacity))
-                            
+
                             // 설명
                             Text(pages[index].description)
                                 .font(.body)
@@ -81,14 +90,14 @@ struct OnboardingView: View {
                                 .foregroundColor(.secondary)
                                 .padding(.horizontal, 32)
                                 .transition(.move(edge: .trailing).combined(with: .opacity))
-                            
+
                             Spacer()
                         }
                         .tag(index)
                     }
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                
+
                 // 버튼 영역
                 HStack {
                     if currentPage > 0 {
@@ -100,7 +109,7 @@ struct OnboardingView: View {
                             HStack(spacing: 4) {
                                 Image(systemName: "chevron.left")
                                     .font(.system(size: 14, weight: .semibold))
-                                Text("이전")
+                                Text(LocalizedStringResource("prev", defaultValue: "이전"))
                             }
                             .foregroundColor(.background)
                             .padding(.horizontal, 16)
@@ -109,9 +118,9 @@ struct OnboardingView: View {
                             .cornerRadius(20)
                         }
                     }
-                    
+
                     Spacer()
-                    
+
                     if currentPage < pages.count - 1 {
                         Button {
                             withAnimation {
@@ -119,7 +128,7 @@ struct OnboardingView: View {
                             }
                         } label: {
                             HStack(spacing: 4) {
-                                Text("다음")
+                                Text(LocalizedStringResource("next", defaultValue: "다음"))
                                 Image(systemName: "chevron.right")
                                     .font(.system(size: 14, weight: .semibold))
                             }
@@ -133,7 +142,7 @@ struct OnboardingView: View {
                         Button {
                             dismiss()
                         } label: {
-                            Text("시작하기")
+                            Text(LocalizedStringResource("start", defaultValue: "시작하기"))
                                 .fontWeight(.bold)
                                 .foregroundColor(.white)
                                 .padding(.horizontal, 16)
@@ -161,7 +170,6 @@ struct PressableButtonStyle: ButtonStyle {
             .animation(.easeOut(duration: 0.2), value: configuration.isPressed)
     }
 }
-
 
 #Preview {
     OnboardingView()

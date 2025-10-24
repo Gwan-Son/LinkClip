@@ -13,16 +13,16 @@ struct LinkRowView: View {
     let onCopy: () -> Void
     let onEdit: () -> Void
     let onDelete: () -> Void
-    
+
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(link.title)
                 .font(.headline)
-            
+
             Text(link.url)
                 .font(.subheadline)
                 .foregroundColor(.blue)
-            
+
             if let memo = link.personalMemo, !memo.isEmpty {
                 Text(memo)
                     .font(.caption)
@@ -33,39 +33,42 @@ struct LinkRowView: View {
         .onTapGesture(perform: onTap)
         .swipeActions {
             Button(role: .destructive, action: onDelete) {
-                Label("삭제", systemImage: "trash")
+                Label(LocalizedStringResource("btn_delete", defaultValue: "삭제"), systemImage: "trash")
             }
             .tint(.red)
 
             Button(action: onEdit) {
-                Label("수정", systemImage: "pencil")
+                Label(LocalizedStringResource("btn_edit", defaultValue: "수정"), systemImage: "pencil")
             }
             .tint(.gray)
         }
         .contextMenu {
             if let url = URL(string: link.url) {
                 ShareLink(item: url) {
-                    Label("공유", systemImage: "square.and.arrow.up")
+                    Label(
+                        LocalizedStringResource("btn_share", defaultValue: "공유"),
+                        systemImage: "square.and.arrow.up")
                 }
             }
-            
-            if let _ = URL(string: link.url) {
+
+            if URL(string: link.url) != nil {
                 Button(action: onCopy) {
-                    Label("복사", systemImage: "link")
+                    Label(LocalizedStringResource("btn_copy", defaultValue: "복사"), systemImage: "link")
                 }
             }
-            
+
             Button(action: onEdit) {
-                Label("수정", systemImage: "pencil")
+                Label(LocalizedStringResource("btn_edit", defaultValue: "수정"), systemImage: "pencil")
             }
-            
+
             Button(role: .destructive, action: onDelete) {
-                Label("삭제", systemImage: "trash")
+                Label(LocalizedStringResource("btn_delete", defaultValue: "삭제"), systemImage: "trash")
             }
         }
     }
 }
 
 #Preview {
-    LinkRowView(link: LinkItem(url: "google.com", title: "구글"), onTap: {}, onCopy: {}, onEdit: {}, onDelete: {})
+    LinkRowView(
+        link: LinkItem(url: "google.com", title: "구글"), onTap: {}, onCopy: {}, onEdit: {}, onDelete: {})
 }

@@ -10,11 +10,11 @@ import SwiftUI
 struct ToastModifier: ViewModifier {
     @Binding var isShowing: Bool
     let message: String
-    
+
     func body(content: Content) -> some View {
         ZStack {
             content
-            
+
             if isShowing {
                 VStack {
                     Spacer()

@@ -49,12 +49,15 @@ struct MainView: View {
                     }
                 }
             }
-            .navigationTitle("저장된 URL")
+            .navigationTitle(LocalizedStringResource("nav_saved_urls", defaultValue: "저장된 URL"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Menu {
-                        Picker("정렬 옵션", selection: $viewModel.sortOption) {
+                        Picker(
+                            LocalizedStringResource("sort_options", defaultValue: "정렬 옵션"),
+                            selection: $viewModel.sortOption
+                        ) {
                             ForEach(SortOption.allCases) { option in
                                 Text(option.displayName).tag(option)
                             }
@@ -71,7 +74,10 @@ struct MainView: View {
                     }
                 }
             }
-            .searchable(text: $viewModel.searchText, prompt: "URL 또는 제목 검색")
+            .searchable(
+                text: $viewModel.searchText,
+                prompt: LocalizedStringResource("search_prompt", defaultValue: "URL 또는 제목 검색")
+            )
             .searchScopes(
                 $viewModel.searchScope,
                 scopes: {
@@ -80,9 +86,6 @@ struct MainView: View {
                     }
                 }
             )
-            .sheet(item: $viewModel.selectedURLForEditing) { item in
-                EditView(savedURL: item)
-            }
             .fullScreenCover(
                 isPresented: $viewModel.showOnboarding,
                 content: {

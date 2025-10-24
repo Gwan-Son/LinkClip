@@ -9,7 +9,7 @@ import SwiftUI
 
 struct NothingView: View {
     let onTap: () -> Void
-    
+
     var body: some View {
         VStack(spacing: 20) {
             Image(systemName: "link.circle")
@@ -18,18 +18,20 @@ struct NothingView: View {
                 .frame(width: 80, height: 80)
                 .foregroundColor(.gray)
 
-            Text("저장된 URL이 없습니다")
+            Text(LocalizedStringResource("empty_saved_urls", defaultValue: "저장된 URL이 없습니다"))
                 .font(.title2)
                 .fontWeight(.medium)
-            
-            Text("웹에서 공유 버튼을 눌러 URL을 저장해보세요.")
-                .font(.body)
-                .foregroundColor(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 32)
-            
+
+            Text(
+                LocalizedStringResource("guide_save_from_share", defaultValue: "웹에서 공유 버튼을 눌러 URL을 저장해보세요.")
+            )
+            .font(.body)
+            .foregroundColor(.secondary)
+            .multilineTextAlignment(.center)
+            .padding(.horizontal, 32)
+
             Button(action: onTap) {
-                Text("온보딩 다시보기")
+                Text(LocalizedStringResource("btn_onboarding_replay", defaultValue: "온보딩 다시보기"))
             }
             .padding(.top, 16)
         }

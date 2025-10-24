@@ -58,7 +58,6 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"Component/String+Extension.swift",
-				Model/Category.swift,
 				Model/LinkItem.swift,
 				Model/SearchScope.swift,
 				Model/ShareError.swift,

@@ -16,6 +16,7 @@ final class MainViewModel: ObservableObject {
     // 서비스 의존성 (DI)
     private let urlOpener: URLOpener
     private let clipboard: ClipboardService
+    private let linkRepository: LinkRepository
 
     // 상태 변수들
     @Published var selectedURLForEditing: LinkItem?
@@ -33,52 +34,27 @@ final class MainViewModel: ObservableObject {
     // 초기화: 서비스 주입(기본 구현 제공)
     init(
         urlOpener: URLOpener = SystemURLOpener(),
-        clipboard: ClipboardService = SystemClipboardService()
+        clipboard: ClipboardService = SystemClipboardService(),
+        linkRepository: LinkRepository = SwiftDataLinkRepository()
     ) {
         self.urlOpener = urlOpener
         self.clipboard = clipboard
+        self.linkRepository = linkRepository
     }
 
     // 필터링 로직
     func filterLinks(_ links: [LinkItem]) -> [LinkItem] {
-        if searchText.isEmpty {
-            return links
-        } else {
-            return links.filter { link in
-                switch searchScope {
-                case .all:
-                    return link.title.localizedCaseInsensitiveContains(searchText)
-                    || link.url.localizedCaseInsensitiveContains(searchText)
-                    || (link.personalMemo ?? "").localizedCaseInsensitiveContains(searchText)
-                case .title:
-                    return link.title.localizedCaseInsensitiveContains(searchText)
-                case .url:
-                    return link.url.localizedCaseInsensitiveContains(searchText)
-                case .memo:
-                    return (link.personalMemo ?? "").localizedCaseInsensitiveContains(searchText)
-                }
-            }
-        }
+        linkRepository.filter(links, by: searchText, scope: searchScope)
     }
 
     // 정렬 로직
     func sortLinks(_ links: [LinkItem]) -> [LinkItem] {
-        switch sortOption {
-        case .dateNewest:
-            return links.sorted { $0.savedDate > $1.savedDate }
-        case .dateOldest:
-            return links.sorted { $0.savedDate < $1.savedDate }
-        case .titleAtoZ:
-            return links.sorted { $0.title < $1.title }
-        case .titleZtoA:
-            return links.sorted { $0.title > $1.title }
-        }
+        linkRepository.sort(links, by: sortOption)
     }
 
     // 삭제 함수
     func deleteLink(_ link: LinkItem) {
-        guard let modelContext = modelContext else { return }
-        modelContext.delete(link)
+        linkRepository.delete(link)
     }
 
     // URL 열기 함수
@@ -110,5 +86,6 @@ final class MainViewModel: ObservableObject {
         if modelContext == nil {
             modelContext = context
         }
+        linkRepository.setContextIfNeeded(context)
     }
 }

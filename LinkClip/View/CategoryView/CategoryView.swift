@@ -5,17 +5,17 @@
 //  Created by 심관혁 on 4/11/25.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct CategoryView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var categories: [CategoryItem]
     @Query private var links: [LinkItem]
-    
+
     @ObservedObject var viewModel: MainViewModel
     @State private var showAddCategory: Bool = false
-    
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -28,20 +28,23 @@ struct CategoryView: View {
                             .frame(width: 80, height: 80)
                             .foregroundColor(.gray)
 
-                        Text("카테고리가 없습니다")
+                        Text(LocalizedStringResource("categories_empty", defaultValue: "카테고리가 없습니다"))
                             .font(.title2)
                             .fontWeight(.medium)
-                        
-                        Text("카테고리를 추가하여 URL을 체계적으로 관리해보세요.")
-                            .font(.body)
-                            .foregroundColor(.secondary)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 32)
-                        
+
+                        Text(
+                            LocalizedStringResource(
+                                "categories_guide_add", defaultValue: "카테고리를 추가하여 URL을 체계적으로 관리해보세요.")
+                        )
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 32)
+
                         Button(action: {
                             showAddCategory = true
                         }) {
-                            Text("카테고리 추가하기")
+                            Text(LocalizedStringResource("btn_add_category", defaultValue: "카테고리 추가하기"))
                                 .fontWeight(.medium)
                                 .padding(.horizontal, 20)
                                 .padding(.vertical, 10)
@@ -56,16 +59,18 @@ struct CategoryView: View {
                     // 카테고리 목록 표시
                     List {
                         // 미분류 항목
-                        Section(header: HStack {
-                            Image(systemName: "tray")
-                            Text("미분류")
-                        }) {
+                        Section(
+                            header: HStack {
+                                Image(systemName: "tray")
+                                Text(LocalizedStringResource("uncategorized", defaultValue: "미분류"))
+                            }
+                        ) {
                             let uncategorizedLinks = links.filter {
                                 $0.category == nil
                             }
-                            
+
                             if uncategorizedLinks.isEmpty {
-                                Text("항목 없음")
+                                Text(LocalizedStringResource("no_item", defaultValue: "항목 없음"))
                                     .foregroundColor(.secondary)
                                     .italic()
                             } else {
@@ -74,126 +79,140 @@ struct CategoryView: View {
                                         link: link,
                                         onTap: {
                                             viewModel.openURL(link.url)
-                                        }, onCopy: {
+                                        },
+                                        onCopy: {
                                             viewModel.copyURL(link.url)
-                                        }, onEdit: {
+                                        },
+                                        onEdit: {
                                             viewModel.selectedURLForEditing = link
-                                        }, onDelete: {
+                                        },
+                                        onDelete: {
                                             viewModel.deleteLink(link)
                                         })
                                 }
                             }
                         }
-                        
+
                         // 각 카테고리별 섹션
                         ForEach(
-                            categories.filter { $0.parentCategory == nil
-                            }) { category in
-                                Section(header: HStack {
+                            categories.filter {
+                                $0.parentCategory == nil
+                            }
+                        ) { category in
+                            Section(
+                                header: HStack {
                                     Image(systemName: category.icon)
                                     Text(category.name)
-                                }) {
-                                    // 현재 카테고리에 속한 링크 표시
-                                    let categoryLinks = links.filter {
-                                        $0.category?.id == category.id
+                                }
+                            ) {
+                                // 현재 카테고리에 속한 링크 표시
+                                let categoryLinks = links.filter {
+                                    $0.category?.id == category.id
+                                }
+
+                                if categoryLinks.isEmpty {
+                                    Text(LocalizedStringResource("no_item", defaultValue: "항목 없음"))
+                                        .foregroundColor(.secondary)
+                                        .italic()
+                                } else {
+                                    ForEach(categoryLinks) { link in
+                                        LinkRowView(
+                                            link: link,
+                                            onTap: {
+                                                viewModel.openURL(link.url)
+                                            },
+                                            onCopy: {
+                                                viewModel.copyURL(link.url)
+                                            },
+                                            onEdit: {
+                                                viewModel.selectedURLForEditing = link
+                                            },
+                                            onDelete: {
+                                                viewModel.deleteLink(link)
+                                            })
                                     }
-                                
-                                    if categoryLinks.isEmpty {
-                                        Text("항목 없음")
-                                            .foregroundColor(.secondary)
-                                            .italic()
-                                    } else {
-                                        ForEach(categoryLinks) { link in
-                                            LinkRowView(
-                                                link: link,
-                                                onTap: {
-                                                    viewModel.openURL(link.url)
-                                                }, onCopy: {
-                                                    viewModel.copyURL(link.url)
-                                                }, onEdit: {
-                                                    viewModel.selectedURLForEditing = link
-                                                }, onDelete: {
-                                                    viewModel.deleteLink(link)
-                                                })
-                                        }
-                                    }
-                                
-                                    // 하위 카테고리가 있는 경우 표시
-                                    if let subCategories = category.subCategories, !subCategories.isEmpty {
-                                        ForEach(subCategories) { subCategory in
-                                            DisclosureGroup(
-                                                content: {
-                                                    let subCategoryLinks = links.filter {
-                                                        $0.category?.id == subCategory.id
-                                                    }
-                                                
-                                                    if subCategoryLinks.isEmpty {
-                                                        Text("항목 없음")
-                                                            .foregroundColor(
-                                                                .secondary
-                                                            )
-                                                            .italic()
-                                                    } else {
-                                                        ForEach(
-                                                            subCategoryLinks
-                                                        ) { link in
-                                                            LinkRowView(
-                                                                link: link,
-                                                                onTap: {
-                                                                    viewModel
-                                                                        .openURL(
-                                                                            link.url
-                                                                        )
-                                                                },
-                                                                onCopy: {
-                                                                    viewModel
-                                                                        .copyURL(
-                                                                            link.url
-                                                                        )
-                                                                },
-                                                                onEdit: {
-                                                                    viewModel.selectedURLForEditing = link
-                                                                },
-                                                                onDelete: {
-                                                                    viewModel
-                                                                        .deleteLink(
-                                                                            link
-                                                                        )
-                                                                })
-                                                        }
-                                                    }
-                                                },
-                                                label: {
-                                                    HStack {
-                                                        Image(
-                                                            systemName: subCategory.icon
+                                }
+
+                                // 하위 카테고리가 있는 경우 표시
+                                if let subCategories = category.subCategories, !subCategories.isEmpty {
+                                    ForEach(subCategories) { subCategory in
+                                        DisclosureGroup(
+                                            content: {
+                                                let subCategoryLinks = links.filter {
+                                                    $0.category?.id == subCategory.id
+                                                }
+
+                                                if subCategoryLinks.isEmpty {
+                                                    Text(LocalizedStringResource("no_item", defaultValue: "항목 없음"))
+                                                        .foregroundColor(
+                                                            .secondary
                                                         )
-                                                        .foregroundColor(.blue)
-                                                        Text(subCategory.name)
-                                                            .font(.headline)
+                                                        .italic()
+                                                } else {
+                                                    ForEach(
+                                                        subCategoryLinks
+                                                    ) { link in
+                                                        LinkRowView(
+                                                            link: link,
+                                                            onTap: {
+                                                                viewModel
+                                                                    .openURL(
+                                                                        link.url
+                                                                    )
+                                                            },
+                                                            onCopy: {
+                                                                viewModel
+                                                                    .copyURL(
+                                                                        link.url
+                                                                    )
+                                                            },
+                                                            onEdit: {
+                                                                viewModel.selectedURLForEditing = link
+                                                            },
+                                                            onDelete: {
+                                                                viewModel
+                                                                    .deleteLink(
+                                                                        link
+                                                                    )
+                                                            })
                                                     }
                                                 }
-                                            )
-                                        }
+                                            },
+                                            label: {
+                                                HStack {
+                                                    Image(
+                                                        systemName: subCategory.icon
+                                                    )
+                                                    .foregroundColor(.blue)
+                                                    Text(subCategory.name)
+                                                        .font(.headline)
+                                                }
+                                            }
+                                        )
                                     }
                                 }
                             }
+                        }
                     }
                 }
             }
-            .navigationTitle("카테고리")
+            .navigationTitle(LocalizedStringResource("nav_categories", defaultValue: "카테고리"))
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: {
                         showAddCategory = true
                     }) {
-                        Label("카테고리 추가", systemImage: "folder.badge.plus")
+                        Label(
+                            LocalizedStringResource("btn_add_category", defaultValue: "카테고리 추가"),
+                            systemImage: "folder.badge.plus")
                     }
                 }
-                
+
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink(destination: CategoryManagementView()) {
-                        Label("카테고리 관리", systemImage: "gear")
+                        Label(
+                            LocalizedStringResource("nav_manage_category", defaultValue: "카테고리 관리"),
+                            systemImage: "gear")
                     }
                 }
             }
@@ -202,7 +221,7 @@ struct CategoryView: View {
                 AddCategoryView(
                     categories: categories,
                     onSave: {
- name,
+                        name,
                         icon,
                         parentCategory in
                         addCategory(
@@ -213,15 +232,13 @@ struct CategoryView: View {
                     }
                 )
             }
-            .sheet(item: $viewModel.selectedURLForEditing) { item in
-                EditView(savedURL: item)
-            }
+            // 편집 시트는 HomeView에서 중앙집중으로 표시
             .onAppear {
                 viewModel.modelContext = modelContext
             }
         }
     }
-    
+
     private func addCategory(
         name: String,
         icon: String,

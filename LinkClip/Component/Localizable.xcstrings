@@ -27,12 +27,367 @@
         }
       }
     },
+    "alert_url_saved_message" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "URL이 성공적으로 저장되었습니다."
+          }
+        }
+      }
+    },
+    "alert_url_saved_title" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "URL 저장됨"
+          }
+        }
+      }
+    },
+    "btn_add_category" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "카테고리 추가"
+          }
+        }
+      }
+    },
+    "btn_cancel" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "취소"
+          }
+        }
+      }
+    },
+    "btn_confirm" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "확인"
+          }
+        }
+      }
+    },
+    "btn_copy" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "복사"
+          }
+        }
+      }
+    },
+    "btn_delete" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "삭제"
+          }
+        }
+      }
+    },
+    "btn_edit" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "수정"
+          }
+        }
+      }
+    },
+    "btn_onboarding_replay" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "온보딩 다시보기"
+          }
+        }
+      }
+    },
+    "btn_save" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "저장"
+          }
+        }
+      }
+    },
+    "btn_share" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "공유"
+          }
+        }
+      }
+    },
+    "categories_empty" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "카테고리가 없습니다"
+          }
+        }
+      }
+    },
+    "categories_guide_add" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "카테고리를 추가하여 URL을 체계적으로 관리해보세요."
+          }
+        }
+      }
+    },
+    "category_title" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "카테고리 이름"
+          }
+        }
+      }
+    },
+    "empty_categories" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "카테고리가 없습니다."
+          }
+        }
+      }
+    },
+    "empty_saved_urls" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "저장된 URL이 없습니다"
+          }
+        }
+      }
+    },
+    "guide_save_from_share" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "웹에서 공유 버튼을 눌러 URL을 저장해보세요."
+          }
+        }
+      }
+    },
     "LinkClip" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "LinkClip"
+          }
+        }
+      }
+    },
+    "LinkClip 앱 문의" : {
+
+    },
+    "manage_data" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "데이터 관리"
+          }
+        }
+      }
+    },
+    "nav_categories" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "카테고리"
+          }
+        }
+      }
+    },
+    "nav_edit_url" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "URL 편집"
+          }
+        }
+      }
+    },
+    "nav_manage_category" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "카테고리 관리"
+          }
+        }
+      }
+    },
+    "nav_new_category" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "새 카테고리"
+          }
+        }
+      }
+    },
+    "nav_save_url" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "URL 저장"
+          }
+        }
+      }
+    },
+    "nav_saved_urls" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "저장된 URL"
+          }
+        }
+      }
+    },
+    "next" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "다음"
+          }
+        }
+      }
+    },
+    "no_item" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "항목 없음"
+          }
+        }
+      }
+    },
+    "none" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "없음"
+          }
+        }
+      }
+    },
+    "ph_url_title" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "URL 제목"
+          }
+        }
+      }
+    },
+    "picker_select_category" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "카테고리 선택"
+          }
+        }
+      }
+    },
+    "prev" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "이전"
+          }
+        }
+      }
+    },
+    "reset_saved_url" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "저장된 URL 초기화"
+          }
+        }
+      }
+    },
+    "search_prompt" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "URL 또는 제목 검색"
           }
         }
       }
@@ -81,6 +436,72 @@
         }
       }
     },
+    "section_category" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "카테고리"
+          }
+        }
+      }
+    },
+    "section_category_info" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "카테고리 정보"
+          }
+        }
+      }
+    },
+    "section_personal_memo" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "개인 메모"
+          }
+        }
+      }
+    },
+    "section_title" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "제목"
+          }
+        }
+      }
+    },
+    "section_url_info" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "URL 정보"
+          }
+        }
+      }
+    },
+    "select_icon" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "아이콘 선택"
+          }
+        }
+      }
+    },
     "sort_date_newest" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
@@ -99,6 +520,17 @@
           "stringUnit" : {
             "state" : "new",
             "value" : "오래된순"
+          }
+        }
+      }
+    },
+    "sort_options" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "정렬 옵션"
           }
         }
       }
@@ -125,7 +557,74 @@
         }
       }
     },
+    "start" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "시작하기"
+          }
+        }
+      }
+    },
+    "support" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "지원"
+          }
+        }
+      }
+    },
+    "tab_category" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "카테고리"
+          }
+        }
+      }
+    },
+    "tab_url_list" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "URL 목록"
+          }
+        }
+      }
+    },
+    "top_category" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "상위 카테고리"
+          }
+        }
+      }
+    },
+    "uncategorized" : {
+      "extractionState" : "extracted_with_value",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "미분류"
+          }
+        }
+      }
+    },
     "URL 또는 제목 검색" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -136,6 +635,7 @@
       }
     },
     "URL 목록" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -146,6 +646,7 @@
       }
     },
     "URL 저장" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -156,6 +657,7 @@
       }
     },
     "URL 저장됨" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -177,6 +679,7 @@
       }
     },
     "URL 정보" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -187,6 +690,7 @@
       }
     },
     "URL 제목" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -197,6 +701,7 @@
       }
     },
     "URL 편집" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -207,6 +712,7 @@
       }
     },
     "URL이 성공적으로 저장되었습니다." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -239,6 +745,7 @@
       }
     },
     "개인 메모" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -259,6 +766,7 @@
       }
     },
     "공유" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -269,6 +777,7 @@
       }
     },
     "다음" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -279,6 +788,7 @@
       }
     },
     "데이터 관리" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -331,6 +841,7 @@
       }
     },
     "미분류" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -340,7 +851,18 @@
         }
       }
     },
+    "버전 %@ (%@)" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "버전 %1$@ (%2$@)"
+          }
+        }
+      }
+    },
     "버전 %@ %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -357,6 +879,7 @@
       }
     },
     "복사" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -377,6 +900,7 @@
       }
     },
     "상위 카테고리" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -397,6 +921,7 @@
       }
     },
     "새 카테고리" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -417,6 +942,7 @@
       }
     },
     "수정" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -427,6 +953,7 @@
       }
     },
     "시작하기" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -437,6 +964,7 @@
       }
     },
     "아이콘 선택" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -490,6 +1018,7 @@
       }
     },
     "없음" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -511,6 +1040,7 @@
       }
     },
     "온보딩 다시보기" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -531,6 +1061,7 @@
       }
     },
     "웹에서 공유 버튼을 눌러 URL을 저장해보세요." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -582,6 +1113,7 @@
       }
     },
     "이전" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -592,6 +1124,7 @@
       }
     },
     "저장" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -602,6 +1135,7 @@
       }
     },
     "저장된 URL" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -612,6 +1146,7 @@
       }
     },
     "저장된 URL 초기화" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -622,6 +1157,7 @@
       }
     },
     "저장된 URL이 없습니다" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -643,6 +1179,7 @@
       }
     },
     "정렬 옵션" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -663,6 +1200,7 @@
       }
     },
     "제목" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -695,6 +1233,7 @@
       }
     },
     "지원" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -726,6 +1265,7 @@
       }
     },
     "카테고리" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -736,6 +1276,7 @@
       }
     },
     "카테고리 관리" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -746,6 +1287,7 @@
       }
     },
     "카테고리 선택" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -756,6 +1298,7 @@
       }
     },
     "카테고리 이름" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -766,6 +1309,7 @@
       }
     },
     "카테고리 정보" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -776,6 +1320,7 @@
       }
     },
     "카테고리 추가" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -786,6 +1331,7 @@
       }
     },
     "카테고리 추가하기" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -796,6 +1342,7 @@
       }
     },
     "카테고리가 없습니다" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -806,6 +1353,7 @@
       }
     },
     "카테고리가 없습니다." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -816,6 +1364,7 @@
       }
     },
     "카테고리를 추가하여 URL을 체계적으로 관리해보세요." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -859,6 +1408,7 @@
       }
     },
     "항목 없음" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -869,6 +1419,7 @@
       }
     },
     "확인" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {

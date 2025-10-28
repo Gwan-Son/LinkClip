@@ -97,71 +97,38 @@ struct ShareView: View {
             .navigationTitle(LocalizedStringResource("nav_save_url", defaultValue: "URL 저장"))
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    if #available(iOS 26, *) {
-                        Button(LocalizedStringResource("btn_cancel", defaultValue: "취소")) {
-                            if let extensionContext {
-                                extensionContext.completeRequest(returningItems: [], completionHandler: nil)
-                            } else {
-                                dismiss()
-                            }
-                        }
-                    } else {
-                        Button(String(localized: "btn_cancel")) {
-                            if let extensionContext {
-                                extensionContext.completeRequest(returningItems: [], completionHandler: nil)
-                            } else {
-                                dismiss()
-                            }
+                    Button(LocalizedStringResource("btn_cancel", defaultValue: "취소")) {
+                        if let extensionContext {
+                            extensionContext.completeRequest(returningItems: [], completionHandler: nil)
+                        } else {
+                            dismiss()
                         }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    if #available(iOS 26, *) {
-                        Button(LocalizedStringResource("btn_save", defaultValue: "저장")) {
-                            saveURL()
-                        }
-                    } else {
-                        Button(String(localized: "btn_save")) {
-                            saveURL()
-                        }
+                    Button(LocalizedStringResource("btn_save", defaultValue: "저장")) {
+                        saveURL()
                     }
                 }
             }
             .alert(isPresented: $isSaved) {
-                if #available(iOS 26, *) {
-                    return Alert(
-                        title: Text(LocalizedStringResource("alert_url_saved_title", defaultValue: "URL 저장됨")),
-                        message: Text(
-                            LocalizedStringResource(
-                                "alert_url_saved_message", defaultValue: "URL이 성공적으로 저장되었습니다.")
-                        ),
-                        dismissButton: .default(
-                            Text(LocalizedStringResource("btn_confirm", defaultValue: "확인")),
-                            action: {
-                                if let extensionContext {
-                                    extensionContext.completeRequest(returningItems: [], completionHandler: nil)
-                                } else {
-                                    dismiss()
-                                }
+                Alert(
+                    title: Text(LocalizedStringResource("alert_url_saved_title", defaultValue: "URL 저장됨")),
+                    message: Text(
+                        LocalizedStringResource(
+                            "alert_url_saved_message", defaultValue: "URL이 성공적으로 저장되었습니다.")
+                    ),
+                    dismissButton: .default(
+                        Text(LocalizedStringResource("btn_confirm", defaultValue: "확인")),
+                        action: {
+                            if let extensionContext {
+                                extensionContext.completeRequest(returningItems: [], completionHandler: nil)
+                            } else {
+                                dismiss()
                             }
-                        )
+                        }
                     )
-                } else {
-                    return Alert(
-                        title: Text(String(localized: "alert_url_saved_title")),
-                        message: Text(String(localized: "alert_url_saved_message")),
-                        dismissButton: .default(
-                            Text(String(localized: "btn_confirm")),
-                            action: {
-                                if let extensionContext {
-                                    extensionContext.completeRequest(returningItems: [], completionHandler: nil)
-                                } else {
-                                    dismiss()
-                                }
-                            }
-                        )
-                    )
-                }
+                )
             }
             .onAppear {
                 loadCategories()
@@ -204,12 +171,14 @@ struct ShareView: View {
                 predicate: #Predicate { $0.url == urlString }
             )
             existingDescriptor.fetchLimit = 1
+            let itemToIndex: LinkItem
             if let existing = try context.fetch(existingDescriptor).first {
                 // 기존 항목 업데이트
                 let newTitle = title.isEmpty ? (url.host ?? existing.title) : title
                 existing.title = newTitle
                 existing.personalMemo = personalMemo.isEmpty ? existing.personalMemo : personalMemo
                 existing.category = categoryToUse
+                itemToIndex = existing
             } else {
                 // 새 항목 삽입
                 let savedURL = LinkItem(
@@ -219,8 +188,12 @@ struct ShareView: View {
                     category: categoryToUse
                 )
                 context.insert(savedURL)
+                itemToIndex = savedURL
             }
             try context.save()
+
+            // Spotlight 색인 (비동기)
+            Task { await SpotlightIndexingService().index(link: itemToIndex) }
 
             isSaved = true
         } catch (let error) {

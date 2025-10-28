@@ -36,7 +36,8 @@ struct EditView: View {
                 Section(header: Text(LocalizedStringResource("section_title", defaultValue: "제목"))) {
                     if #available(iOS 26.0, *) {
                         TextField(
-                            LocalizedStringResource("ph_url_title", defaultValue: "URL 제목"), text: $savedURL.title)
+                            LocalizedStringResource("ph_url_title", defaultValue: "URL 제목"), text: $savedURL.title
+                        )
                     } else {
                         TextField(String(localized: "ph_url_title"), text: $savedURL.title)
                     }
@@ -64,7 +65,9 @@ struct EditView: View {
                         // 하위 카테고리
                         ForEach(categories.filter { $0.parentCategory != nil }) { subCategory in
                             if let parentName = subCategory.parentCategory?.name {
-                                Text("\(parentName) > \(subCategory.name)").tag(subCategory as CategoryItem?)
+                                let format = String(localized: "%@ > %@")
+                                Text(String(format: format, parentName, subCategory.name))
+                                    .tag(subCategory as CategoryItem?)
                             }
                         }
                     }

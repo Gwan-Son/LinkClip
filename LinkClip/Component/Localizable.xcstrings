@@ -30,6 +30,12 @@
     "alert_url_saved_message" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL saved successfully"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -41,6 +47,12 @@
     "alert_url_saved_title" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL Saved"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -52,6 +64,12 @@
     "btn_add_category" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Category"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -63,6 +81,12 @@
     "btn_cancel" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -74,6 +98,12 @@
     "btn_confirm" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Confirm"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -85,6 +115,12 @@
     "btn_copy" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -96,6 +132,12 @@
     "btn_delete" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -107,6 +149,12 @@
     "btn_edit" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -118,6 +166,12 @@
     "btn_onboarding_replay" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onboarding replay"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -129,6 +183,12 @@
     "btn_save" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -140,6 +200,12 @@
     "btn_share" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -151,6 +217,12 @@
     "categories_empty" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No categories"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -162,6 +234,12 @@
     "categories_guide_add" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add categories to organize URLs systematically."
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -173,6 +251,12 @@
     "category_title" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Category Name"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -184,6 +268,12 @@
     "empty_categories" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are no categories."
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -195,6 +285,12 @@
     "empty_saved_urls" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No saved URLs"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -206,6 +302,12 @@
     "guide_save_from_share" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Click the Share button on the Web to save the URL"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -225,11 +327,30 @@
       }
     },
     "LinkClip 앱 문의" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contact LinkClip"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "LinkClip 앱 문의"
+          }
+        }
+      }
     },
     "manage_data" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage Data"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -241,6 +362,12 @@
     "nav_categories" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Categories"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -252,6 +379,12 @@
     "nav_edit_url" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit URL"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -263,6 +396,12 @@
     "nav_manage_category" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage Category"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -274,6 +413,12 @@
     "nav_new_category" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Category"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -285,6 +430,12 @@
     "nav_save_url" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save URL"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -296,6 +447,12 @@
     "nav_saved_urls" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saved URLs"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -307,6 +464,12 @@
     "next" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -318,6 +481,12 @@
     "no_item" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No items"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -329,6 +498,12 @@
     "none" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "None"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -340,6 +515,12 @@
     "ph_url_title" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL Title"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -351,6 +532,12 @@
     "picker_select_category" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select Category"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -362,6 +549,12 @@
     "prev" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prev"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -373,6 +566,12 @@
     "reset_saved_url" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset Saved URLs"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -384,6 +583,12 @@
     "search_prompt" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search URL or Title"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -395,6 +600,12 @@
     "search_scope_all" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -406,6 +617,12 @@
     "search_scope_memo" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memo"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -417,6 +634,12 @@
     "search_scope_title" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Title"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -428,6 +651,12 @@
     "search_scope_url" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -439,6 +668,12 @@
     "section_category" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Category"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -450,6 +685,12 @@
     "section_category_info" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Category Information"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -461,6 +702,12 @@
     "section_personal_memo" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Personal Memo"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -472,6 +719,12 @@
     "section_title" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Title"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -483,6 +736,12 @@
     "section_url_info" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL Info"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -494,6 +753,12 @@
     "select_icon" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select Icon"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -505,6 +770,12 @@
     "sort_date_newest" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Newest"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -516,6 +787,12 @@
     "sort_date_oldest" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oldest"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -527,6 +804,12 @@
     "sort_options" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sort Options"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -538,6 +821,12 @@
     "sort_title_az" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Title (A-Z)"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -549,6 +838,12 @@
     "sort_title_za" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Title (Z-A)"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -557,9 +852,65 @@
         }
       }
     },
+    "Spotlight 재색인" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotlight Reindex"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Spotlight 재색인"
+          }
+        }
+      }
+    },
+    "Spotlight 재색인 중..." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reindexing Spotlight..."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Spotlight 재색인 중..."
+          }
+        }
+      }
+    },
+    "Spotlight 재색인이 완료되었습니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spotlight reindexing completed."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Spotlight 재색인이 완료되었습니다."
+          }
+        }
+      }
+    },
     "start" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -571,6 +922,12 @@
     "support" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -582,6 +939,12 @@
     "tab_category" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Categories"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -593,6 +956,12 @@
     "tab_url_list" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "URL List"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -604,6 +973,12 @@
     "top_category" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parent Category"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
@@ -615,54 +990,16 @@
     "uncategorized" : {
       "extractionState" : "extracted_with_value",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uncategorized"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "미분류"
-          }
-        }
-      }
-    },
-    "URL 또는 제목 검색" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Search URL or Title"
-          }
-        }
-      }
-    },
-    "URL 목록" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "URL List"
-          }
-        }
-      }
-    },
-    "URL 저장" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Save URL"
-          }
-        }
-      }
-    },
-    "URL 저장됨" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "URL Saved"
           }
         }
       }
@@ -674,50 +1011,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Save URL"
-          }
-        }
-      }
-    },
-    "URL 정보" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "URL Info"
-          }
-        }
-      }
-    },
-    "URL 제목" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "URL Title"
-          }
-        }
-      }
-    },
-    "URL 편집" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Edit URL"
-          }
-        }
-      }
-    },
-    "URL이 성공적으로 저장되었습니다." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "URL saved successfully"
           }
         }
       }
@@ -744,56 +1037,12 @@
         }
       }
     },
-    "개인 메모" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Personal Memo"
-          }
-        }
-      }
-    },
     "개인정보 처리방침" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Policy"
-          }
-        }
-      }
-    },
-    "공유" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Share"
-          }
-        }
-      }
-    },
-    "다음" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Next"
-          }
-        }
-      }
-    },
-    "데이터 관리" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Manage Data"
           }
         }
       }
@@ -840,51 +1089,18 @@
         }
       }
     },
-    "미분류" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unclassified"
-          }
-        }
-      }
-    },
     "버전 %@ (%@)" : {
       "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "버전 %1$@ (%2$@)"
-          }
-        }
-      }
-    },
-    "버전 %@ %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Version %1$@ %2$@"
+            "value" : "Version %1$@ (%2$@)"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "버전 %1$@ %2$@"
-          }
-        }
-      }
-    },
-    "복사" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Copy"
+            "value" : "버전 %1$@ (%2$@)"
           }
         }
       }
@@ -899,17 +1115,6 @@
         }
       }
     },
-    "상위 카테고리" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Top Category"
-          }
-        }
-      }
-    },
     "상위 카테고리: %@" : {
       "localizations" : {
         "en" : {
@@ -920,56 +1125,12 @@
         }
       }
     },
-    "새 카테고리" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "New Category"
-          }
-        }
-      }
-    },
     "설정" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Setting"
-          }
-        }
-      }
-    },
-    "수정" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Edit"
-          }
-        }
-      }
-    },
-    "시작하기" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start"
-          }
-        }
-      }
-    },
-    "아이콘 선택" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Select Icon"
+            "value" : "Settings"
           }
         }
       }
@@ -1017,56 +1178,12 @@
         }
       }
     },
-    "없음" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Category"
-          }
-        }
-      }
-    },
-    "오래된순" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oldest"
-          }
-        }
-      }
-    },
-    "온보딩 다시보기" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Onboarding replay"
-          }
-        }
-      }
-    },
     "완료" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Success"
-          }
-        }
-      }
-    },
-    "웹에서 공유 버튼을 눌러 URL을 저장해보세요." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Click the Share button on the Web to save the URL"
+            "value" : "Done"
           }
         }
       }
@@ -1112,57 +1229,18 @@
         }
       }
     },
-    "이전" : {
-      "extractionState" : "stale",
+    "재색인 중 오류가 발생했습니다." : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prev"
+            "value" : "An error occurred during reindexing."
           }
-        }
-      }
-    },
-    "저장" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
+        },
+        "ko" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "Save"
-          }
-        }
-      }
-    },
-    "저장된 URL" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saved URL"
-          }
-        }
-      }
-    },
-    "저장된 URL 초기화" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reset Saved URL"
-          }
-        }
-      }
-    },
-    "저장된 URL이 없습니다" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Saved URL"
+            "state" : "new",
+            "value" : "재색인 중 오류가 발생했습니다."
           }
         }
       }
@@ -1178,17 +1256,6 @@
         }
       }
     },
-    "정렬 옵션" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sort Option"
-          }
-        }
-      }
-    },
     "정보" : {
       "localizations" : {
         "en" : {
@@ -1199,177 +1266,12 @@
         }
       }
     },
-    "제목" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Title"
-          }
-        }
-      }
-    },
-    "제목 (A-Z)" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Title (A-Z)"
-          }
-        }
-      }
-    },
-    "제목 (Z-A)" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Title (Z-A)"
-          }
-        }
-      }
-    },
-    "지원" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Support"
-          }
-        }
-      }
-    },
-    "최신순" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Newest"
-          }
-        }
-      }
-    },
     "취소" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cancel"
-          }
-        }
-      }
-    },
-    "카테고리" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Category"
-          }
-        }
-      }
-    },
-    "카테고리 관리" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Manage Category"
-          }
-        }
-      }
-    },
-    "카테고리 선택" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Select Category"
-          }
-        }
-      }
-    },
-    "카테고리 이름" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Category Title"
-          }
-        }
-      }
-    },
-    "카테고리 정보" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Category Info"
-          }
-        }
-      }
-    },
-    "카테고리 추가" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add Category"
-          }
-        }
-      }
-    },
-    "카테고리 추가하기" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add Category"
-          }
-        }
-      }
-    },
-    "카테고리가 없습니다" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Category"
-          }
-        }
-      }
-    },
-    "카테고리가 없습니다." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Category"
-          }
-        }
-      }
-    },
-    "카테고리를 추가하여 URL을 체계적으로 관리해보세요." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add Category for Management URL"
           }
         }
       }
@@ -1403,28 +1305,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Study"
-          }
-        }
-      }
-    },
-    "항목 없음" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No Item"
-          }
-        }
-      }
-    },
-    "확인" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Confirm"
           }
         }
       }

@@ -5,11 +5,13 @@
 //  Created by 심관혁 on 4/11/25.
 //
 
+import CoreSpotlight
 import SwiftData
 import SwiftUI
 
 struct HomeView: View {
     @StateObject private var viewModel = MainViewModel()
+    @Environment(\.modelContext) private var modelContext
 
     var body: some View {
         TabView {
@@ -26,6 +28,16 @@ struct HomeView: View {
                 }
         }
         .tint(.main)
+        .onContinueUserActivity(CSSearchableItemActionType) { activity in
+            guard let idString = activity.userInfo?[CSSearchableItemActivityIdentifier] as? String,
+                  let linkId = UUID(uuidString: idString)
+            else { return }
+            openLink(withId: linkId)
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .openLinkFromSpotlight)) { note in
+            guard let linkId = note.object as? UUID else { return }
+            openLink(withId: linkId)
+        }
         .sheet(
             item: $viewModel.selectedURLForEditing,
             onDismiss: {
@@ -34,6 +46,16 @@ struct HomeView: View {
             }
         ) { item in
             EditView(savedURL: item)
+        }
+    }
+
+    private func openLink(withId id: UUID) {
+        let predicate = #Predicate<LinkItem> { $0.id == id }
+        var descriptor = FetchDescriptor<LinkItem>(predicate: predicate)
+        descriptor.fetchLimit = 1
+        if let link = try? modelContext.fetch(descriptor).first {
+            viewModel.openURL(link.url)
+            Task { await SpotlightIndexingService().index(link: link) }
         }
     }
 }

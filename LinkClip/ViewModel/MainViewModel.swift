@@ -17,6 +17,7 @@ final class MainViewModel: ObservableObject {
     private let urlOpener: URLOpener
     private let clipboard: ClipboardService
     private let linkRepository: LinkRepository
+    private let spotlight: SpotlightIndexing
 
     // 상태 변수들
     @Published var selectedURLForEditing: LinkItem?
@@ -31,15 +32,26 @@ final class MainViewModel: ObservableObject {
     // AppStorage 래핑
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding: Bool = false
 
-    // 초기화: 서비스 주입(기본 구현 제공)
+    // 초기화: 서비스 주입
     init(
-        urlOpener: URLOpener = SystemURLOpener(),
-        clipboard: ClipboardService = SystemClipboardService(),
-        linkRepository: LinkRepository = SwiftDataLinkRepository()
+        urlOpener: URLOpener,
+        clipboard: ClipboardService,
+        linkRepository: LinkRepository,
+        spotlight: SpotlightIndexing
     ) {
         self.urlOpener = urlOpener
         self.clipboard = clipboard
         self.linkRepository = linkRepository
+        self.spotlight = spotlight
+    }
+
+    convenience init() {
+        self.init(
+            urlOpener: SystemURLOpener(),
+            clipboard: SystemClipboardService(),
+            linkRepository: SwiftDataLinkRepository(),
+            spotlight: SpotlightIndexingService()
+        )
     }
 
     // 필터링 로직
@@ -87,5 +99,25 @@ final class MainViewModel: ObservableObject {
             modelContext = context
         }
         linkRepository.setContextIfNeeded(context)
+    }
+
+    func saveNewLink(_ link: LinkItem, in context: ModelContext) async {
+        context.insert(link)
+        do {
+            try context.save()
+            await spotlight.index(link: link)
+        } catch {
+            //TODO: - 에러 UI 처리
+        }
+    }
+
+    func deleteLink(_ link: LinkItem, in context: ModelContext) async {
+        linkRepository.delete(link)
+        do {
+            try context.save()
+            await spotlight.delete(linkId: link.id)
+        } catch {
+            //TODO: - 에러 UI 처리
+        }
     }
 }

@@ -25,7 +25,7 @@ struct SettingView: View {
 
     // 앱 정보
     private let appVersion =
-    Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+    Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.2"
     private let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
 
     var body: some View {

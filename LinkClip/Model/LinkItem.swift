@@ -45,13 +45,13 @@ final class LinkItem {
     var imageURL: String?  // 썸네일 이미지 URL
     var siteName: String?  // 사이트 이름
     var faviconURL: String?  // 파비콘 URL
-    var isMetadataLoaded: Bool  // 메타데이터 로드 완료 여부
+    var isMetadataLoaded: Bool?  // 메타데이터 로드 완료 여부
     var metadataLoadDate: Date?  // 메타데이터 로드 날짜
 
     init(
         url: String, title: String, personalMemo: String? = nil, category: CategoryItem? = nil,
         metaDescription: String? = nil, imageURL: String? = nil, siteName: String? = nil,
-        faviconURL: String? = nil, isMetadataLoaded: Bool = false, metadataLoadDate: Date? = nil
+        faviconURL: String? = nil, isMetadataLoaded: Bool? = false, metadataLoadDate: Date? = nil
     ) {
         self.id = UUID()
         self.url = url

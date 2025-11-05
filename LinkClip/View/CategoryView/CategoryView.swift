@@ -58,6 +58,10 @@ struct CategoryView: View {
                 } else {
                     // 카테고리 목록 표시
                     List {
+                        // 링크 사전 계산 (카테고리별 그룹핑)으로 중복 필터링 비용 절감
+                        let linksByCategoryId: [UUID: [LinkItem]] = links.reduce(into: [:]) { dict, link in
+                            if let id = link.category?.id { dict[id, default: []].append(link) }
+                        }
                         // 미분류 항목
                         Section(
                             header: HStack {
@@ -65,9 +69,7 @@ struct CategoryView: View {
                                 Text(LocalizedStringResource("uncategorized", defaultValue: "미분류"))
                             }
                         ) {
-                            let uncategorizedLinks = links.filter {
-                                $0.category == nil
-                            }
+                            let uncategorizedLinks = links.filter { $0.category == nil }
 
                             if uncategorizedLinks.isEmpty {
                                 Text(LocalizedStringResource("no_item", defaultValue: "항목 없음"))
@@ -87,7 +89,7 @@ struct CategoryView: View {
                                             viewModel.selectedURLForEditing = link
                                         },
                                         onDelete: {
-                                            viewModel.deleteLink(link)
+                                            Task { await viewModel.deleteLink(link) }
                                         })
                                 }
                             }
@@ -106,9 +108,7 @@ struct CategoryView: View {
                                 }
                             ) {
                                 // 현재 카테고리에 속한 링크 표시
-                                let categoryLinks = links.filter {
-                                    $0.category?.id == category.id
-                                }
+                                let categoryLinks = linksByCategoryId[category.id] ?? []
 
                                 if categoryLinks.isEmpty {
                                     Text(LocalizedStringResource("no_item", defaultValue: "항목 없음"))
@@ -128,7 +128,7 @@ struct CategoryView: View {
                                                 viewModel.selectedURLForEditing = link
                                             },
                                             onDelete: {
-                                                viewModel.deleteLink(link)
+                                                Task { await viewModel.deleteLink(link) }
                                             })
                                     }
                                 }
@@ -138,9 +138,7 @@ struct CategoryView: View {
                                     ForEach(subCategories) { subCategory in
                                         DisclosureGroup(
                                             content: {
-                                                let subCategoryLinks = links.filter {
-                                                    $0.category?.id == subCategory.id
-                                                }
+                                                let subCategoryLinks = linksByCategoryId[subCategory.id] ?? []
 
                                                 if subCategoryLinks.isEmpty {
                                                     Text(LocalizedStringResource("no_item", defaultValue: "항목 없음"))
@@ -170,10 +168,7 @@ struct CategoryView: View {
                                                                 viewModel.selectedURLForEditing = link
                                                             },
                                                             onDelete: {
-                                                                viewModel
-                                                                    .deleteLink(
-                                                                        link
-                                                                    )
+                                                                Task { await viewModel.deleteLink(link) }
                                                             })
                                                     }
                                                 }

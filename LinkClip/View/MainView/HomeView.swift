@@ -55,7 +55,6 @@ struct HomeView: View {
         descriptor.fetchLimit = 1
         if let link = try? modelContext.fetch(descriptor).first {
             viewModel.openURL(link.url)
-            Task { await SpotlightIndexingService().index(link: link) }
         }
     }
 }

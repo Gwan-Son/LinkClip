@@ -151,7 +151,6 @@ struct SettingView: View {
                 }
 
                 // 앱 정보 섹션
-                // TODO: - 앱 등록되면 정보탭 추가
                 Section(header: Text(String(localized: "정보"))) {
                     Link(destination: URL(string: "https://apps.apple.com/app/id")!) {
                         HStack {
@@ -223,21 +222,43 @@ struct SettingView: View {
         }
     }
 
-    @MainActor
     private func reindexAll() async {
-        isReindexing = true
-        defer { isReindexing = false }
+        await MainActor.run { isReindexing = true }
+        defer { Task { await MainActor.run { isReindexing = false } } }
+
         let descriptor = FetchDescriptor<LinkItem>()
         do {
-            let links = try modelContext.fetch(descriptor)
+            let entries: [SpotlightEntry] = try await MainActor.run {
+                let links = try modelContext.fetch(descriptor)
+                return links.map { link in
+                    SpotlightEntry(
+                        id: link.id,
+                        urlString: link.url,
+                        title: link.title,
+                        personalMemo: link.personalMemo,
+                        metaDescription: link.metaDescription,
+                        imageURL: link.imageURL,
+                        siteName: link.siteName,
+                        faviconURL: link.faviconURL,
+                        savedDate: link.savedDate,
+                        metadataLoadDate: link.metadataLoadDate,
+                        categoryId: link.category?.id
+                    )
+                }
+            }
+
             let spotlight: SpotlightIndexing = SpotlightIndexingService()
             await spotlight.deleteAll()
-            await spotlight.indexAll(links)
-            toastMessage = String(localized: "Spotlight 재색인이 완료되었습니다.")
-            withAnimation { showingToast = true }
+            await spotlight.indexAllEntries(entries)
+            await MainActor.run {
+                toastMessage = String(localized: "Spotlight 재색인이 완료되었습니다.")
+                withAnimation { showingToast = true }
+            }
         } catch {
-            toastMessage = String(localized: "재색인 중 오류가 발생했습니다.")
-            withAnimation { showingToast = true }
+            await MainActor.run {
+                toastMessage = String(localized: "재색인 중 오류가 발생했습니다.")
+                withAnimation { showingToast = true }
+            }
         }
     }
 }

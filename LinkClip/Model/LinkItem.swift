@@ -34,7 +34,7 @@ class CategoryItem {
 @Model
 final class LinkItem {
     var id: UUID
-    var url: String
+    @Attribute(.unique) var url: String
     var title: String
     var personalMemo: String?
     var savedDate: Date
@@ -47,7 +47,7 @@ final class LinkItem {
     var faviconURL: String?  // 파비콘 URL
     var isMetadataLoaded: Bool?  // 메타데이터 로드 완료 여부
     var metadataLoadDate: Date?  // 메타데이터 로드 날짜
-
+    
     init(
         url: String, title: String, personalMemo: String? = nil, category: CategoryItem? = nil,
         metaDescription: String? = nil, imageURL: String? = nil, siteName: String? = nil,

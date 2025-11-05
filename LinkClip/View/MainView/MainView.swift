@@ -43,7 +43,7 @@ struct MainView: View {
                                     viewModel.selectedURLForEditing = link
                                 },
                                 onDelete: {
-                                    viewModel.deleteLink(link)
+                                    Task { await viewModel.deleteLink(link) }
                                 })
                         }
                     }

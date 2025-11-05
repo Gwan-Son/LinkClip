@@ -64,9 +64,17 @@ final class MainViewModel: ObservableObject {
         linkRepository.sort(links, by: sortOption)
     }
 
-    // 삭제 함수
-    func deleteLink(_ link: LinkItem) {
+    // 삭제 함수 (저장 및 Spotlight 삭제까지 보장)
+    func deleteLink(_ link: LinkItem) async {
+        guard let context = modelContext else { return }
         linkRepository.delete(link)
+        do {
+            try context.save()
+            await spotlight.delete(linkId: link.id)
+        } catch {
+            toastMessage = String(localized: "삭제 중 오류가 발생했습니다.")
+            withAnimation { showToast = true }
+        }
     }
 
     // URL 열기 함수
@@ -107,17 +115,11 @@ final class MainViewModel: ObservableObject {
             try context.save()
             await spotlight.index(link: link)
         } catch {
-            //TODO: - 에러 UI 처리
+            // 에러 발생 시 사용자에게 토스트로 알림
+            toastMessage = String(localized: "저장 중 오류가 발생했습니다.")
+            withAnimation { showToast = true }
         }
     }
 
-    func deleteLink(_ link: LinkItem, in context: ModelContext) async {
-        linkRepository.delete(link)
-        do {
-            try context.save()
-            await spotlight.delete(linkId: link.id)
-        } catch {
-            //TODO: - 에러 UI 처리
-        }
-    }
+    // 과거 API 정리: context를 외부에서 받지 않고 내부 보유 context 사용
 }

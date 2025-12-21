@@ -54,17 +54,18 @@
 			);
 			target = 9F2852432D647C7D0001803F /* ShareViewController */;
 		};
-		9F572BAD2D6D66F400EDBB4A /* Exceptions for "LinkClip" folder in "ShareViewController" target */ = {
+		9FF03C2F2EF5397D00CDC968 /* Exceptions for "LinkClip" folder in "ShareViewController" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				"Component/String+Extension.swift",
-				Model/LinkItem.swift,
-				Model/SearchScope.swift,
-				Model/ShareError.swift,
-				Model/SortOption.swift,
-				Service/SpotlightIndexingService.swift,
-				Service/SwiftDataContainer.swift,
-				View/Shared/ShareView.swift,
+				Core/Components/CategoryChip.swift,
+				"Core/Components/Color+Extension.swift",
+				Core/Components/Localizable.xcstrings,
+				Core/Models/LinkItem.swift,
+				Core/Models/ShareError.swift,
+				Core/Services/SpotlightIndexingService.swift,
+				Core/Services/SwiftDataContainer.swift,
+				Core/Services/ThumbnailService.swift,
+				Features/Share/View/ShareView.swift,
 			);
 			target = 9F2852432D647C7D0001803F /* ShareViewController */;
 		};
@@ -74,7 +75,7 @@
 		9F2852192D646B720001803F /* LinkClip */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				9F572BAD2D6D66F400EDBB4A /* Exceptions for "LinkClip" folder in "ShareViewController" target */,
+				9FF03C2F2EF5397D00CDC968 /* Exceptions for "LinkClip" folder in "ShareViewController" target */,
 			);
 			path = LinkClip;
 			sourceTree = "<group>";
@@ -203,6 +204,8 @@
 			);
 			mainGroup = 9F28520E2D646B720001803F;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 9F2852182D646B720001803F /* Products */;
 			projectDirPath = "";
@@ -389,10 +392,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = LinkClip/LinkClip.entitlements;
+				CODE_SIGN_ENTITLEMENTS = LinkClip/App/LinkClip.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"LinkClip/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"LinkClip/Preview/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = LinkClip;
@@ -407,7 +410,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = kr.gwanson.LinkClip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -421,10 +425,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = LinkClip/LinkClip.entitlements;
+				CODE_SIGN_ENTITLEMENTS = LinkClip/App/LinkClip.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"LinkClip/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"LinkClip/Preview/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = LinkClip;
@@ -439,7 +443,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
+				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = kr.gwanson.LinkClip;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -463,7 +468,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = kr.gwanson.LinkClip.ShareViewController;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -488,7 +493,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2;
+				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = kr.gwanson.LinkClip.ShareViewController;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

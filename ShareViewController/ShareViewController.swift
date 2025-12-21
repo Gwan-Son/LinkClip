@@ -52,9 +52,13 @@ class ShareViewController: UIViewController {
     private func showURLSaveView(url: URL, extensionContext: NSExtensionContext? = nil, title: String? = nil) {
         let shareView = ShareView(url: url, extensionContext: extensionContext, extensionTitle: title)
         let hostingController = UIHostingController(rootView: shareView)
-        
-        hostingController.modalPresentationStyle = .formSheet
-        self.present(hostingController, animated: true, completion: nil)
+
+        // Share Extension에서는 modal present 대신 child view controller로 추가
+        addChild(hostingController)
+        hostingController.view.frame = view.bounds
+        hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        view.addSubview(hostingController.view)
+        hostingController.didMove(toParent: self)
     }
     
     private func completeRequest() {

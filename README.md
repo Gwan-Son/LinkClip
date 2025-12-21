@@ -1,4 +1,4 @@
-# LinkToMe
+# LinkClip
 
 ### 가장 심플한 링크 저장소 LinkClip
 

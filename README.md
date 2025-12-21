@@ -11,6 +11,7 @@
 - [🚀 개발 기간](#-개발-기간)
 - [💻 개발 환경](#-개발-환경)
 - [👀 미리 보기](#-미리-보기)
+- [📐 아키텍처 요약](#-아키텍처-요약)
 - [📝개발 내용](#-개발-내용)
 - [📁 파일 구조](#-파일-구조)
 
@@ -33,6 +34,68 @@
  <img src="https://github.com/user-attachments/assets/ccead617-92e8-4164-a6b4-605580afa188" width=45%>
  <img src="https://github.com/user-attachments/assets/8ea5a813-0741-40b0-9dc0-e132c85c97b3" width=45%>
 </div>
+
+# 📐 아키텍처 요약
+
+```mermaid
+graph TB
+    %% 메인 앱
+    A[LinkClip App<br/>SwiftUI] --> B[HomeView<br/>메인 화면]
+    
+    %% MVVM 구조
+    B --> C[HomeViewModel]
+    B --> D[HomeState<br/>UI 상태]
+    
+    %% 데이터 계층
+    C --> E[SwiftData]
+    C --> F[SwiftDataLinkRepository<br/>데이터 액세스]
+    
+    %% 서비스 계층
+    C --> G[ThumbnailService<br/>썸네일 관리]
+    C --> H[ClipboardService<br/>클립보드 처리]
+    
+    %% 공유 기능
+    I[Share Extension<br/>공유 기능] --> J[ShareViewController<br/>iOS 공유 UI]
+    J --> K[ShareView<br/>링크 저장 화면]
+    K --> E
+    
+    %% 컴포넌트 계층
+    B --> L[UI Components<br/>LinkCardView,<br/>CategoriesView,<br/>etc.]
+    
+    %% 모델
+    E --> M[Models<br/>LinkItem,<br/>CategoryItem]
+    
+    %% 스타일링
+    subgraph "Architecture Layers"
+        A
+        B
+        C
+        D
+        E
+        F
+        G
+        H
+        L
+        M
+    end
+    
+    subgraph "Share Extension"
+        I
+        J
+        K
+    end
+    
+    %% 관계 스타일링
+    classDef primary fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef secondary fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef data fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef service fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    
+    class A,B primary
+    class C,D secondary
+    class E,F data
+    class G,H service
+```
 
 # 📝 개발 내용
 

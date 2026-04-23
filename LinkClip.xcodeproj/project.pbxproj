@@ -40,6 +40,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		9F013F142F975CC700B3AB7B /* Exceptions for "LinkClip" folder in "LinkClip" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 9F2852162D646B720001803F /* LinkClip */;
+		};
 		9F0E4EFC2D8002CC00B318CD /* Exceptions for "ShareViewController" folder in "LinkClip" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -62,6 +69,8 @@
 				Core/Components/Localizable.xcstrings,
 				Core/Models/LinkItem.swift,
 				Core/Models/ShareError.swift,
+				Core/Services/NotificationManager.swift,
+				Core/Services/ShoppingDomainDetector.swift,
 				Core/Services/SpotlightIndexingService.swift,
 				Core/Services/SwiftDataContainer.swift,
 				Core/Services/ThumbnailService.swift,
@@ -75,6 +84,7 @@
 		9F2852192D646B720001803F /* LinkClip */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				9F013F142F975CC700B3AB7B /* Exceptions for "LinkClip" folder in "LinkClip" target */,
 				9FF03C2F2EF5397D00CDC968 /* Exceptions for "LinkClip" folder in "ShareViewController" target */,
 			);
 			path = LinkClip;
@@ -398,6 +408,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"LinkClip/Preview/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LinkClip/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LinkClip;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -431,6 +442,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"LinkClip/Preview/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = LinkClip/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = LinkClip;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

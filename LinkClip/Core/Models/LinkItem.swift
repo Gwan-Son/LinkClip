@@ -34,7 +34,7 @@ class CategoryItem {
 
     // 마이그레이션 후 color가 nil인 경우를 위한 computed property
     var safeColor: String {
-        get { color ?? CategoryItem.randomColor() }
+        get { color ?? "6C757D" }
         set { color = newValue }
     }
 

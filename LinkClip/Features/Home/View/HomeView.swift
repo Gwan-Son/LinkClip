@@ -167,9 +167,6 @@ struct HomeView: View {
         .onAppear {
             viewModel.setContext(modelContext)
         }
-        .onDisappear {
-            viewModel.cleanupMemory()
-        }
         .onChange(of: scenePhase) { oldPhase, newPhase in
             if newPhase == .active {
                 // ShareExtension에서 데이터 변경이 있었는지 확인
@@ -200,9 +197,6 @@ struct HomeView: View {
         } message: {
             Text(LocalizedStringResource("삭제할 항목이 없습니다.\n링크를 선택한 후 다시 시도해주세요.", defaultValue: "삭제할 항목이 없습니다.\n링크를 선택한 후 다시 시도해주세요."))
         }
-        .onAppear {
-            viewModel.setContext(modelContext)
-        }
         .sheet(item: $state.activeSheet) { sheetType in
             HomeSheetView(
                 sheetType: sheetType,
@@ -210,15 +204,8 @@ struct HomeView: View {
                 onCategorySave: { name, icon, colorHex in
                     viewModel.saveCategory(name: name, icon: icon, colorHex: colorHex)
                 },
-                onLinkSave: { url, title, memo, categories, imageURL, siteName in
-                    viewModel.addLink(
-                        url: url,
-                        title: title,
-                        personalMemo: memo,
-                        categories: categories,
-                        imageURL: imageURL.flatMap(URL.init)?.absoluteString,
-                        siteName: siteName
-                    )
+                onLinkSave: {
+                    viewModel.reloadAllData()
                 }
             )
         }

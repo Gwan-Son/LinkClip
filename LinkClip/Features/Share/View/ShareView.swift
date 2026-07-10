@@ -263,53 +263,14 @@ struct ShareView: View {
 
     private func extractMetadata(from url: URL) async {
         do {
-            // 썸네일 URL 가져오기
-            if let thumbnail = try await ThumbnailService.shared.fetchThumbnailURL(from: url) {
-                await MainActor.run {
-                    thumbnailURL = thumbnail.absoluteString
-                }
-            }
-
-            // 사이트 이름 가져오기
-            let (data, _) = try await URLSession.shared.data(from: url)
-            if let htmlString = String(data: data, encoding: .utf8) {
-                // Open Graph title 찾기
-                let ogTitlePattern = "<meta[^>]*property=[\"']og:title[\"'][^>]*content=[\"']([^\"']+)[\"']"
-                let titlePattern = "<title[^>]*>([^<]+)</title>"
-
-                var extractedSiteName: String? = nil
-
-                if let ogTitle = extractContent(from: htmlString, pattern: ogTitlePattern) {
-                    extractedSiteName = ogTitle
-                } else if let title = extractContent(from: htmlString, pattern: titlePattern) {
-                    extractedSiteName = title
-                } else {
-                    // 호스트 이름 사용
-                    extractedSiteName = url.host
-                }
-
-                await MainActor.run {
-                    siteName = extractedSiteName
-                }
+            let metadata = try await ThumbnailService.shared.fetchMetadata(from: url)
+            await MainActor.run {
+                thumbnailURL = metadata.imageURL?.absoluteString
+                siteName = metadata.siteName
             }
         } catch {
             print("메타데이터 추출 실패: \(error.localizedDescription)")
         }
-    }
-
-    private func extractContent(from html: String, pattern: String) -> String? {
-        do {
-            let regex = try NSRegularExpression(pattern: pattern, options: [.caseInsensitive])
-            let nsString = html as NSString
-            let results = regex.matches(in: html, options: [], range: NSRange(location: 0, length: nsString.length))
-
-            if let result = results.first, result.numberOfRanges > 1 {
-                return nsString.substring(with: result.range(at: 1))
-            }
-        } catch {
-            print("Regex error: \(error)")
-        }
-        return nil
     }
 
     private func saveURL() {
@@ -380,13 +341,9 @@ struct ShareView: View {
             Task { await SpotlightIndexingService().index(link: itemToIndex) }
 
             isSaved = true
-        } catch (let error) {
+        } catch {
             print("URL 저장 중 오류 발생: \(error)")
-            if error is ShareError {
-                extensionContext?.cancelRequest(withError: error as! ShareError)
-            } else {
-                extensionContext?.cancelRequest(withError: ShareError.unknown)
-            }
+            extensionContext?.cancelRequest(withError: ShareError.unknown)
         }
     }
 }

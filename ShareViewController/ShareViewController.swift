@@ -21,8 +21,6 @@ class ShareViewController: UIViewController {
             return
         }
         let title = extensionItem.attributedContentText?.string ?? "No title"
-        print(title)
-        print(type(of: title))
         if itemProvider.hasItemConformingToTypeIdentifier(UTType.url.identifier) {
             itemProvider.loadItem(forTypeIdentifier: UTType.url.identifier, options: nil) { [weak self] (url, error) in
                 DispatchQueue.main.async {
@@ -33,10 +31,13 @@ class ShareViewController: UIViewController {
                     }
                 }
             }
-        } else if itemProvider.hasItemConformingToTypeIdentifier("public.plain-txt") {
-            itemProvider.loadItem(forTypeIdentifier: "public.plain-txt", options: nil) { [weak self] (text, error) in
+        } else if itemProvider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier) {
+            itemProvider.loadItem(forTypeIdentifier: UTType.plainText.identifier, options: nil) { [weak self] (text, error) in
                 DispatchQueue.main.async {
-                    if let urlString = text as? String, let url = URL(string: urlString) {
+                    if let urlString = text as? String,
+                       let url = URL(string: urlString.trimmingCharacters(in: .whitespacesAndNewlines)),
+                       ["http", "https"].contains(url.scheme?.lowercased() ?? ""),
+                       url.host != nil {
                         self?.showURLSaveView(url: url, extensionContext: self?.extensionContext)
                     } else {
                         self?.cancelRequest(.loadItemError)
@@ -59,11 +60,6 @@ class ShareViewController: UIViewController {
         hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         view.addSubview(hostingController.view)
         hostingController.didMove(toParent: self)
-    }
-    
-    private func completeRequest() {
-        self.extensionContext?
-            .completeRequest(returningItems: [], completionHandler: nil)
     }
     
     private func cancelRequest(_ error: ShareError) {

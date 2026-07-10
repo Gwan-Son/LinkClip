@@ -8,14 +8,20 @@
 import SwiftUI
 import SwiftData
 
+private func normalizedURLString(_ value: String) -> String {
+    value.lowercased().hasPrefix("http://") || value.lowercased().hasPrefix("https://")
+        ? value
+        : "https://" + value
+}
+
 struct AddLinkView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \CategoryItem.createdDate, order: .forward) private var categories: [CategoryItem]
 
-    let onLinkAdded: ((String, String, String?, [CategoryItem]?, String?, String?) -> Void)?
+    let onLinkAdded: (() -> Void)?
 
-    init(onLinkAdded: ((String, String, String?, [CategoryItem]?, String?, String?) -> Void)? = nil) {
+    init(onLinkAdded: (() -> Void)? = nil) {
         self.onLinkAdded = onLinkAdded
     }
 
@@ -30,21 +36,6 @@ struct AddLinkView: View {
     @State private var thumbnailURL: String? = nil
     @State private var isLoadingThumbnail: Bool = false
     @State private var siteName: String? = nil
-
-    private let folderColors: [Color] = [
-        Color(hex: "FF6B6B"), // 빨강
-        Color(hex: "4ECDC4"), // 청록
-        Color(hex: "45B7D1"), // 파랑
-        Color(hex: "96CEB4"), // 민트
-        Color(hex: "FFEAA7"), // 노랑
-        Color(hex: "DDA0DD"), // 자주
-        Color(hex: "98D8C8"), // 연두
-        Color(hex: "F7DC6F"), // 금색
-        Color(hex: "BB8FCE"), // 보라
-        Color(hex: "85C1E9"), // 하늘
-        Color(hex: "F8C471"), // 주황
-        Color(hex: "82E0AA"), // 라임
-    ]
 
     var body: some View {
         NavigationView {
@@ -79,7 +70,7 @@ struct AddLinkView: View {
                             .onChange(of: url) { oldValue, newValue in
                                 let trimmedURL = newValue.trimmingCharacters(in: .whitespaces)
                                 // https://가 포함되어 있지 않으면 붙여서 완전한 URL 생성
-                                let fullURL = trimmedURL.hasPrefix("https://") ? trimmedURL : "https://" + trimmedURL
+                                let fullURL = normalizedURLString(trimmedURL)
 
                                 // URL이 유효하고 기본값이 아니면 썸네일 자동 로드
                                 if let url = URL(string: fullURL),
@@ -260,37 +251,12 @@ struct AddLinkView: View {
         }
 
         do {
-            // 썸네일 URL 가져오기
-            if let thumbnail = try await ThumbnailService.shared.fetchThumbnailURL(from: url) {
-                await MainActor.run {
-                    thumbnailURL = thumbnail.absoluteString
-                }
-            }
-
-            // 사이트 이름 가져오기 (HTML 파싱)
-            let (data, _) = try await URLSession.shared.data(from: url)
-            if let htmlString = String(data: data, encoding: .utf8) {
-                // Open Graph title 찾기
-                let ogTitlePattern = "<meta[^>]*property=[\"']og:title[\"'][^>]*content=[\"']([^\"']+)[\"']"
-                let titlePattern = "<title[^>]*>([^<]+)</title>"
-
-                var extractedSiteName: String? = nil
-
-                if let ogTitle = extractContent(from: htmlString, pattern: ogTitlePattern) {
-                    extractedSiteName = ogTitle
-                } else if let title = extractContent(from: htmlString, pattern: titlePattern) {
-                    extractedSiteName = title
-                } else {
-                    // 호스트 이름 사용
-                    extractedSiteName = url.host
-                }
-
-                await MainActor.run {
-                    siteName = extractedSiteName
-                    // 사이트 이름을 제목으로 자동 입력 (제목이 비어있고, 메모가 비어있는 경우에만)
-                    if title.isEmpty && personalMemo.isEmpty {
-                        title = extractedSiteName ?? ""
-                    }
+            let metadata = try await ThumbnailService.shared.fetchMetadata(from: url)
+            await MainActor.run {
+                thumbnailURL = metadata.imageURL?.absoluteString
+                siteName = metadata.siteName
+                if title.isEmpty && personalMemo.isEmpty {
+                    title = metadata.siteName ?? ""
                 }
             }
         } catch {
@@ -300,21 +266,6 @@ struct AddLinkView: View {
         await MainActor.run {
             isLoadingThumbnail = false
         }
-    }
-
-    private func extractContent(from html: String, pattern: String) -> String? {
-        do {
-            let regex = try NSRegularExpression(pattern: pattern, options: [.caseInsensitive])
-            let nsString = html as NSString
-            let results = regex.matches(in: html, options: [], range: NSRange(location: 0, length: nsString.length))
-
-            if let result = results.first, result.numberOfRanges > 1 {
-                return nsString.substring(with: result.range(at: 1))
-            }
-        } catch {
-            print("Regex error: \(error)")
-        }
-        return nil
     }
 
     private func saveLink() {
@@ -335,10 +286,11 @@ struct AddLinkView: View {
         }
 
         // https://가 포함되어 있지 않으면 붙여서 완전한 URL 생성
-        let fullURL = trimmedURL.hasPrefix("https://") ? trimmedURL : "https://" + trimmedURL
+        let fullURL = normalizedURLString(trimmedURL)
 
-        // URL 유효성 검사
-        guard URL(string: fullURL) != nil else {
+        guard let parsedURL = URL(string: fullURL),
+              ["http", "https"].contains(parsedURL.scheme?.lowercased() ?? ""),
+              parsedURL.host != nil else {
             alertMessage = "올바른 URL 형식을 입력해주세요."
             showingAlert = true
             return
@@ -364,9 +316,10 @@ struct AddLinkView: View {
 
         do {
             try modelContext.save()
+            Task { await SpotlightIndexingService().index(link: newLink) }
 
             // HomeViewModel에 새로운 링크 알림
-            onLinkAdded?(fullURL, trimmedTitle, memo, selectedCategoriesArray, thumbnailURL, siteName)
+            onLinkAdded?()
 
             print("링크 저장 성공: \(trimmedTitle)")
             dismiss()
@@ -410,21 +363,6 @@ struct LinkEditView: View {
     @State private var thumbnailURL: String?
     @State private var isLoadingThumbnail: Bool = false
     @State private var siteName: String?
-
-    private let folderColors: [Color] = [
-        Color(hex: "FF6B6B"), // 빨강
-        Color(hex: "4ECDC4"), // 청록
-        Color(hex: "45B7D1"), // 파랑
-        Color(hex: "96CEB4"), // 민트
-        Color(hex: "FFEAA7"), // 노랑
-        Color(hex: "DDA0DD"), // 자주
-        Color(hex: "98D8C8"), // 연두
-        Color(hex: "F7DC6F"), // 금색
-        Color(hex: "BB8FCE"), // 보라
-        Color(hex: "85C1E9"), // 하늘
-        Color(hex: "F8C471"), // 주황
-        Color(hex: "82E0AA"), // 라임
-    ]
 
     var body: some View {
         NavigationView {
@@ -607,6 +545,7 @@ struct LinkEditView: View {
             }
 
             try modelContext.save()
+            Task { await SpotlightIndexingService().index(link: link) }
 
             // 콜백 호출
             onLinkUpdated?(link)
@@ -622,7 +561,5 @@ struct LinkEditView: View {
 }
 
 #Preview {
-    AddLinkView { url, title, memo, categories, imageURL, siteName in
-        print("새 링크 추가: \(title)")
-    }
+    AddLinkView()
 }

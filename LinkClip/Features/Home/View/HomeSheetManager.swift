@@ -11,7 +11,7 @@ struct HomeSheetView: View {
     let sheetType: HomeSheetType
     let viewModel: HomeViewModel
     let onCategorySave: (String, String, String) -> Void
-    let onLinkSave: (String, String, String?, [CategoryItem]?, String?, String?) -> Void
+    let onLinkSave: () -> Void
 
     var body: some View {
         switch sheetType {
@@ -30,9 +30,7 @@ struct HomeSheetView: View {
                 viewModel.deleteCategory(category)
             }
         case .addLink:
-            AddLinkView { url, title, memo, categories, imageURL, siteName in
-                onLinkSave(url, title, memo, categories, imageURL, siteName)
-            }
+            AddLinkView(onLinkAdded: onLinkSave)
         case .editLink(let link):
             LinkEditView(link: link) { updatedLink in
                 viewModel.refreshDataIfNeeded()

@@ -168,7 +168,7 @@ struct SettingView: View {
 
                 // 앱 정보 섹션
                 Section(header: Text(String(localized: "정보"))) {
-                    Link(destination: URL(string: "https://apps.apple.com/app/id")!) {
+                    Link(destination: URL(string: "https://apps.apple.com/app/id6744954526?action=write-review")!) {
                         HStack {
                             Image(systemName: "star")
                                 .foregroundColor(.yellow)
@@ -203,7 +203,7 @@ struct SettingView: View {
             .alert(String(localized: "모든 URL을 삭제하시겠습니까?"), isPresented: $showingResetAlert) {
                 Button(String(localized: "취소"), role: .cancel) {}
                 Button(String(localized: "삭제"), role: .destructive) {
-                    resetAllData()
+                    Task { await resetAllData() }
                 }
             } message: {
                 Text(String(localized: "이 작업은 되돌릴 수 없습니다."))
@@ -217,7 +217,7 @@ struct SettingView: View {
         }
     }
 
-    private func resetAllData() {
+    private func resetAllData() async {
         do {
             let fetchDescriptor = FetchDescriptor<LinkItem>()
             let items = try modelContext.fetch(fetchDescriptor)
@@ -227,6 +227,8 @@ struct SettingView: View {
             }
 
             try modelContext.save()
+
+            await SpotlightIndexingService().deleteAll()
 
             // 데이터 리셋 알림 전송
             NotificationCenter.default.post(name: .dataReset, object: nil)
@@ -308,34 +310,15 @@ struct SettingView: View {
             for link in linksWithoutThumbnails {
                 if let url = URL(string: link.url) {
                     do {
-                        // 썸네일 로딩
-                        if let thumbnailURL = try await ThumbnailService.shared.fetchThumbnailURL(from: url) {
-                            await MainActor.run {
-                                link.imageURL = thumbnailURL.absoluteString
-                                link.metadataLoadDate = Date()
+                        let metadata = try await ThumbnailService.shared.fetchMetadata(from: url)
+                        await MainActor.run {
+                            link.imageURL = metadata.imageURL?.absoluteString
+                            link.siteName = metadata.siteName
+                            link.metadataLoadDate = Date()
+                            if metadata.imageURL != nil || metadata.siteName != nil {
                                 successCount += 1
                             }
                         }
-
-                        // 사이트 이름 로딩 (HTML에서 title 태그 추출)
-                        let (data, _) = try await URLSession.shared.data(from: url)
-                        if let htmlString = String(data: data, encoding: .utf8),
-                           link.siteName == nil || link.siteName?.isEmpty == true {
-
-                            // Title 태그 찾기
-                            let titlePattern = "<title[^>]*>([^<]+)</title>"
-                            if let titleRange = htmlString.range(of: titlePattern, options: .regularExpression),
-                               let title = htmlString[titleRange].split(separator: ">")[1].split(separator: "<").first {
-
-                                await MainActor.run {
-                                    link.siteName = String(title).trimmingCharacters(in: .whitespacesAndNewlines)
-                                    if link.imageURL != nil {
-                                        successCount += 1
-                                    }
-                                }
-                            }
-                        }
-
                     } catch {
                         print("썸네일 로딩 실패 - \(link.url): \(error)")
                     }

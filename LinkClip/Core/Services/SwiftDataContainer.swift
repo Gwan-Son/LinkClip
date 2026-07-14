@@ -144,6 +144,18 @@ extension UserDefaults {
     enum Keys {
         static let dataChanged = "dataChanged"
         static let lastChangeTimestamp = "lastChangeTimestamp"
+        static let favoriteLinkIDs = "favoriteLinkIDs"
+        static let categoryOrder = "categoryOrder"
+    }
+
+    var favoriteLinkIDs: Set<UUID> {
+        get { Set(stringArray(forKey: Keys.favoriteLinkIDs)?.compactMap(UUID.init) ?? []) }
+        set { set(newValue.map(\.uuidString), forKey: Keys.favoriteLinkIDs) }
+    }
+
+    var categoryOrder: [UUID] {
+        get { stringArray(forKey: Keys.categoryOrder)?.compactMap(UUID.init) ?? [] }
+        set { set(newValue.map(\.uuidString), forKey: Keys.categoryOrder) }
     }
 
     // ShareExtension에서 데이터 변경 알림

@@ -24,17 +24,36 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
+    @Published var searchText = "" {
+        didSet {
+            updateFilteredLinks()
+        }
+    }
+
     // 필터링된 링크들
     @Published private(set) var filteredLinks: [LinkItem] = []
 
     // 모든 카테고리
     @Published private(set) var categories: [CategoryItem] = []
 
-    // 모든 링크 (페이징용)
+    // 모든 링크
     @Published private(set) var allLinks: [LinkItem] = []
+    @Published private(set) var favoriteLinkIDs = UserDefaults.shared.favoriteLinkIDs
 
     private var modelContext: ModelContext?
     private var lastRefreshDate: Date?
+
+    var isSearching: Bool {
+        !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    var recentLinks: [LinkItem] {
+        allLinks.sorted {
+            let lhsFavorite = isFavorite($0)
+            let rhsFavorite = isFavorite($1)
+            return lhsFavorite == rhsFavorite ? $0.savedDate > $1.savedDate : lhsFavorite
+        }
+    }
 
     init() {
         // Darwin Notification 대신 ScenePhase를 통한 리프레시만 사용
@@ -59,7 +78,7 @@ final class HomeViewModel: ObservableObject {
             let categoryDescriptor = FetchDescriptor<CategoryItem>(
                 sortBy: [SortDescriptor(\.createdDate, order: .forward)]
             )
-            categories = try context.fetch(categoryDescriptor)
+            categories = sortedCategories(try context.fetch(categoryDescriptor))
 
             let linkDescriptor = FetchDescriptor<LinkItem>(
                 sortBy: [SortDescriptor(\.savedDate, order: .reverse)]
@@ -87,19 +106,63 @@ final class HomeViewModel: ObservableObject {
             }
         }
 
-        // 정렬 적용
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !query.isEmpty {
+            links = links.filter { link in
+                link.title.localizedCaseInsensitiveContains(query)
+                || link.url.localizedCaseInsensitiveContains(query)
+                || (link.personalMemo?.localizedCaseInsensitiveContains(query) ?? false)
+                || (link.siteName?.localizedCaseInsensitiveContains(query) ?? false)
+                || (link.categories?.contains {
+                    $0.name.localizedCaseInsensitiveContains(query)
+                } ?? false)
+            }
+        }
+
+        // 즐겨찾기를 먼저 표시한 뒤 선택한 정렬 적용
         switch sortOption {
         case .dateNewest:
-            links.sort { $0.savedDate > $1.savedDate }
+            links.sort { lhs, rhs in compare(lhs, rhs) { lhs.savedDate > rhs.savedDate } }
         case .dateOldest:
-            links.sort { $0.savedDate < $1.savedDate }
+            links.sort { lhs, rhs in compare(lhs, rhs) { lhs.savedDate < rhs.savedDate } }
         case .titleAtoZ:
-            links.sort { $0.title.localizedCompare($1.title) == .orderedAscending }
+            links.sort { lhs, rhs in
+                compare(lhs, rhs) { lhs.title.localizedCompare(rhs.title) == .orderedAscending }
+            }
         case .titleZtoA:
-            links.sort { $0.title.localizedCompare($1.title) == .orderedDescending }
+            links.sort { lhs, rhs in
+                compare(lhs, rhs) { lhs.title.localizedCompare(rhs.title) == .orderedDescending }
+            }
         }
 
         filteredLinks = links
+    }
+
+    func isFavorite(_ link: LinkItem) -> Bool {
+        favoriteLinkIDs.contains(link.id)
+    }
+
+    func toggleFavorite(_ link: LinkItem) {
+        if favoriteLinkIDs.contains(link.id) {
+            favoriteLinkIDs.remove(link.id)
+        } else {
+            favoriteLinkIDs.insert(link.id)
+        }
+        UserDefaults.shared.favoriteLinkIDs = favoriteLinkIDs
+        updateFilteredLinks()
+    }
+
+    private func compare(_ lhs: LinkItem, _ rhs: LinkItem, fallback: () -> Bool) -> Bool {
+        let lhsFavorite = isFavorite(lhs)
+        let rhsFavorite = isFavorite(rhs)
+        return lhsFavorite == rhsFavorite ? fallback() : lhsFavorite
+    }
+
+    private func sortedCategories(_ items: [CategoryItem]) -> [CategoryItem] {
+        let order = Dictionary(uniqueKeysWithValues: UserDefaults.shared.categoryOrder.enumerated().map { ($1, $0) })
+        return items.sorted {
+            (order[$0.id] ?? .max) < (order[$1.id] ?? .max)
+        }
     }
 
     // 카테고리 저장
@@ -173,6 +236,8 @@ final class HomeViewModel: ObservableObject {
             try context.save()
             // 로컬 배열에서도 제거
             allLinks.removeAll { $0.id == linkID }
+            favoriteLinkIDs.remove(linkID)
+            UserDefaults.shared.favoriteLinkIDs = favoriteLinkIDs
             updateFilteredLinks()
             Task { await SpotlightIndexingService().delete(linkId: linkID) }
         } catch {
@@ -229,7 +294,7 @@ final class HomeViewModel: ObservableObject {
             let categoryDescriptor = FetchDescriptor<CategoryItem>(
                 sortBy: [SortDescriptor(\.createdDate, order: .forward)]
             )
-            categories = try context.fetch(categoryDescriptor)
+            categories = sortedCategories(try context.fetch(categoryDescriptor))
 
             // 필터링된 링크 업데이트
             updateFilteredLinks()

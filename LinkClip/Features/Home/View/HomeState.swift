@@ -14,6 +14,8 @@ class HomeState: ObservableObject {
     @Published var showingDuplicateAlert = false
     @Published var showingDeleteConfirmation = false
     @Published var showingNoSelectionAlert = false
+    @Published var showingCopiedToast = false
+    @Published var linkPendingDeletion: LinkItem?
 
     // 편집 모드 상태
     @Published var isEditing = false

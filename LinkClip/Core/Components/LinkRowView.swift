@@ -9,10 +9,13 @@ import SwiftUI
 
 struct LinkRow: View {
     let link: LinkItem
+    var searchText = ""
+    var isFavorite = false
     let onTap: () -> Void
     let onCopy: () -> Void
     let onEdit: () -> Void
     let onDelete: () -> Void
+    var onFavorite: () -> Void = {}
 
     var body: some View {
         HStack(spacing: 12) {
@@ -31,16 +34,31 @@ struct LinkRow: View {
             }
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(link.title)
+                Text(highlighted(link.title))
                     .font(.system(size: 16, weight: .medium))
                     .foregroundColor(.primary)
                     .lineLimit(2)
 
                 if let memo = link.personalMemo, !memo.isEmpty {
-                    Text(memo)
+                    Text(highlighted(memo))
                         .font(.system(size: 14))
                         .foregroundColor(.secondary)
                         .lineLimit(1)
+                }
+
+                if link.siteName != nil || !(link.categories ?? []).isEmpty {
+                    HStack(spacing: 6) {
+                        if let siteName = link.siteName, !siteName.isEmpty {
+                            Text(siteName)
+                        }
+
+                        ForEach((link.categories ?? []).prefix(2)) { category in
+                            Text("#\(category.name)")
+                        }
+                    }
+                    .font(.system(size: 12))
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
                 }
 
                 Text(
@@ -53,6 +71,12 @@ struct LinkRow: View {
 
             Spacer()
 
+            if isFavorite {
+                Image(systemName: "star.fill")
+                    .foregroundColor(.yellow)
+                    .accessibilityLabel("즐겨찾기")
+            }
+
             Image(systemName: "chevron.right")
                 .font(.system(size: 14))
                 .foregroundColor(.secondary)
@@ -60,12 +84,19 @@ struct LinkRow: View {
         .padding(.horizontal, 20)
         .padding(.vertical, 10)
         .contentShape(Rectangle())
-        .onTapGesture { // TODO: - onTap으로 수정
+        .onTapGesture {
             if let url = URL(string: link.url) {
                 UIApplication.shared.open(url)
             }
         }
         .contextMenu {
+            Button(action: onFavorite) {
+                Label(
+                    isFavorite ? "즐겨찾기 해제" : "즐겨찾기",
+                    systemImage: isFavorite ? "star.slash" : "star"
+                )
+            }
+
             if let url = URL(string: link.url) {
                 ShareLink(item: url) {
                     Label(
@@ -101,5 +132,22 @@ struct LinkRow: View {
                 )
             }
         }
+    }
+
+    private func highlighted(_ text: String) -> AttributedString {
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else { return AttributedString(text) }
+
+        var result = AttributedString()
+        var remaining = text[...]
+        while let range = remaining.range(of: query, options: .caseInsensitive) {
+            result += AttributedString(String(remaining[..<range.lowerBound]))
+            var match = AttributedString(String(remaining[range]))
+            match.backgroundColor = .yellow.opacity(0.35)
+            result += match
+            remaining = remaining[range.upperBound...]
+        }
+        result += AttributedString(String(remaining))
+        return result
     }
 }

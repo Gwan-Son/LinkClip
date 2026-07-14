@@ -10,14 +10,19 @@ import SwiftUI
 
 struct CategoryManagementView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \CategoryItem.createdDate, order: .forward) private var categories: [CategoryItem]
+    @Query(sort: \CategoryItem.createdDate, order: .forward) private var fetchedCategories: [CategoryItem]
     @Environment(\.dismiss) private var dismiss
 
     var onCategoryDeleted: ((CategoryItem) -> Void)? = nil
+    var onOrderChanged: (() -> Void)? = nil
 
     @State private var selectedCategory: CategoryItem? = nil
     @State private var showingEditView = false
 
+    private var categories: [CategoryItem] {
+        let order = Dictionary(uniqueKeysWithValues: UserDefaults.shared.categoryOrder.enumerated().map { ($1, $0) })
+        return fetchedCategories.sorted { (order[$0.id] ?? .max) < (order[$1.id] ?? .max) }
+    }
 
     var body: some View {
         NavigationStack {
@@ -61,10 +66,12 @@ struct CategoryManagementView: View {
                         }
                     }
                     .onDelete(perform: deleteCategories)
+                    .onMove(perform: moveCategories)
                 }
             }
             .navigationTitle(LocalizedStringResource("카테고리 관리", defaultValue: "Category Management"))
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar { EditButton() }
             .sheet(isPresented: $showingEditView, onDismiss: {
                 selectedCategory = nil
                 showingEditView = false
@@ -126,6 +133,13 @@ struct CategoryManagementView: View {
         } catch {
             print("카테고리 삭제 실패: \(error)")
         }
+    }
+
+    private func moveCategories(from source: IndexSet, to destination: Int) {
+        var reordered = categories
+        reordered.move(fromOffsets: source, toOffset: destination)
+        UserDefaults.shared.categoryOrder = reordered.map(\.id)
+        onOrderChanged?()
     }
 }
 

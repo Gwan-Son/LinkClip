@@ -26,9 +26,10 @@ struct HomeSheetView: View {
                 editingCategory: nil
             )
         case .categoryManagement:
-            CategoryManagementView { category in
-                viewModel.deleteCategory(category)
-            }
+            CategoryManagementView(
+                onCategoryDeleted: { viewModel.deleteCategory($0) },
+                onOrderChanged: { viewModel.refreshData() }
+            )
         case .addLink:
             AddLinkView(onLinkAdded: onLinkSave)
         case .editLink(let link):

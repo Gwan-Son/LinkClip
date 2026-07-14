@@ -98,7 +98,7 @@
       }
     },
     "alert_url_saved_message" : {
-      "extractionState" : "extracted_with_value",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -115,7 +115,7 @@
       }
     },
     "alert_url_saved_title" : {
-      "extractionState" : "extracted_with_value",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -529,6 +529,9 @@
         }
       }
     },
+    "URL 저장됨" : {
+
+    },
     "URL 저장하기" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -559,6 +562,9 @@
           }
         }
       }
+    },
+    "URL이 성공적으로 저장되었습니다." : {
+
     },
     "각 URL에 제목과 개인 메모를 추가하여 나중에 쉽게 찾을 수 있습니다." : {
       "extractionState" : "manual",
@@ -592,6 +598,12 @@
         }
       }
     },
+    "검색 결과가 없습니다" : {
+
+    },
+    "검색어 지우기" : {
+
+    },
     "검색창에 키워드 입력" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -602,6 +614,9 @@
           }
         }
       }
+    },
+    "다른 검색어를 입력해보세요" : {
+
     },
     "다른 태그를 선택해보세요" : {
       "localizations" : {
@@ -656,6 +671,9 @@
           }
         }
       }
+    },
+    "링크 업데이트됨" : {
+
     },
     "링크 저장 가이드" : {
       "extractionState" : "manual",
@@ -1094,6 +1112,9 @@
         }
       }
     },
+    "이미 저장된 링크의 정보를 업데이트했습니다." : {
+
+    },
     "이미 존재하는 카테고리 이름입니다.\n다른 이름을 입력해주세요." : {
       "localizations" : {
         "en" : {
@@ -1188,6 +1209,9 @@
           }
         }
       }
+    },
+    "저장한 링크 검색" : {
+
     },
     "전체" : {
       "extractionState" : "manual",
@@ -1476,28 +1500,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Study"
-          }
-        }
-      }
-    },
-    "URL 제목을 입력하세요" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enter URL title"
-          }
-        }
-      }
-    },
-    "URL 저장" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Save URL"
           }
         }
       }

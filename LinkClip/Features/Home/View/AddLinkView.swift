@@ -31,6 +31,8 @@ struct AddLinkView: View {
     @State private var selectedCategories: Set<CategoryItem> = []
     @State private var showingAlert = false
     @State private var alertMessage = ""
+    @State private var duplicateLink: LinkItem?
+    @State private var editingDuplicateLink: LinkItem?
 
     // 썸네일 관련 상태
     @State private var thumbnailURL: String? = nil
@@ -236,9 +238,19 @@ struct AddLinkView: View {
                 }
             }
             .alert("알림", isPresented: $showingAlert) {
+                if let duplicateLink {
+                    Button("기존 링크 수정") {
+                        editingDuplicateLink = duplicateLink
+                    }
+                }
                 Button("확인", role: .cancel) { }
             } message: {
                 Text(alertMessage)
+            }
+            .sheet(item: $editingDuplicateLink) { link in
+                LinkEditView(link: link) { _ in
+                    onLinkAdded?()
+                }
             }
         }
     }
@@ -298,6 +310,17 @@ struct AddLinkView: View {
 
         let memo = trimmedMemo.isEmpty ? nil : trimmedMemo
         let selectedCategoriesArray = selectedCategories.isEmpty ? nil : Array(selectedCategories)
+
+        var duplicateDescriptor = FetchDescriptor<LinkItem>(
+            predicate: #Predicate { $0.url == fullURL }
+        )
+        duplicateDescriptor.fetchLimit = 1
+        if let existingLink = try? modelContext.fetch(duplicateDescriptor).first {
+            duplicateLink = existingLink
+            alertMessage = "이미 저장된 링크입니다."
+            showingAlert = true
+            return
+        }
 
         let newLink = LinkItem(
             url: fullURL,

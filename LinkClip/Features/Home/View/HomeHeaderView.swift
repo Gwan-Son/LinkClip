@@ -59,7 +59,7 @@ struct HomeHeaderView: View {
         }
         .padding(.horizontal, 20)
         .padding(.top, 10)
-        .padding(.bottom, 20)
+        .padding(.bottom, 12)
         .background(Color.background)
     }
 }

@@ -33,6 +33,39 @@ struct HomeView: View {
 
     @StateObject private var state = HomeState()
 
+    private var searchSection: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "magnifyingglass")
+                .foregroundColor(.secondary)
+
+            TextField(
+                String(localized: "저장한 링크 검색", defaultValue: "저장한 링크 검색"),
+                text: $viewModel.searchText
+            )
+            .textInputAutocapitalization(.never)
+            .autocorrectionDisabled()
+
+            if viewModel.isSearching {
+                Button {
+                    viewModel.searchText = ""
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.secondary)
+                }
+                .accessibilityLabel(
+                    String(localized: "검색어 지우기", defaultValue: "검색어 지우기")
+                )
+            }
+        }
+        .padding(.horizontal, 14)
+        .frame(height: 46)
+        .background(Color(.secondarySystemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 14))
+        .padding(.horizontal, 20)
+        .padding(.bottom, 12)
+        .background(Color.background)
+    }
+
     // 최근 링크 섹션
     private var recentLinksSection: some View {
         VStack {
@@ -73,11 +106,46 @@ struct HomeView: View {
                             )
                         }
                     } else {
-                        ForEach(viewModel.allLinks.prefix(5)) { link in
+                        ForEach(viewModel.recentLinks.prefix(5)) { link in
                             LinkCardView(link: link)
                                 .onTapGesture {
                                     if let url = URL(string: link.url) {
                                         UIApplication.shared.open(url)
+                                    }
+                                }
+                                .contextMenu {
+                                    Button {
+                                        viewModel.toggleFavorite(link)
+                                    } label: {
+                                        Label(
+                                            viewModel.isFavorite(link) ? "즐겨찾기 해제" : "즐겨찾기",
+                                            systemImage: viewModel.isFavorite(link) ? "star.slash" : "star"
+                                        )
+                                    }
+
+                                    if let url = URL(string: link.url) {
+                                        ShareLink(item: url) {
+                                            Label("공유", systemImage: "square.and.arrow.up")
+                                        }
+                                    }
+
+                                    Button {
+                                        UIPasteboard.general.string = link.url
+                                        withAnimation { state.showingCopiedToast = true }
+                                    } label: {
+                                        Label("복사", systemImage: "link")
+                                    }
+
+                                    Button {
+                                        state.activeSheet = .editLink(link)
+                                    } label: {
+                                        Label("수정", systemImage: "pencil")
+                                    }
+
+                                    Button(role: .destructive) {
+                                        state.linkPendingDeletion = link
+                                    } label: {
+                                        Label("삭제", systemImage: "trash")
                                     }
                                 }
                         }
@@ -129,22 +197,32 @@ struct HomeView: View {
                     onSettingsTap: { state.activeSheet = .settings }
                 )
 
-                if !state.isEditing {
-                    recentLinksSection
+                ScrollView {
+                    VStack(spacing: 0) {
+                        if !state.isEditing {
+                            searchSection
+                        }
 
-                    HomeCategoriesView(
-                        viewModel: viewModel,
-                        isEditing: state.isEditing,
-                        onAddCategoryTap: { state.activeSheet = .addCategory }
-                    )
-                    .padding(.top, 10)
+                        if !state.isEditing && !viewModel.isSearching {
+                            recentLinksSection
+                        }
+
+                        if !state.isEditing {
+                            HomeCategoriesView(
+                                viewModel: viewModel,
+                                isEditing: state.isEditing,
+                                onAddCategoryTap: { state.activeSheet = .addCategory }
+                            )
+                            .padding(.top, 10)
+                        }
+
+                        HomeLinksView(
+                            viewModel: viewModel,
+                            state: state,
+                            onEditLink: { link in state.activeSheet = .editLink(link) }
+                        )
+                    }
                 }
-
-                HomeLinksView(
-                    viewModel: viewModel,
-                    state: state,
-                    onEditLink: { link in state.activeSheet = .editLink(link) }
-                )
             }
 
             // 편집 모드 오버레이
@@ -166,6 +244,12 @@ struct HomeView: View {
         .navigationBarHidden(true)
         .onAppear {
             viewModel.setContext(modelContext)
+        }
+        .onDisappear {
+            viewModel.searchText = ""
+        }
+        .onChange(of: state.isEditing) { _, isEditing in
+            if isEditing { viewModel.searchText = "" }
         }
         .onChange(of: scenePhase) { oldPhase, newPhase in
             if newPhase == .active {
@@ -197,6 +281,20 @@ struct HomeView: View {
         } message: {
             Text(LocalizedStringResource("삭제할 항목이 없습니다.\n링크를 선택한 후 다시 시도해주세요.", defaultValue: "삭제할 항목이 없습니다.\n링크를 선택한 후 다시 시도해주세요."))
         }
+        .alert("링크 삭제", isPresented: Binding(
+            get: { state.linkPendingDeletion != nil },
+            set: { if !$0 { state.linkPendingDeletion = nil } }
+        )) {
+            Button("취소", role: .cancel) { state.linkPendingDeletion = nil }
+            Button("삭제", role: .destructive) {
+                if let link = state.linkPendingDeletion {
+                    viewModel.deleteLink(link)
+                }
+                state.linkPendingDeletion = nil
+            }
+        } message: {
+            Text("이 링크를 삭제하시겠습니까?")
+        }
         .sheet(item: $state.activeSheet) { sheetType in
             HomeSheetView(
                 sheetType: sheetType,
@@ -209,6 +307,7 @@ struct HomeView: View {
                 }
             )
         }
+        .toast(isShowing: $state.showingCopiedToast, message: "링크를 복사했습니다.")
     }
 
     // MARK: - Helper Functions

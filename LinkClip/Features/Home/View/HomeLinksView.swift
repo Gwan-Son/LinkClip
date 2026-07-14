@@ -14,8 +14,21 @@ struct HomeLinksView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            ScrollView {
-                LazyVStack(spacing: 12) {
+            if !state.isEditing && !viewModel.allLinks.isEmpty {
+                HStack {
+                    Text(
+                        String(
+                            format: String(localized: "%lld개의 링크"),
+                            viewModel.filteredLinks.count
+                        )
+                    )
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundColor(.secondary)
+                }
+                .padding(.horizontal, 20)
+            }
+
+            LazyVStack(spacing: 12) {
                     if (state.isEditing ? viewModel.allLinks : viewModel.filteredLinks).isEmpty {
                         VStack(spacing: 12) {
                             Image(systemName: "link.badge.plus")
@@ -23,6 +36,8 @@ struct HomeLinksView: View {
                                 .foregroundColor(.secondary.opacity(0.5))
 
                             Text(
+                                viewModel.isSearching ?
+                                LocalizedStringResource("검색 결과가 없습니다", defaultValue: "검색 결과가 없습니다") :
                                 viewModel.selectedCategory != nil ?
                                 LocalizedStringResource("이 태그에 링크가 없습니다", defaultValue: "이 태그에 링크가 없습니다") :
                                 LocalizedStringResource("저장된 링크가 없습니다", defaultValue: "저장된 링크가 없습니다")
@@ -30,7 +45,11 @@ struct HomeLinksView: View {
                             .font(.system(size: 16))
                             .foregroundColor(.secondary)
 
-                            if viewModel.selectedCategory != nil {
+                            if viewModel.isSearching {
+                                Text(LocalizedStringResource("다른 검색어를 입력해보세요", defaultValue: "다른 검색어를 입력해보세요"))
+                                    .font(.system(size: 14))
+                                    .foregroundColor(.secondary.opacity(0.7))
+                            } else if viewModel.selectedCategory != nil {
                                 Text(LocalizedStringResource("다른 태그를 선택해보세요", defaultValue: "다른 태그를 선택해보세요"))
                                     .font(.system(size: 14))
                                     .foregroundColor(.secondary.opacity(0.7))
@@ -79,26 +98,31 @@ struct HomeLinksView: View {
                                 }
                             } else {
                                 // 일반 모드: 기존 기능 유지
-                                LinkRow(link: link) {
+                                LinkRow(
+                                    link: link,
+                                    searchText: viewModel.searchText,
+                                    isFavorite: viewModel.isFavorite(link)
+                                ) {
                                     if let url = URL(string: link.url) {
                                         UIApplication.shared.open(url)
                                     }
                                 } onCopy: {
-                                    // 클립보드 복사 기능 구현
                                     UIPasteboard.general.string = link.url
+                                    withAnimation { state.showingCopiedToast = true }
                                 } onEdit: {
                                     onEditLink(link)
                                 } onDelete: {
-                                    viewModel.deleteLink(link)
+                                    state.linkPendingDeletion = link
+                                } onFavorite: {
+                                    viewModel.toggleFavorite(link)
                                 }
                             }
 
                             Divider()
                         }
                     }
-                }
-                .padding(.horizontal, 20)
             }
+            .padding(.horizontal, 20)
         }
     }
 }

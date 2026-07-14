@@ -75,13 +75,21 @@ struct LinkCardView: View {
                 .frame(height: 180)
                 .padding(.horizontal, 8)
             } else if let link = link {
-                CachedAsyncImage(
-                    primaryURL: link.imageURL.flatMap(URL.init),
-                    fallbackURL: link.faviconURL.flatMap(URL.init)
-                )
-                .frame(width: 180, height: 100)
-                .background(Color.gray.opacity(0.1))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                ZStack(alignment: .topTrailing) {
+                    CachedAsyncImage(
+                        primaryURL: link.imageURL.flatMap(URL.init),
+                        fallbackURL: link.faviconURL.flatMap(URL.init)
+                    )
+                    .frame(width: 180, height: 100)
+                    .background(Color.gray.opacity(0.1))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+
+                    if UserDefaults.shared.favoriteLinkIDs.contains(link.id) {
+                        Image(systemName: "star.fill")
+                            .foregroundColor(.yellow)
+                            .padding(8)
+                    }
+                }
                 Text(link.title)
                     .font(.system(size: 16, weight: .bold))
                     .foregroundColor(.black)

@@ -8,6 +8,7 @@
 import MessageUI
 import SwiftData
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct SettingView: View {
     @Environment(\.dismiss) private var dismiss
@@ -23,6 +24,9 @@ struct SettingView: View {
     // 토스트 메시지 상태
     @State private var showingToast: Bool = false
     @State private var toastMessage: String = ""
+    @State private var showingExporter = false
+    @State private var showingImporter = false
+    @State private var backupDocument = LinkClipBackupDocument()
 
     // 앱 정보
     private let appVersion =
@@ -87,6 +91,18 @@ struct SettingView: View {
                                         LocalizedStringResource("썸네일 다시 로딩 중...", defaultValue: "썸네일 다시 로딩 중...") :
                                         LocalizedStringResource("썸네일 다시 로딩", defaultValue: "썸네일 다시 로딩")))
                         }
+                    }
+
+                    Button {
+                        exportBackup()
+                    } label: {
+                        Label("백업 내보내기", systemImage: "square.and.arrow.up")
+                    }
+
+                    Button {
+                        showingImporter = true
+                    } label: {
+                        Label("백업 가져오기", systemImage: "square.and.arrow.down")
                     }
 
                     Button(role: .destructive) {
@@ -213,8 +229,109 @@ struct SettingView: View {
                     result: $mailResult, subjects: String(localized: "LinkClip 앱 문의"),
                     messageBody: "앱 버전: \(appVersion)")
             }
+            .fileExporter(
+                isPresented: $showingExporter,
+                document: backupDocument,
+                contentType: .json,
+                defaultFilename: "LinkClip-Backup"
+            ) { result in
+                showToast(result.isSuccess ? "백업을 내보냈습니다." : "백업을 내보내지 못했습니다.")
+            }
+            .fileImporter(isPresented: $showingImporter, allowedContentTypes: [.json]) { result in
+                importBackup(result)
+            }
             .toast(isShowing: $showingToast, message: toastMessage)
         }
+    }
+
+    private func exportBackup() {
+        do {
+            let categories = try modelContext.fetch(FetchDescriptor<CategoryItem>())
+            let links = try modelContext.fetch(FetchDescriptor<LinkItem>())
+            let favorites = UserDefaults.shared.favoriteLinkIDs
+            let backup = LinkClipBackup(
+                categories: categories.map {
+                    .init(id: $0.id, name: $0.name, icon: $0.icon, color: $0.color, createdDate: $0.createdDate)
+                },
+                links: links.map {
+                    .init(
+                        url: $0.url,
+                        title: $0.title,
+                        personalMemo: $0.personalMemo,
+                        savedDate: $0.savedDate,
+                        categoryIDs: $0.categories?.map(\.id) ?? [],
+                        metaDescription: $0.metaDescription,
+                        imageURL: $0.imageURL,
+                        siteName: $0.siteName,
+                        faviconURL: $0.faviconURL,
+                        isFavorite: favorites.contains($0.id)
+                    )
+                },
+                categoryOrder: UserDefaults.shared.categoryOrder
+            )
+            backupDocument = try LinkClipBackupDocument(backup: backup)
+            showingExporter = true
+        } catch {
+            showToast("백업을 만들지 못했습니다.")
+        }
+    }
+
+    private func importBackup(_ result: Result<URL, Error>) {
+        do {
+            let url = try result.get()
+            let accessing = url.startAccessingSecurityScopedResource()
+            defer { if accessing { url.stopAccessingSecurityScopedResource() } }
+            let backup = try JSONDecoder().decode(LinkClipBackup.self, from: Data(contentsOf: url))
+
+            let storedCategories = try modelContext.fetch(FetchDescriptor<CategoryItem>())
+            var categoriesByID = Dictionary(uniqueKeysWithValues: storedCategories.map { ($0.id, $0) })
+            for item in backup.categories where categoriesByID[item.id] == nil {
+                if let existing = storedCategories.first(where: {
+                    $0.name.localizedCaseInsensitiveCompare(item.name) == .orderedSame
+                }) {
+                    categoriesByID[item.id] = existing
+                    continue
+                }
+                let category = CategoryItem(name: item.name, icon: item.icon, color: item.color)
+                category.id = item.id
+                category.createdDate = item.createdDate
+                modelContext.insert(category)
+                categoriesByID[item.id] = category
+            }
+
+            let storedLinks = try modelContext.fetch(FetchDescriptor<LinkItem>())
+            var linksByURL = Dictionary(uniqueKeysWithValues: storedLinks.map { ($0.url, $0) })
+            var favoriteIDs = UserDefaults.shared.favoriteLinkIDs
+            for item in backup.links {
+                let link = linksByURL[item.url] ?? LinkItem(url: item.url, title: item.title)
+                if linksByURL[item.url] == nil {
+                    modelContext.insert(link)
+                    linksByURL[item.url] = link
+                }
+                link.title = item.title
+                link.personalMemo = item.personalMemo
+                link.savedDate = item.savedDate
+                link.categories = item.categoryIDs.compactMap { categoriesByID[$0] }
+                link.metaDescription = item.metaDescription
+                link.imageURL = item.imageURL
+                link.siteName = item.siteName
+                link.faviconURL = item.faviconURL
+                if item.isFavorite { favoriteIDs.insert(link.id) }
+            }
+
+            try modelContext.save()
+            UserDefaults.shared.favoriteLinkIDs = favoriteIDs
+            UserDefaults.shared.categoryOrder = backup.categoryOrder.compactMap { categoriesByID[$0]?.id }
+            NotificationCenter.default.post(name: .dataReset, object: nil)
+            showToast("백업을 가져왔습니다.")
+        } catch {
+            showToast("올바른 LinkClip 백업 파일이 아닙니다.")
+        }
+    }
+
+    private func showToast(_ message: String) {
+        toastMessage = message
+        withAnimation { showingToast = true }
     }
 
     private func resetAllData() async {
@@ -227,6 +344,7 @@ struct SettingView: View {
             }
 
             try modelContext.save()
+            UserDefaults.shared.favoriteLinkIDs = []
 
             await SpotlightIndexingService().deleteAll()
 
@@ -339,6 +457,66 @@ struct SettingView: View {
                 withAnimation { showingToast = true }
             }
         }
+    }
+}
+
+private struct LinkClipBackup: Codable {
+    let version = 1
+    let categories: [BackupCategory]
+    let links: [BackupLink]
+    let categoryOrder: [UUID]
+
+    private enum CodingKeys: String, CodingKey {
+        case version, categories, links, categoryOrder
+    }
+}
+
+private struct BackupCategory: Codable {
+    let id: UUID
+    let name: String
+    let icon: String
+    let color: String?
+    let createdDate: Date?
+}
+
+private struct BackupLink: Codable {
+    let url: String
+    let title: String
+    let personalMemo: String?
+    let savedDate: Date
+    let categoryIDs: [UUID]
+    let metaDescription: String?
+    let imageURL: String?
+    let siteName: String?
+    let faviconURL: String?
+    let isFavorite: Bool
+}
+
+private struct LinkClipBackupDocument: FileDocument {
+    static var readableContentTypes: [UTType] { [.json] }
+    var data = Data()
+
+    init() {}
+
+    init(backup: LinkClipBackup) throws {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        data = try encoder.encode(backup)
+    }
+
+    init(configuration: ReadConfiguration) throws {
+        data = configuration.file.regularFileContents ?? Data()
+    }
+
+    func fileWrapper(configuration: WriteConfiguration) throws -> FileWrapper {
+        FileWrapper(regularFileWithContents: data)
+    }
+}
+
+private extension Result {
+    var isSuccess: Bool {
+        if case .success = self { return true }
+        return false
     }
 }
 

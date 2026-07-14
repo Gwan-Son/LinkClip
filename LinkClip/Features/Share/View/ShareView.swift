@@ -24,6 +24,8 @@ struct ShareView: View {
 
     // 저장완료 시 alert를 띄우기 위한 상태
     @State private var isSaved: Bool = false
+    @State private var updatedExistingLink = false
+    @State private var saveErrorMessage: String?
 
     // 사이트 이름 추출을 위한 상태
     @State private var siteName: String? = nil
@@ -220,10 +222,11 @@ struct ShareView: View {
             }
             .alert(isPresented: $isSaved) {
                 Alert(
-                    title: Text(LocalizedStringResource("alert_url_saved_title", defaultValue: "URL 저장됨")),
+                    title: Text(updatedExistingLink ? "링크 업데이트됨" : "URL 저장됨"),
                     message: Text(
-                        LocalizedStringResource(
-                            "alert_url_saved_message", defaultValue: "URL이 성공적으로 저장되었습니다.")
+                        updatedExistingLink
+                            ? "이미 저장된 링크의 정보를 업데이트했습니다."
+                            : "URL이 성공적으로 저장되었습니다."
                     ),
                     dismissButton: .default(
                         Text(LocalizedStringResource("btn_confirm", defaultValue: "확인")),
@@ -236,6 +239,14 @@ struct ShareView: View {
                         }
                     )
                 )
+            }
+            .alert("저장 실패", isPresented: Binding(
+                get: { saveErrorMessage != nil },
+                set: { if !$0 { saveErrorMessage = nil } }
+            )) {
+                Button("확인", role: .cancel) { saveErrorMessage = nil }
+            } message: {
+                Text(saveErrorMessage ?? "")
             }
             .onAppear {
                 loadCategories()
@@ -302,6 +313,7 @@ struct ShareView: View {
             existingDescriptor.fetchLimit = 1
             let itemToIndex: LinkItem
             if let existing = try context.fetch(existingDescriptor).first {
+                updatedExistingLink = true
                 // 기존 항목 업데이트
                 let newTitle = title.isEmpty ? (url.host ?? existing.title) : title
                 existing.title = newTitle
@@ -316,6 +328,7 @@ struct ShareView: View {
                 }
                 itemToIndex = existing
             } else {
+                updatedExistingLink = false
                 // 새 항목 삽입
                 let savedURL = LinkItem(
                     url: urlString,
@@ -343,7 +356,7 @@ struct ShareView: View {
             isSaved = true
         } catch {
             print("URL 저장 중 오류 발생: \(error)")
-            extensionContext?.cancelRequest(withError: ShareError.unknown)
+            saveErrorMessage = "링크를 저장하지 못했습니다. 잠시 후 다시 시도해주세요."
         }
     }
 }

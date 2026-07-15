@@ -350,6 +350,15 @@ struct ShareView: View {
             // 메인 앱에 데이터 변경 알림 (UserDefaults 방식)
             UserDefaults.shared.notifyDataChanged()
 
+            // 확장 프로그램이 종료돼도 본 앱에서 다시 접수할 수 있도록 먼저 pending으로 저장
+            let linkID = itemToIndex.id
+            if UserDefaults.shared.summaryRecord(for: linkID) == nil {
+                SummaryAPI.markPending(linkID: linkID)
+                Task {
+                    try? await SummaryAPI.submit(linkID: linkID, url: urlString)
+                }
+            }
+
             // Spotlight 색인 (비동기)
             Task { await SpotlightIndexingService().index(link: itemToIndex) }
 

@@ -11,6 +11,7 @@ struct HomeLinksView: View {
     @ObservedObject var viewModel: HomeViewModel
     @ObservedObject var state: HomeState
     let onEditLink: (LinkItem) -> Void
+    let onSummarize: (LinkItem) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -115,6 +116,8 @@ struct HomeLinksView: View {
                                     state.linkPendingDeletion = link
                                 } onFavorite: {
                                     viewModel.toggleFavorite(link)
+                                } onSummary: {
+                                    onSummarize(link)
                                 }
                             }
 

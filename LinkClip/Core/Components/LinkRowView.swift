@@ -16,6 +16,7 @@ struct LinkRow: View {
     let onEdit: () -> Void
     let onDelete: () -> Void
     var onFavorite: () -> Void = {}
+    var onSummary: (() -> Void)?
 
     var body: some View {
         HStack(spacing: 12) {
@@ -84,11 +85,7 @@ struct LinkRow: View {
         .padding(.horizontal, 20)
         .padding(.vertical, 10)
         .contentShape(Rectangle())
-        .onTapGesture {
-            if let url = URL(string: link.url) {
-                UIApplication.shared.open(url)
-            }
-        }
+        .onTapGesture(perform: onTap)
         .contextMenu {
             Button(action: onFavorite) {
                 Label(
@@ -115,6 +112,12 @@ struct LinkRow: View {
                         LocalizedStringResource("btn_copy", defaultValue: "복사"),
                         systemImage: "link"
                     )
+                }
+            }
+
+            if let onSummary {
+                Button(action: onSummary) {
+                    Label("AI 요약", systemImage: "sparkles")
                 }
             }
 

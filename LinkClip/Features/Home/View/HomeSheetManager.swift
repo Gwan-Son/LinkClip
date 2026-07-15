@@ -36,6 +36,8 @@ struct HomeSheetView: View {
             LinkEditView(link: link) { updatedLink in
                 viewModel.refreshDataIfNeeded()
             }
+        case .summary(let link):
+            LinkSummaryView(link: link)
         }
     }
 }

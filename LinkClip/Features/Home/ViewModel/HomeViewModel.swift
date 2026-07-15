@@ -238,6 +238,7 @@ final class HomeViewModel: ObservableObject {
             allLinks.removeAll { $0.id == linkID }
             favoriteLinkIDs.remove(linkID)
             UserDefaults.shared.favoriteLinkIDs = favoriteLinkIDs
+            UserDefaults.shared.removeSummaryRecord(for: linkID)
             updateFilteredLinks()
             Task { await SpotlightIndexingService().delete(linkId: linkID) }
         } catch {

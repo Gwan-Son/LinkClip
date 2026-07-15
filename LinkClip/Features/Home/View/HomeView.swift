@@ -14,6 +14,7 @@ enum HomeSheetType: Identifiable {
     case categoryManagement
     case addLink
     case editLink(LinkItem)
+    case summary(LinkItem)
 
     var id: String {
         switch self {
@@ -22,6 +23,7 @@ enum HomeSheetType: Identifiable {
         case .categoryManagement: return "categoryManagement"
         case .addLink: return "addLink"
         case .editLink(let link): return "editLink-\(link.id)"
+        case .summary(let link): return "summary-\(link.id)"
         }
     }
 }
@@ -137,6 +139,12 @@ struct HomeView: View {
                                     }
 
                                     Button {
+                                        state.activeSheet = .summary(link)
+                                    } label: {
+                                        Label("AI 요약", systemImage: "sparkles")
+                                    }
+
+                                    Button {
                                         state.activeSheet = .editLink(link)
                                     } label: {
                                         Label("수정", systemImage: "pencil")
@@ -219,7 +227,8 @@ struct HomeView: View {
                         HomeLinksView(
                             viewModel: viewModel,
                             state: state,
-                            onEditLink: { link in state.activeSheet = .editLink(link) }
+                            onEditLink: { link in state.activeSheet = .editLink(link) },
+                            onSummarize: { link in state.activeSheet = .summary(link) }
                         )
                     }
                 }
@@ -244,6 +253,7 @@ struct HomeView: View {
         .navigationBarHidden(true)
         .onAppear {
             viewModel.setContext(modelContext)
+            Task { await syncSummaries() }
         }
         .onDisappear {
             viewModel.searchText = ""
@@ -261,6 +271,7 @@ struct HomeView: View {
                     // 일반적인 앱 활성화 시에도 가벼운 리프레시 (30초 쿨다운 적용)
                     viewModel.refreshDataIfNeeded()
                 }
+                Task { await syncSummaries() }
             }
         }
         .alert(LocalizedStringResource("중복된 카테고리 이름", defaultValue: "중복된 카테고리 이름"), isPresented: $state.showingDuplicateAlert) {
@@ -311,6 +322,16 @@ struct HomeView: View {
     }
 
     // MARK: - Helper Functions
+
+    private func syncSummaries() async {
+        let links = (try? modelContext.fetch(FetchDescriptor<LinkItem>())) ?? []
+        let pending = links.compactMap { link in
+            UserDefaults.shared.summaryRecord(for: link.id) == nil ? nil : (link.id, link.url)
+        }
+        for (linkID, url) in pending {
+            _ = try? await SummaryAPI.sync(linkID: linkID, url: url)
+        }
+    }
 
     private func handleSelectAllToggle() {
         withAnimation {

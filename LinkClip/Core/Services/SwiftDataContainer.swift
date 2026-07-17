@@ -149,6 +149,9 @@ extension UserDefaults {
         static let summaryAPIBaseURL = "summaryAPIBaseURL"
         static let summaryInstallationID = "summaryInstallationID"
         static let summaryLinkIDs = "summaryLinkIDs"
+        static let summaryAuthToken = "summaryAuthToken"
+        static let summaryAuthExpiration = "summaryAuthExpiration"
+        static let appAttestKeyID = "appAttestKeyID"
     }
 
     var favoriteLinkIDs: Set<UUID> {
@@ -293,6 +296,7 @@ enum SummaryAPI {
                 force: force
             )
         )
+        authorize(&request)
         let response: Response
         do {
             response = try await send(request)
@@ -323,6 +327,7 @@ enum SummaryAPI {
 
         var request = URLRequest(url: try endpoint("summaries/\(jobID)"))
         request.setValue(UserDefaults.shared.summaryInstallationID, forHTTPHeaderField: "X-Client-ID")
+        authorize(&request)
         let response: Response
         do {
             response = try await send(request)
@@ -342,7 +347,7 @@ enum SummaryAPI {
         return record
     }
 
-    private static func endpoint(_ path: String) throws -> URL {
+    static func endpoint(_ path: String) throws -> URL {
         let configured = UserDefaults.shared.string(forKey: UserDefaults.Keys.summaryAPIBaseURL)?
             .trimmingCharacters(in: .whitespacesAndNewlines)
         let raw = configured.flatMap { $0.isEmpty ? nil : $0 } ?? defaultBaseURL
@@ -353,12 +358,49 @@ enum SummaryAPI {
         return baseURL.appendingPathComponent(path)
     }
 
+    static func authorize(_ request: inout URLRequest) {
+        if let token = UserDefaults.shared.string(forKey: UserDefaults.Keys.summaryAuthToken) {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+    }
+
+    static func registerDeviceToken(_ token: String) async throws {
+        struct Body: Encodable {
+            let client_id: String
+            let device_token: String
+            let environment: String
+        }
+        var request = URLRequest(url: try endpoint("devices"))
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        #if DEBUG
+        let environment = "development"
+        #else
+        let environment = "production"
+        #endif
+        request.httpBody = try JSONEncoder().encode(
+            Body(
+                client_id: UserDefaults.shared.summaryInstallationID,
+                device_token: token,
+                environment: environment
+            )
+        )
+        authorize(&request)
+        let _: EmptyResponse = try await send(request)
+    }
+
+    private struct EmptyResponse: Decodable {}
+
     private static func send<T: Decodable>(_ request: URLRequest) async throws -> T {
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse else {
             throw SummaryAPIError.server("서버 응답을 확인할 수 없습니다.")
         }
         guard 200..<300 ~= httpResponse.statusCode else {
+            if httpResponse.statusCode == 401 {
+                UserDefaults.shared.removeObject(forKey: UserDefaults.Keys.summaryAuthToken)
+                UserDefaults.shared.removeObject(forKey: UserDefaults.Keys.summaryAuthExpiration)
+            }
             let error = try? JSONDecoder().decode(ErrorResponse.self, from: data)
             throw SummaryAPIError.server(error?.message ?? message(for: error?.error))
         }

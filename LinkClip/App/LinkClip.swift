@@ -10,6 +10,7 @@ import SwiftUI
 
 @main
 struct LinkClip: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     let sharedModelContainer = createSharedModelContainer()
 
@@ -17,6 +18,9 @@ struct LinkClip: App {
 
         WindowGroup {
             HomeView()
+                .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+                    Task { await AppAttestManager.shared.prepareSession() }
+                }
         }
         .modelContainer(sharedModelContainer)
     }

@@ -393,6 +393,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkClip/App/LinkClip.entitlements;
+				APP_ATTEST_ENVIRONMENT = development;
+				APS_ENVIRONMENT = development;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkClip/Preview/Preview Content\"";
@@ -427,6 +429,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkClip/App/LinkClip.entitlements;
+				APP_ATTEST_ENVIRONMENT = production;
+				APS_ENVIRONMENT = production;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkClip/Preview/Preview Content\"";

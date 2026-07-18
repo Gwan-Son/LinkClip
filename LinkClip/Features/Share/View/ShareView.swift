@@ -21,6 +21,7 @@ struct ShareView: View {
     @State private var personalMemo: String = ""
     @State private var url: URL?
     @State private var selectedCategories: Set<CategoryItem> = []
+    @State private var shouldRequestSummary = true
 
     // 저장완료 시 alert를 띄우기 위한 상태
     @State private var isSaved: Bool = false
@@ -165,6 +166,13 @@ struct ShareView: View {
                         )
                     }
                     
+                    // AI 요약
+                    Toggle(isOn: $shouldRequestSummary) {
+                        Label("AI 요약 요청", systemImage: "sparkles")
+                            .font(.system(size: 18, weight: .semibold))
+                    }
+                    .tint(.mainColor)
+
                     // URL 정보
                     VStack(alignment: .leading, spacing: 12) {
                         HStack(spacing: 8) {
@@ -352,7 +360,8 @@ struct ShareView: View {
 
             // 확장 프로그램이 종료돼도 본 앱에서 다시 접수할 수 있도록 먼저 pending으로 저장
             let linkID = itemToIndex.id
-            if UserDefaults.shared.summaryRecord(for: linkID) == nil {
+            if shouldRequestSummary,
+               UserDefaults.shared.summaryRecord(for: linkID) == nil {
                 SummaryAPI.markPending(linkID: linkID)
                 Task {
                     try? await SummaryAPI.submit(linkID: linkID, url: urlString)

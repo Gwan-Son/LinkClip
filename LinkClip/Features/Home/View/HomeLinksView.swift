@@ -59,7 +59,10 @@ struct HomeLinksView: View {
                         .frame(maxWidth: .infinity, minHeight: 200)
                         .padding(.vertical, 40)
                     } else {
-                        ForEach(state.isEditing ? viewModel.allLinks : viewModel.filteredLinks) { link in
+                        ForEach(
+                            state.isEditing ? viewModel.allLinks : viewModel.filteredLinks,
+                            id: \.id
+                        ) { link in
                             if state.isEditing {
                                 // 편집 모드: 선택 가능한 행
                                 HStack {
@@ -119,6 +122,7 @@ struct HomeLinksView: View {
                                 } onSummary: {
                                     onSummarize(link)
                                 }
+                                .id(link.id)
                             }
 
                             Divider()

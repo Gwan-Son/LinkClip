@@ -8,6 +8,10 @@ struct LinkSummaryView: View {
     @State private var errorMessage: String?
     @State private var isWorking = false
 
+    private var currentRecord: SummaryRecord? {
+        record?.linkID == link.id ? record : nil
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -22,12 +26,20 @@ struct LinkSummaryView: View {
                     }
 
                     Group {
-                        switch record?.status {
+                        switch currentRecord?.status {
                         case .completed:
-                            if let summary = record?.summary {
+                            if let summary = currentRecord?.summary {
                                 VStack(alignment: .leading, spacing: 16) {
-                                    Text(summary)
-                                        .textSelection(.enabled)
+                                    if let markdown = try? AttributedString(
+                                        markdown: summary,
+                                        options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace)
+                                    ) {
+                                        Text(markdown)
+                                            .textSelection(.enabled)
+                                    } else {
+                                        Text(summary)
+                                            .textSelection(.enabled)
+                                    }
 
                                     ShareLink(item: summary) {
                                         Label("요약 공유", systemImage: "square.and.arrow.up")
@@ -44,7 +56,7 @@ struct LinkSummaryView: View {
                             ContentUnavailableView(
                                 "요약하지 못했습니다",
                                 systemImage: "exclamationmark.triangle",
-                                description: Text(record?.error ?? "잠시 후 다시 시도해주세요.")
+                                description: Text(currentRecord?.error ?? "잠시 후 다시 시도해주세요.")
                             )
                         case nil:
                             ContentUnavailableView(
@@ -57,15 +69,15 @@ struct LinkSummaryView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                     Button {
-                        Task { await requestSummary(force: record != nil) }
+                        Task { await requestSummary(force: currentRecord != nil) }
                     } label: {
-                        Label(record == nil ? "요약 요청" : "다시 요약", systemImage: "sparkles")
+                        Label(currentRecord == nil ? "요약 요청" : "다시 요약", systemImage: "sparkles")
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
                     .disabled(
-                        isWorking || record?.status == .pending ||
-                        record?.status == .queued || record?.status == .processing
+                        isWorking || currentRecord?.status == .pending ||
+                        currentRecord?.status == .queued || currentRecord?.status == .processing
                     )
                 }
                 .padding(20)
@@ -85,7 +97,11 @@ struct LinkSummaryView: View {
             } message: {
                 Text(errorMessage ?? "")
             }
-            .task { await pollUntilFinished() }
+            .task(id: link.id) {
+                record = nil
+                errorMessage = nil
+                await pollUntilFinished()
+            }
         }
     }
 
@@ -103,6 +119,8 @@ struct LinkSummaryView: View {
         isWorking = true
         defer { isWorking = false }
         do {
+            await AppAttestManager.shared.prepareSession()
+            await PushNotificationService.enable()
             if force {
                 record = try await SummaryAPI.submit(linkID: link.id, url: link.url, force: true)
             } else {

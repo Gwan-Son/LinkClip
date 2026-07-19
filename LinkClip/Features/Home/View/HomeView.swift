@@ -108,8 +108,9 @@ struct HomeView: View {
                             )
                         }
                     } else {
-                        ForEach(viewModel.recentLinks.prefix(5)) { link in
+                        ForEach(viewModel.recentLinks.prefix(5), id: \.id) { link in
                             LinkCardView(link: link)
+                                .id(link.id)
                                 .onTapGesture {
                                     if let url = URL(string: link.url) {
                                         UIApplication.shared.open(url)
@@ -317,6 +318,7 @@ struct HomeView: View {
                     viewModel.reloadAllData()
                 }
             )
+            .id(sheetType.id)
         }
         .toast(isShowing: $state.showingCopiedToast, message: "링크를 복사했습니다.")
     }

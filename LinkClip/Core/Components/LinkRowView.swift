@@ -24,19 +24,19 @@ struct LinkRow: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 8)
                     .fill(Color.gray.opacity(0.1))
-                    .frame(width: 40, height: 40)
+                    .frame(width: 64, height: 64)
 
                 CachedAsyncImage(
                     primaryURL: link.imageURL.flatMap(URL.init),
                     fallbackURL: link.faviconURL.flatMap(URL.init)
                 )
-                .frame(width: 40, height: 40)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .frame(width: 64, height: 64)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
             }
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(highlighted(link.title))
-                    .font(.system(size: 16, weight: .medium))
+                    .font(.system(size: 16, weight: .semibold))
                     .foregroundColor(.primary)
                     .lineLimit(2)
 
@@ -72,18 +72,29 @@ struct LinkRow: View {
 
             Spacer()
 
-            if isFavorite {
-                Image(systemName: "star.fill")
-                    .foregroundColor(.yellow)
-                    .accessibilityLabel("즐겨찾기")
-            }
+            VStack(spacing: 10) {
+                if UserDefaults.shared.summaryRecord(for: link.id)?.status == .completed {
+                    Image(systemName: "sparkles")
+                        .foregroundStyle(Color(hex: "F2A65A"))
+                        .accessibilityLabel("요약 완료")
+                } else if isFavorite {
+                    Image(systemName: "star.fill")
+                        .foregroundStyle(Color(hex: "F2A65A"))
+                        .accessibilityLabel("즐겨찾기")
+                }
 
-            Image(systemName: "chevron.right")
-                .font(.system(size: 14))
-                .foregroundColor(.secondary)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(.tertiary)
+            }
         }
-        .padding(.horizontal, 20)
-        .padding(.vertical, 10)
+        .padding(14)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 18))
+        .overlay {
+            RoundedRectangle(cornerRadius: 18)
+                .stroke(Color.primary.opacity(0.05))
+        }
         .contentShape(Rectangle())
         .onTapGesture(perform: onTap)
         .contextMenu {

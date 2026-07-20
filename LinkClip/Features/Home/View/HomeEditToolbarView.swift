@@ -52,15 +52,16 @@ struct HomeEditToolbarView: View {
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
-            .background(
-                Color.white
+            .background {
+                Color(.secondarySystemGroupedBackground)
                     .shadow(
                         color: Color.black.opacity(0.1),
                         radius: 8,
                         x: 0,
                         y: -4
                     )
-            )
+                    .ignoresSafeArea(edges: .bottom)
+            }
             .transition(.move(edge: .bottom))
         }
         .ignoresSafeArea(.keyboard)

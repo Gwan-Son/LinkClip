@@ -18,18 +18,36 @@ struct LinkSummaryView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     VStack(alignment: .leading, spacing: 6) {
                         Text(link.title)
-                            .font(.headline)
-                        Text(link.url)
+                            .font(.title2.bold())
+                        Text(URL(string: link.url)?.host ?? link.url)
                             .font(.caption)
                             .foregroundStyle(.secondary)
                             .lineLimit(2)
                     }
+
+                    HStack(spacing: 10) {
+                        if let url = URL(string: link.url) {
+                            Link(destination: url) {
+                                Label("원문 열기", systemImage: "arrow.up.right.square")
+                            }
+
+                            ShareLink(item: url) {
+                                Label("공유", systemImage: "square.and.arrow.up")
+                            }
+                        }
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(.primary)
 
                     Group {
                         switch currentRecord?.status {
                         case .completed:
                             if let summary = currentRecord?.summary {
                                 VStack(alignment: .leading, spacing: 16) {
+                                    Label("핵심 요약", systemImage: "sparkles")
+                                        .font(.headline)
+                                        .foregroundStyle(Color(hex: "F2A65A"))
+
                                     if let markdown = try? AttributedString(
                                         markdown: summary,
                                         options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace)
@@ -45,6 +63,9 @@ struct LinkSummaryView: View {
                                         Label("요약 공유", systemImage: "square.and.arrow.up")
                                     }
                                 }
+                                .padding(18)
+                                .background(Color(.secondarySystemGroupedBackground))
+                                .clipShape(RoundedRectangle(cornerRadius: 20))
                             }
                         case .queued:
                             progress("요약 요청이 대기 중입니다.")
@@ -68,6 +89,42 @@ struct LinkSummaryView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
 
+                    if let memo = link.personalMemo, !memo.isEmpty {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Label("나의 메모", systemImage: "note.text")
+                                .font(.headline)
+                            Text(memo)
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(18)
+                        .background(Color(.secondarySystemGroupedBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                    }
+
+                    if let categories = link.categories, !categories.isEmpty {
+                        VStack(alignment: .leading, spacing: 10) {
+                            Label("태그", systemImage: "tag")
+                                .font(.headline)
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack {
+                                    ForEach(categories, id: \.id) { category in
+                                        Text(category.name)
+                                            .font(.subheadline)
+                                            .padding(.horizontal, 12)
+                                            .padding(.vertical, 7)
+                                            .background(Color(hex: category.safeColor).opacity(0.15))
+                                            .clipShape(Capsule())
+                                    }
+                                }
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(18)
+                        .background(Color(.secondarySystemGroupedBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                    }
+
                     Button {
                         Task { await requestSummary(force: currentRecord != nil) }
                     } label: {
@@ -75,6 +132,7 @@ struct LinkSummaryView: View {
                             .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(.borderedProminent)
+                    .tint(Color(hex: "F2A65A"))
                     .disabled(
                         isWorking || currentRecord?.status == .pending ||
                         currentRecord?.status == .queued || currentRecord?.status == .processing
@@ -82,6 +140,7 @@ struct LinkSummaryView: View {
                 }
                 .padding(20)
             }
+            .background(Color(.systemGroupedBackground))
             .navigationTitle("AI 요약")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -111,7 +170,10 @@ struct LinkSummaryView: View {
             Text(message)
                 .foregroundStyle(.secondary)
         }
-        .padding(.vertical, 24)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(18)
+        .background(Color(.secondarySystemGroupedBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 20))
     }
 
     @MainActor

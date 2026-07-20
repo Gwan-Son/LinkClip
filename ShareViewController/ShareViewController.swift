@@ -22,9 +22,12 @@ class ShareViewController: UIViewController {
         }
         let title = extensionItem.attributedContentText?.string ?? "No title"
         if itemProvider.hasItemConformingToTypeIdentifier(UTType.url.identifier) {
-            itemProvider.loadItem(forTypeIdentifier: UTType.url.identifier, options: nil) { [weak self] (url, error) in
+            itemProvider.lc_loadURL(
+                forTypeIdentifier: UTType.url.identifier,
+                options: nil
+            ) { [weak self] url, error in
                 DispatchQueue.main.async {
-                    if let url = url as? URL {
+                    if let url {
                         self?.showURLSaveView(url: url, extensionContext: self?.extensionContext, title: title)
                     } else {
                         self?.cancelRequest(.loadItemError)
@@ -32,9 +35,12 @@ class ShareViewController: UIViewController {
                 }
             }
         } else if itemProvider.hasItemConformingToTypeIdentifier(UTType.plainText.identifier) {
-            itemProvider.loadItem(forTypeIdentifier: UTType.plainText.identifier, options: nil) { [weak self] (text, error) in
+            itemProvider.lc_loadString(
+                forTypeIdentifier: UTType.plainText.identifier,
+                options: nil
+            ) { [weak self] urlString, error in
                 DispatchQueue.main.async {
-                    if let urlString = text as? String,
+                    if let urlString,
                        let url = URL(string: urlString.trimmingCharacters(in: .whitespacesAndNewlines)),
                        ["http", "https"].contains(url.scheme?.lowercased() ?? ""),
                        url.host != nil {

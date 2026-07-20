@@ -146,7 +146,6 @@ extension UserDefaults {
         static let lastChangeTimestamp = "lastChangeTimestamp"
         static let favoriteLinkIDs = "favoriteLinkIDs"
         static let categoryOrder = "categoryOrder"
-        static let summaryAPIBaseURL = "summaryAPIBaseURL"
         static let summaryInstallationID = "summaryInstallationID"
         static let summaryLinkIDs = "summaryLinkIDs"
         static let summaryAuthToken = "summaryAuthToken"
@@ -236,12 +235,10 @@ struct SummaryRecord: Codable, Equatable, Identifiable {
 }
 
 enum SummaryAPIError: LocalizedError {
-    case invalidServerURL
     case server(String)
 
     var errorDescription: String? {
         switch self {
-        case .invalidServerURL: return "유효한 HTTPS 서버 주소가 아닙니다."
         case .server(let message): return message
         }
     }
@@ -348,14 +345,7 @@ enum SummaryAPI {
     }
 
     static func endpoint(_ path: String) throws -> URL {
-        let configured = UserDefaults.shared.string(forKey: UserDefaults.Keys.summaryAPIBaseURL)?
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-        let raw = configured.flatMap { $0.isEmpty ? nil : $0 } ?? defaultBaseURL
-        guard let baseURL = URL(string: raw),
-              let scheme = baseURL.scheme?.lowercased(),
-              scheme == "https" || (scheme == "http" && ["127.0.0.1", "localhost"].contains(baseURL.host))
-        else { throw SummaryAPIError.invalidServerURL }
-        return baseURL.appendingPathComponent(path)
+        URL(string: defaultBaseURL)!.appendingPathComponent(path)
     }
 
     static func authorize(_ request: inout URLRequest) {

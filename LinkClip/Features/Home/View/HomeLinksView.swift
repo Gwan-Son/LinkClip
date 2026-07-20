@@ -29,7 +29,7 @@ struct HomeLinksView: View {
                 .padding(.horizontal, 20)
             }
 
-            LazyVStack(spacing: 12) {
+            LazyVStack(spacing: 10) {
                     if (state.isEditing ? viewModel.allLinks : viewModel.filteredLinks).isEmpty {
                         VStack(spacing: 12) {
                             Image(systemName: "link.badge.plus")
@@ -125,11 +125,11 @@ struct HomeLinksView: View {
                                 .id(link.id)
                             }
 
-                            Divider()
                         }
                     }
             }
             .padding(.horizontal, 20)
+            .padding(.bottom, 100)
         }
     }
 }

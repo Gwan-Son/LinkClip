@@ -16,7 +16,7 @@ struct HomeCategoriesView: View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
                 Text("태그")
-                    .font(.system(size: 20, weight: .semibold))
+                    .font(.system(size: 17, weight: .semibold))
                     .foregroundColor(.primary)
                     .padding(.leading, 20)
 
@@ -27,11 +27,11 @@ struct HomeCategoriesView: View {
                     Button(action: onAddCategoryTap) {
                         Image(systemName: "plus.circle")
                             .font(.system(size: 20))
-                            .foregroundColor(.black)
+                            .foregroundStyle(.primary)
                             .frame(width: 25, height: 25)
                             .background(
                                 Circle()
-                                    .fill(Color.white)
+                                        .fill(Color(.secondarySystemBackground))
                                     .overlay(
                                         Circle()
                                             .stroke(
@@ -53,11 +53,11 @@ struct HomeCategoriesView: View {
                 } label: {
                     Image(systemName: "arrow.up.arrow.down.circle")
                         .font(.system(size: 20))
-                        .foregroundColor(.black)
+                        .foregroundStyle(.primary)
                         .frame(width: 25, height: 25)
                         .background(
                             Circle()
-                                .fill(Color.white)
+                                .fill(Color(.secondarySystemBackground))
                                 .overlay(
                                     Circle()
                                         .stroke(
@@ -77,10 +77,33 @@ struct HomeCategoriesView: View {
                         title: String(localized: "전체", defaultValue: "전체"),
                         icon: "link",
                         count: viewModel.allLinks.count,
-                        color: Color(hex: "6C757D"),
-                        isSelected: viewModel.selectedCategory == nil
+                        color: Color(hex: "F2A65A"),
+                        isSelected: viewModel.linkFilter == .all && viewModel.selectedCategory == nil
+                    ) {
+                        viewModel.linkFilter = .all
+                        viewModel.selectedCategory = nil
+                    }
+
+                    TagCapsule(
+                        title: "즐겨찾기",
+                        icon: "star.fill",
+                        count: viewModel.favoriteLinkIDs.count,
+                        color: Color(hex: "F2A65A"),
+                        isSelected: viewModel.linkFilter == .favorites
                     ) {
                         viewModel.selectedCategory = nil
+                        viewModel.linkFilter = .favorites
+                    }
+
+                    TagCapsule(
+                        title: "요약 완료",
+                        icon: "sparkles",
+                        count: viewModel.summarizedCount,
+                        color: Color(hex: "F2A65A"),
+                        isSelected: viewModel.linkFilter == .summarized
+                    ) {
+                        viewModel.selectedCategory = nil
+                        viewModel.linkFilter = .summarized
                     }
 
                     // 카테고리 태그 캡슐들
@@ -95,6 +118,7 @@ struct HomeCategoriesView: View {
                             color: color,
                             isSelected: viewModel.selectedCategory?.id == category.id
                         ) {
+                            viewModel.linkFilter = .all
                             viewModel.selectedCategory = category
                         }
                     }

@@ -8,8 +8,16 @@
 import SwiftData
 import SwiftUI
 
+enum LinkFilter {
+    case all, favorites, summarized
+}
+
 @MainActor
 final class HomeViewModel: ObservableObject {
+    @Published var linkFilter: LinkFilter = .all {
+        didSet { updateFilteredLinks() }
+    }
+
     // 카테고리 선택 상태
     @Published var selectedCategory: CategoryItem? = nil {
         didSet {
@@ -47,12 +55,10 @@ final class HomeViewModel: ObservableObject {
         !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
-    var recentLinks: [LinkItem] {
-        allLinks.sorted {
-            let lhsFavorite = isFavorite($0)
-            let rhsFavorite = isFavorite($1)
-            return lhsFavorite == rhsFavorite ? $0.savedDate > $1.savedDate : lhsFavorite
-        }
+    var summarizedCount: Int {
+        allLinks.filter {
+            UserDefaults.shared.summaryRecord(for: $0.id)?.status == .completed
+        }.count
     }
 
     init() {
@@ -103,6 +109,17 @@ final class HomeViewModel: ObservableObject {
         if let selectedCategory = selectedCategory {
             links = links.filter { link in
                 link.categories?.contains { $0.id == selectedCategory.id } ?? false
+            }
+        }
+
+        switch linkFilter {
+        case .all:
+            break
+        case .favorites:
+            links = links.filter { favoriteLinkIDs.contains($0.id) }
+        case .summarized:
+            links = links.filter {
+                UserDefaults.shared.summaryRecord(for: $0.id)?.status == .completed
             }
         }
 

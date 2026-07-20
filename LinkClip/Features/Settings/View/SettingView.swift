@@ -27,8 +27,6 @@ struct SettingView: View {
     @State private var showingExporter = false
     @State private var showingImporter = false
     @State private var backupDocument = LinkClipBackupDocument()
-    @AppStorage(UserDefaults.Keys.summaryAPIBaseURL, store: UserDefaults.shared)
-    private var summaryAPIBaseURL = SummaryAPI.defaultBaseURL
 
     // 앱 정보
     private let appVersion =
@@ -63,17 +61,6 @@ struct SettingView: View {
                         }
                     }
                     .padding(.vertical, 8)
-                }
-
-                Section {
-                    TextField("https://api.example.com", text: $summaryAPIBaseURL)
-                        .keyboardType(.URL)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                } header: {
-                    Text("AI 요약")
-                } footer: {
-                    Text("요약을 요청하면 URL 본문이 Oracle 요약 서버로 전송됩니다.")
                 }
 
                 // 데이터 관리 섹션

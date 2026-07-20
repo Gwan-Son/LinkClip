@@ -14,8 +14,8 @@ struct HomeHeaderView: View {
     var body: some View {
         HStack {
             Text("LinkClip")
-                .font(.system(size: 28, weight: .bold))
-                .foregroundColor(.white)
+                .font(.system(size: 34, weight: .bold, design: .rounded))
+                .foregroundStyle(.primary)
 
             Spacer()
 
@@ -23,11 +23,11 @@ struct HomeHeaderView: View {
             Button(action: onCategoryManagementTap) {
                 Image(systemName: "tag")
                     .font(.system(size: 20))
-                    .foregroundColor(.black)
+                    .foregroundStyle(.primary)
                     .frame(width: 44, height: 44)
                     .background(
                         Circle()
-                            .fill(Color.white)
+                            .fill(Color(.secondarySystemBackground))
                             .overlay(
                                 Circle()
                                     .stroke(
@@ -42,11 +42,11 @@ struct HomeHeaderView: View {
             Button(action: onSettingsTap) {
                 Image(systemName: "gear")
                     .font(.system(size: 20))
-                    .foregroundColor(.black)
+                    .foregroundStyle(.primary)
                     .frame(width: 44, height: 44)
                     .background(
                         Circle()
-                            .fill(Color.white)
+                            .fill(Color(.secondarySystemBackground))
                             .overlay(
                                 Circle()
                                     .stroke(
@@ -60,6 +60,6 @@ struct HomeHeaderView: View {
         .padding(.horizontal, 20)
         .padding(.top, 10)
         .padding(.bottom, 12)
-        .background(Color.background)
+        .background(Color(.systemGroupedBackground))
     }
 }

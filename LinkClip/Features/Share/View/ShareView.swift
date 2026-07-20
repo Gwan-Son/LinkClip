@@ -12,8 +12,7 @@ import UniformTypeIdentifiers
 // LinkClip 앱 테마 색상
 extension Color {
     // Share Extension에서는 asset catalog 접근이 제한되므로 직접 색상 값 사용
-    static let mainColor = Color(hex: "FFC277")  // MainColor: #FFC277
-    static let backgroundColor = Color(hex: "170800")  // BackgroundColor: #170800
+    static let mainColor = Color(hex: "F2A65A")
 }
 
 struct ShareView: View {
@@ -203,8 +202,9 @@ struct ShareView: View {
                 .padding(.horizontal, 20)
                 .padding(.vertical, 32)
             }
+            .background(Color(.systemGroupedBackground))
             .navigationTitle(LocalizedStringResource("URL 저장", defaultValue: "URL 저장"))
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(LocalizedStringResource("btn_cancel", defaultValue: "취소")) {

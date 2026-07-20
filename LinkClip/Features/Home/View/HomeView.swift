@@ -65,106 +65,7 @@ struct HomeView: View {
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .padding(.horizontal, 20)
         .padding(.bottom, 12)
-        .background(Color.background)
-    }
-
-    // 최근 링크 섹션
-    private var recentLinksSection: some View {
-        VStack {
-            HStack {
-                Text(
-                    viewModel.allLinks.isEmpty ?
-                    LocalizedStringResource("저장된 링크가 없어요", defaultValue: "저장된 링크가 없어요") :
-                    LocalizedStringResource("최근 저장한 링크에요", defaultValue: "최근 저장한 링크에요")
-                )
-                .font(.system(size: 18))
-                .foregroundColor(.white)
-
-                Spacer()
-
-                Button {
-                    state.activeSheet = .addLink
-                } label: {
-                    HStack {
-                        Text(LocalizedStringResource("링크 추가", defaultValue: "링크 추가"))
-                            .font(.system(size: 14))
-                            .foregroundColor(.white)
-
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 14))
-                            .foregroundColor(.gray)
-                    }
-                }
-            }
-            .padding(.horizontal, 20)
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                LazyHStack {
-                    if viewModel.allLinks.isEmpty {
-                        ForEach(0 ..< 3) { index in
-                            LinkCardView(
-                                isOnboarding: true,
-                                onboardingIndex: index
-                            )
-                        }
-                    } else {
-                        ForEach(viewModel.recentLinks.prefix(5), id: \.id) { link in
-                            LinkCardView(link: link)
-                                .id(link.id)
-                                .onTapGesture {
-                                    if let url = URL(string: link.url) {
-                                        UIApplication.shared.open(url)
-                                    }
-                                }
-                                .contextMenu {
-                                    Button {
-                                        viewModel.toggleFavorite(link)
-                                    } label: {
-                                        Label(
-                                            viewModel.isFavorite(link) ? "즐겨찾기 해제" : "즐겨찾기",
-                                            systemImage: viewModel.isFavorite(link) ? "star.slash" : "star"
-                                        )
-                                    }
-
-                                    if let url = URL(string: link.url) {
-                                        ShareLink(item: url) {
-                                            Label("공유", systemImage: "square.and.arrow.up")
-                                        }
-                                    }
-
-                                    Button {
-                                        UIPasteboard.general.string = link.url
-                                        withAnimation { state.showingCopiedToast = true }
-                                    } label: {
-                                        Label("복사", systemImage: "link")
-                                    }
-
-                                    Button {
-                                        state.activeSheet = .summary(link)
-                                    } label: {
-                                        Label("AI 요약", systemImage: "sparkles")
-                                    }
-
-                                    Button {
-                                        state.activeSheet = .editLink(link)
-                                    } label: {
-                                        Label("수정", systemImage: "pencil")
-                                    }
-
-                                    Button(role: .destructive) {
-                                        state.linkPendingDeletion = link
-                                    } label: {
-                                        Label("삭제", systemImage: "trash")
-                                    }
-                                }
-                        }
-                    }
-                }
-                .padding(.horizontal, 20)
-            }
-            .frame(height: 220)
-        }
-        .background(Color.background)
+        .background(Color(.systemGroupedBackground))
     }
 
     // 플로팅 편집 버튼
@@ -180,11 +81,11 @@ struct HomeView: View {
                 } label: {
                     ZStack {
                         Circle()
-                            .fill(state.isEditing ? Color.red : Color.blue)
+                            .fill(state.isEditing ? Color.red : Color(hex: "F2A65A"))
                             .frame(width: 56, height: 56)
                             .shadow(color: Color.black.opacity(0.3), radius: 4, x: 0, y: 2)
 
-                        Image(systemName: state.isEditing ? "xmark" : "checkmark.circle")
+                        Image(systemName: state.isEditing ? "xmark" : "pencil")
                             .font(.system(size: 20, weight: .bold))
                             .foregroundColor(.white)
                             .rotationEffect(state.isEditing ? .degrees(180) : .degrees(0))
@@ -210,10 +111,6 @@ struct HomeView: View {
                     VStack(spacing: 0) {
                         if !state.isEditing {
                             searchSection
-                        }
-
-                        if !state.isEditing && !viewModel.isSearching {
-                            recentLinksSection
                         }
 
                         if !state.isEditing {
@@ -251,6 +148,7 @@ struct HomeView: View {
                 floatingEditButton
             }
         }
+        .background(Color(.systemGroupedBackground).ignoresSafeArea())
         .navigationBarHidden(true)
         .onAppear {
             viewModel.setContext(modelContext)

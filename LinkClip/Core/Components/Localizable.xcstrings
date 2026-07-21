@@ -1,6 +1,9 @@
 {
   "sourceLanguage" : "ko",
   "strings" : {
+    "-" : {
+
+    },
     "(선택사항)" : {
       "localizations" : {
         "en" : {
@@ -17,16 +20,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "(Multiple selection allowed)"
-          }
-        }
-      }
-    },
-    "@ 2025 Linkclip. All rights reserved." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "@ 2025 Linkclip. All rights reserved."
           }
         }
       }
@@ -60,6 +53,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld"
+          }
+        }
+      }
+    },
+    "%lld개 링크의 태그" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tags for %lld Links"
           }
         }
       }
@@ -120,6 +123,26 @@
         }
       }
     },
+    "%lld회" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld"
+          }
+        }
+      }
+    },
+    "© 2025–%@ LinkClip" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "© 2025–%@ LinkClip"
+          }
+        }
+      }
+    },
     "AI 요약" : {
 
     },
@@ -147,11 +170,22 @@
       }
     },
     "AI가 긴 글의 핵심을 정리해드려요.\n태그, 즐겨찾기, 나중에 읽기로 관리할 수 있어요." : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "AI summarizes long articles. Organize links\nwith tags, favorites, and Read Later."
+          }
+        }
+      }
+    },
+    "AI가 긴 글의 핵심을 정리해드려요.\n태그, 즐겨찾기, 나중에 읽기로 관리할 수 있어요.\n\n요약 시 URL과 웹페이지 내용이 서버로 전송됩니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI summarizes long articles. Organize links with tags, favorites, and Read Later.\n\nThe URL and webpage content are sent to the server for summarization."
           }
         }
       }
@@ -405,7 +439,7 @@
       }
     },
     "reset_saved_url" : {
-      "extractionState" : "extracted_with_value",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -572,7 +606,7 @@
       }
     },
     "support" : {
-      "extractionState" : "extracted_with_value",
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -690,6 +724,16 @@
     "검색 결과가 없습니다" : {
 
     },
+    "검색 결과나 썸네일이 정상적으로 표시되지 않을 때만 사용하세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use these tools only when search results or thumbnails are not displayed correctly."
+          }
+        }
+      }
+    },
     "검색어 지우기" : {
 
     },
@@ -700,6 +744,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Enter keywords in search bar"
+          }
+        }
+      }
+    },
+    "고급 데이터 관리" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Advanced Data Management"
           }
         }
       }
@@ -724,8 +778,38 @@
         }
       }
     },
+    "기본 정렬" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Default sort"
+          }
+        }
+      }
+    },
     "기존 링크 수정" : {
 
+    },
+    "꺼짐" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Off"
+          }
+        }
+      }
+    },
+    "나만의 링크 보관함" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your personal link library"
+          }
+        }
+      }
     },
     "나의 메모" : {
       "localizations" : {
@@ -787,6 +871,16 @@
         }
       }
     },
+    "뉴스" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "News"
+          }
+        }
+      }
+    },
     "다른 검색어를 입력해보세요" : {
 
     },
@@ -823,6 +917,16 @@
     "다음" : {
 
     },
+    "다크" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dark"
+          }
+        }
+      }
+    },
     "닫기" : {
       "localizations" : {
         "en" : {
@@ -843,12 +947,42 @@
         }
       }
     },
+    "도움말" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Help"
+          }
+        }
+      }
+    },
     "등록된 카테고리가 없습니다" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "No categories registered"
+          }
+        }
+      }
+    },
+    "등록된 태그가 없습니다" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No tags yet"
+          }
+        }
+      }
+    },
+    "라이트" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Light"
           }
         }
       }
@@ -1003,6 +1137,16 @@
         }
       }
     },
+    "모두 삭제" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete All"
+          }
+        }
+      }
+    },
     "모두 선택" : {
       "localizations" : {
         "en" : {
@@ -1024,6 +1168,7 @@
       }
     },
     "모든 URL을 삭제하시겠습니까?" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
@@ -1044,6 +1189,36 @@
         }
       }
     },
+    "모든 저장 데이터 삭제" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete All Saved Data"
+          }
+        }
+      }
+    },
+    "모든 저장 데이터를 삭제할까요?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete all saved data?"
+          }
+        }
+      }
+    },
+    "모양" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appearance"
+          }
+        }
+      }
+    },
     "문의하기" : {
       "localizations" : {
         "en" : {
@@ -1060,6 +1235,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Preview"
+          }
+        }
+      }
+    },
+    "미분류" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untagged"
           }
         }
       }
@@ -1113,6 +1299,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quick filters"
+          }
+        }
+      }
+    },
+    "사용 환경" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferences"
           }
         }
       }
@@ -1217,6 +1413,39 @@
         }
       }
     },
+    "설정 필요" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Setup required"
+          }
+        }
+      }
+    },
+    "쇼핑" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shopping"
+          }
+        }
+      }
+    },
+    "수정" : {
+
+    },
+    "시스템" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System"
+          }
+        }
+      }
+    },
     "시작하기" : {
 
     },
@@ -1288,6 +1517,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "No links without thumbnails."
+          }
+        }
+      }
+    },
+    "아이디어" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ideas"
           }
         }
       }
@@ -1425,6 +1664,26 @@
         }
       }
     },
+    "연결 확인 필요" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check connection"
+          }
+        }
+      }
+    },
+    "오늘 남은 요약" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Summaries remaining today"
+          }
+        }
+      }
+    },
     "오늘 사용할 수 있는 요약 3회를 모두 사용했습니다." : {
       "localizations" : {
         "en" : {
@@ -1491,6 +1750,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Share Summary"
+          }
+        }
+      }
+    },
+    "요약 서비스" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Summary service"
           }
         }
       }
@@ -1598,12 +1867,35 @@
         }
       }
     },
+    "요약 횟수 확인 중…" : {
+
+    },
+    "요약·읽기 알림" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Summary & reading notifications"
+          }
+        }
+      }
+    },
     "요약을 다시 요청할까요?" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Request another summary?"
+          }
+        }
+      }
+    },
+    "요약을 위해 링크 URL과 웹페이지 내용이 LinkClip 요약 서버로 전송됩니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The link URL and webpage content are sent to the LinkClip summary server for summarization."
           }
         }
       }
@@ -1649,7 +1941,20 @@
         }
       }
     },
+    "위험 영역" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Danger Zone"
+          }
+        }
+      }
+    },
     "이 링크를 삭제하시겠습니까?" : {
+
+    },
+    "이 링크를 삭제할까요?" : {
 
     },
     "이 작업은 되돌릴 수 없습니다." : {
@@ -1853,6 +2158,9 @@
         }
       }
     },
+    "저장된 링크와 요약이 함께 삭제됩니다." : {
+
+    },
     "저장한 URL을 친구들과 쉽게 공유할 수 있습니다." : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1866,6 +2174,16 @@
     },
     "저장한 링크 검색" : {
 
+    },
+    "저장한 링크, 태그, 요약, 읽기 상태와 알림이 모두 삭제됩니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All saved links, tags, summaries, reading states, and reminders will be deleted."
+          }
+        }
+      }
     },
     "저장한 링크를 읽어볼까요?" : {
       "localizations" : {
@@ -1899,11 +2217,22 @@
       }
     },
     "정보" : {
+      "extractionState" : "stale",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Infomation"
+          }
+        }
+      }
+    },
+    "정상" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Available"
           }
         }
       }
@@ -1984,6 +2313,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Suggested Tags"
+          }
+        }
+      }
+    },
+    "추천 태그 추가하고 시작" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Suggested Tags and Start"
+          }
+        }
+      }
+    },
+    "추천 태그로 시작할까요?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start with suggested tags?"
           }
         }
       }
@@ -2120,6 +2469,16 @@
         }
       }
     },
+    "켜짐" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "On"
+          }
+        }
+      }
+    },
     "태그" : {
       "localizations" : {
         "en" : {
@@ -2136,6 +2495,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Manage tags"
+          }
+        }
+      }
+    },
+    "태그 없이 시작" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Without Tags"
+          }
+        }
+      }
+    },
+    "태그 편집" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit Tags"
           }
         }
       }
@@ -2158,6 +2537,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Organize with Tags"
+          }
+        }
+      }
+    },
+    "태그를 누르면 선택한 링크 전체에 추가되거나 해제됩니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap a tag to add it to or remove it from all selected links."
+          }
+        }
+      }
+    },
+    "태그를 저장하지 못했습니다" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't Save Tags"
+          }
+        }
+      }
+    },
+    "태그를 추가하지 못했습니다" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't Add Tags"
           }
         }
       }
@@ -2190,6 +2599,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "See only what matters,\nright away"
+          }
+        }
+      }
+    },
+    "필요한 태그만 선택해주세요.\n언제든 수정하거나 삭제할 수 있어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose only the tags you need.\nYou can edit or delete them anytime."
           }
         }
       }
@@ -2236,12 +2655,42 @@
         }
       }
     },
+    "홈에서 태그를 먼저 추가해주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add a tag from Home first."
+          }
+        }
+      }
+    },
     "확인" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Confirm"
+          }
+        }
+      }
+    },
+    "확인 중" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking"
+          }
+        }
+      }
+    },
+    "확인 필요" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check required"
           }
         }
       }

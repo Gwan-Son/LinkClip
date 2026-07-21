@@ -1,4 +1,22 @@
+import SwiftData
 import SwiftUI
+
+private struct StarterTag: Identifiable {
+    let id: String
+    let name: String
+    let icon: String
+    let color: String
+
+    static var all: [StarterTag] {
+        [
+            .init(id: "work", name: String(localized: "업무"), icon: "briefcase", color: "5B8DEF"),
+            .init(id: "study", name: String(localized: "학습"), icon: "book", color: "7A6FF0"),
+            .init(id: "news", name: String(localized: "뉴스"), icon: "newspaper", color: "E98A3A"),
+            .init(id: "ideas", name: String(localized: "아이디어"), icon: "lightbulb", color: "E5B72F"),
+            .init(id: "shopping", name: String(localized: "쇼핑"), icon: "cart", color: "E46C8C"),
+        ]
+    }
+}
 
 struct OnboardingGateView: View {
     @AppStorage(
@@ -19,12 +37,21 @@ struct OnboardingGateView: View {
 
 struct OnboardingView: View {
     let showsCloseButton: Bool
+    let offersStarterTags: Bool
     let onComplete: () -> Void
 
+    @Environment(\.modelContext) private var modelContext
     @State private var page = 0
+    @State private var selectedStarterTagIDs = Set(StarterTag.all.map(\.id))
+    @State private var errorMessage: String?
 
-    init(showsCloseButton: Bool = false, onComplete: @escaping () -> Void) {
+    init(
+        showsCloseButton: Bool = false,
+        offersStarterTags: Bool = true,
+        onComplete: @escaping () -> Void
+    ) {
         self.showsCloseButton = showsCloseButton
+        self.offersStarterTags = offersStarterTags
         self.onComplete = onComplete
     }
 
@@ -61,13 +88,17 @@ struct OnboardingView: View {
                 }
                 .tag(1)
 
-                onboardingPage(
-                    title: "필요한 내용만\n빠르게 확인하세요",
-                    description: "AI가 긴 글의 핵심을 정리해드려요.\n태그, 즐겨찾기, 나중에 읽기로 관리할 수 있어요."
-                ) {
-                    SummaryOnboardingIllustration()
+                if offersStarterTags {
+                    starterTagsPage.tag(2)
+                } else {
+                    onboardingPage(
+                        title: "필요한 내용만\n빠르게 확인하세요",
+                        description: "AI가 긴 글의 핵심을 정리해드려요.\n태그, 즐겨찾기, 나중에 읽기로 관리할 수 있어요.\n\n요약 시 URL과 웹페이지 내용이 서버로 전송됩니다."
+                    ) {
+                        SummaryOnboardingIllustration()
+                    }
+                    .tag(2)
                 }
-                .tag(2)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
 
@@ -94,13 +125,26 @@ struct OnboardingView: View {
             .padding(.bottom, 20)
         }
         .background(Color.appBackground.ignoresSafeArea())
+        .alert("태그를 추가하지 못했습니다", isPresented: Binding(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )) {
+            Button("확인", role: .cancel) { errorMessage = nil }
+        } message: {
+            Text(errorMessage ?? "")
+        }
     }
 
     private var buttonTitle: LocalizedStringKey {
         switch page {
         case 0: "시작하기"
         case 1: "다음"
-        default: "LinkClip 시작하기"
+        default:
+            if offersStarterTags {
+                selectedStarterTagIDs.isEmpty ? "태그 없이 시작" : "추천 태그 추가하고 시작"
+            } else {
+                "LinkClip 시작하기"
+            }
         }
     }
 
@@ -108,7 +152,70 @@ struct OnboardingView: View {
         if page < 2 {
             withAnimation { page += 1 }
         } else {
+            finishOnboarding()
+        }
+    }
+
+    private var starterTagsPage: some View {
+        VStack(spacing: 14) {
+            VStack(spacing: 8) {
+                Text("추천 태그로 시작할까요?")
+                    .font(.system(size: 26, weight: .bold, design: .rounded))
+                    .multilineTextAlignment(.center)
+                Text("필요한 태그만 선택해주세요.\n언제든 수정하거나 삭제할 수 있어요.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+
+            SummaryOnboardingIllustration()
+                .frame(maxWidth: .infinity, maxHeight: 170)
+                .clipped()
+                .accessibilityHidden(true)
+
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 96))], spacing: 10) {
+                ForEach(StarterTag.all) { tag in
+                    let isSelected = selectedStarterTagIDs.contains(tag.id)
+                    Button {
+                        if isSelected {
+                            selectedStarterTagIDs.remove(tag.id)
+                        } else {
+                            selectedStarterTagIDs.insert(tag.id)
+                        }
+                    } label: {
+                        Label(tag.name, systemImage: isSelected ? "checkmark.circle.fill" : tag.icon)
+                            .font(.subheadline.weight(.medium))
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 9)
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(isSelected ? Color(hex: tag.color) : .secondary)
+                }
+            }
+        }
+        .padding(.horizontal, 24)
+        .padding(.top, 8)
+    }
+
+    private func finishOnboarding() {
+        guard offersStarterTags, !selectedStarterTagIDs.isEmpty else {
             onComplete()
+            return
+        }
+
+        do {
+            let existing = try modelContext.fetch(FetchDescriptor<CategoryItem>())
+            for tag in StarterTag.all where selectedStarterTagIDs.contains(tag.id) {
+                guard !existing.contains(where: {
+                    $0.name.localizedCaseInsensitiveCompare(tag.name) == .orderedSame
+                }) else { continue }
+                modelContext.insert(CategoryItem(name: tag.name, icon: tag.icon, color: tag.color))
+            }
+            try modelContext.save()
+            onComplete()
+        } catch {
+            modelContext.rollback()
+            errorMessage = error.localizedDescription
         }
     }
 

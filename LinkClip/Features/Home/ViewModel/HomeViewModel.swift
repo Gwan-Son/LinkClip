@@ -9,7 +9,7 @@ import SwiftData
 import SwiftUI
 
 enum LinkFilter {
-    case all, summarized, unread, recent
+    case all, summarized, unread, uncategorized, recent
 }
 
 enum LibrarySection: String, CaseIterable, Identifiable {
@@ -36,8 +36,9 @@ final class HomeViewModel: ObservableObject {
     }
 
     // 정렬 옵션
-    @Published var sortOption: SortOption = .dateNewest {
+    @Published var sortOption: SortOption {
         didSet {
+            UserDefaults.shared.defaultSortOptionRawValue = sortOption.rawValue
             updateFilteredLinks()
         }
     }
@@ -76,12 +77,16 @@ final class HomeViewModel: ObservableObject {
     var unreadCount: Int { allLinks.filter { !readLinkIDs.contains($0.id) }.count }
     var readLaterCount: Int { allLinks.filter { readLaterLinkIDs.contains($0.id) }.count }
     var recentCount: Int { allLinks.filter { $0.savedDate >= oneWeekAgo }.count }
+    var uncategorizedCount: Int { allLinks.filter { $0.categories?.isEmpty != false }.count }
 
     private var oneWeekAgo: Date {
         Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
     }
 
     init() {
+        sortOption = SortOption(
+            rawValue: UserDefaults.shared.defaultSortOptionRawValue
+        ) ?? .dateNewest
         // Darwin Notification 대신 ScenePhase를 통한 리프레시만 사용
         setupNotifications()
     }
@@ -151,6 +156,8 @@ final class HomeViewModel: ObservableObject {
             }
         case .unread:
             links = links.filter { !readLinkIDs.contains($0.id) }
+        case .uncategorized:
+            links = links.filter { $0.categories?.isEmpty != false }
         case .recent:
             links = links.filter { $0.savedDate >= oneWeekAgo }
         }
@@ -408,10 +415,22 @@ final class HomeViewModel: ObservableObject {
             name: .dataReset,
             object: nil
         )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleSortOptionChanged),
+            name: .sortOptionChanged,
+            object: nil
+        )
     }
 
     @objc private func handleDataReset() {
         refreshData()
+    }
+
+    @objc private func handleSortOptionChanged() {
+        sortOption = SortOption(
+            rawValue: UserDefaults.shared.defaultSortOptionRawValue
+        ) ?? .dateNewest
     }
 
     func refreshData() {

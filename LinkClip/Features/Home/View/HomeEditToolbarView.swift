@@ -8,6 +8,7 @@
 import SwiftUI
 
 enum HomeBatchAction {
+    case manageTags
     case markRead, markUnread
     case addToReadLater, removeFromReadLater
     case addToFavorites, removeFromFavorites
@@ -68,6 +69,7 @@ struct HomeEditToolbarView: View {
             isPresented: $showingBatchActions,
             titleVisibility: .visible
         ) {
+            Button("태그 편집") { onBatchAction(.manageTags) }
             Button("읽음으로 표시") { onBatchAction(.markRead) }
             Button("읽지 않음으로 표시") { onBatchAction(.markUnread) }
             Button("나중에 읽기") { onBatchAction(.addToReadLater) }

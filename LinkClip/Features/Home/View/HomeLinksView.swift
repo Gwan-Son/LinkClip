@@ -105,10 +105,7 @@ struct HomeLinksView: View {
                                     isRead: viewModel.isRead(link),
                                     isReadLater: viewModel.isReadLater(link)
                                 ) {
-                                    if let url = URL(string: link.url) {
-                                        viewModel.markRead(link)
-                                        UIApplication.shared.open(url)
-                                    }
+                                    onSummarize(link)
                                 } onCopy: {
                                     UIPasteboard.general.string = link.url
                                     withAnimation { state.showingCopiedToast = true }

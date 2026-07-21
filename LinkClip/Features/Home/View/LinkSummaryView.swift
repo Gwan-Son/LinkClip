@@ -4,6 +4,7 @@ import SwiftUI
 
 struct LinkSummaryView: View {
     let link: LinkItem
+    let onDelete: () -> Void
 
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
@@ -12,6 +13,9 @@ struct LinkSummaryView: View {
     @State private var errorMessage: String?
     @State private var isWorking = false
     @State private var showingResummaryConfirmation = false
+    @State private var showingEdit = false
+    @State private var showingTags = false
+    @State private var showingDeleteConfirmation = false
     @State private var usage = UserDefaults.shared.summaryUsage
 
     private var currentRecord: SummaryRecord? {
@@ -61,6 +65,13 @@ struct LinkSummaryView: View {
         guard let summary = currentRecord?.summary, !summary.isEmpty else { return [] }
         let assigned = Set((link.categories ?? []).map(\.id))
         let candidates = allCategories.filter { !assigned.contains($0.id) }
+        let serverNames = currentRecord?.suggestedTags?.map { normalized($0.name) } ?? []
+        let serverSuggestions = serverNames.compactMap { name in
+            candidates.first { normalized($0.name) == name }
+        }
+        if !serverSuggestions.isEmpty {
+            return Array(serverSuggestions.prefix(3))
+        }
         let text = "\(link.title)\n\(summary.prefix(1500))"
         let language = NLLanguageRecognizer.dominantLanguage(for: text) ?? .english
         guard let embedding = NLEmbedding.sentenceEmbedding(for: language) else {
@@ -94,6 +105,16 @@ struct LinkSummaryView: View {
                             ShareLink(item: url) {
                                 Label("공유", systemImage: "square.and.arrow.up")
                             }
+                        }
+
+                        Button { showingEdit = true } label: {
+                            Label("수정", systemImage: "pencil")
+                        }
+
+                        Button(role: .destructive) {
+                            showingDeleteConfirmation = true
+                        } label: {
+                            Label("삭제", systemImage: "trash")
                         }
                     }
                     .buttonStyle(.bordered)
@@ -176,12 +197,12 @@ struct LinkSummaryView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                     }
 
-                    if let categories = link.categories, !categories.isEmpty {
-                        VStack(alignment: .leading, spacing: 10) {
-                            Label("태그", systemImage: "tag")
-                                .font(.headline)
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack {
+                    VStack(alignment: .leading, spacing: 10) {
+                        Label("태그", systemImage: "tag")
+                            .font(.headline)
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack {
+                                if let categories = link.categories {
                                     ForEach(categories, id: \.id) { category in
                                         Text(category.name)
                                             .font(.subheadline)
@@ -191,13 +212,24 @@ struct LinkSummaryView: View {
                                             .clipShape(Capsule())
                                     }
                                 }
+
+                                Button { showingTags = true } label: {
+                                    Image(systemName: "plus")
+                                        .font(.subheadline)
+                                        .padding(.horizontal, 12)
+                                        .padding(.vertical, 7)
+                                        .background(Color.mainColor.opacity(0.15))
+                                        .clipShape(Capsule())
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityLabel("태그 편집")
                             }
                         }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(18)
-                        .background(Color.cardBackground)
-                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                     }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(18)
+                    .background(Color.cardBackground)
+                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
 
                     if !suggestedCategories.isEmpty {
                         VStack(alignment: .leading, spacing: 10) {
@@ -263,6 +295,12 @@ struct LinkSummaryView: View {
             }
             .navigationTitle("AI 요약")
             .navigationBarTitleDisplayMode(.inline)
+            .sheet(isPresented: $showingEdit) {
+                LinkEditView(link: link)
+            }
+            .sheet(isPresented: $showingTags) {
+                BatchTagEditView(links: [link], onChange: {})
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("완료") { dismiss() }
@@ -287,6 +325,19 @@ struct LinkSummaryView: View {
                 Button("취소", role: .cancel) {}
             } message: {
                 Text("오늘 사용할 수 있는 요약 횟수가 1회 차감됩니다.")
+            }
+            .confirmationDialog(
+                "이 링크를 삭제할까요?",
+                isPresented: $showingDeleteConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button("삭제", role: .destructive) {
+                    onDelete()
+                    dismiss()
+                }
+                Button("취소", role: .cancel) {}
+            } message: {
+                Text("저장된 링크와 요약이 함께 삭제됩니다.")
             }
             .task(id: link.id) {
                 record = nil
@@ -326,10 +377,19 @@ struct LinkSummaryView: View {
             await AppAttestManager.shared.prepareSession()
             await PushNotificationService.enable()
             if force {
-                record = try await SummaryAPI.submit(linkID: link.id, url: link.url, force: true)
+                record = try await SummaryAPI.submit(
+                    linkID: link.id,
+                    url: link.url,
+                    force: true,
+                    availableTags: allCategories.map(\.name)
+                )
             } else {
                 SummaryAPI.markPending(linkID: link.id)
-                record = try await SummaryAPI.sync(linkID: link.id, url: link.url)
+                record = try await SummaryAPI.sync(
+                    linkID: link.id,
+                    url: link.url,
+                    availableTags: allCategories.map(\.name)
+                )
             }
             await pollUntilFinished()
             await refreshUsage()
@@ -345,7 +405,11 @@ struct LinkSummaryView: View {
         while !Task.isCancelled &&
               (record?.status == .pending || record?.status == .queued || record?.status == .processing) {
             do {
-                record = try await SummaryAPI.sync(linkID: link.id, url: link.url)
+                record = try await SummaryAPI.sync(
+                    linkID: link.id,
+                    url: link.url,
+                    availableTags: allCategories.map(\.name)
+                )
             } catch {
                 errorMessage = error.localizedDescription
                 return
@@ -368,5 +432,9 @@ struct LinkSummaryView: View {
     private func addSuggestedCategory(_ category: CategoryItem) {
         link.categories = (link.categories ?? []) + [category]
         try? modelContext.save()
+    }
+
+    private func normalized(_ tag: String) -> String {
+        tag.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
     }
 }

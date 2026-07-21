@@ -8,7 +8,8 @@
 import SwiftUI
 import SwiftData
 
-class HomeState: ObservableObject {
+@MainActor
+final class HomeState: ObservableObject {
     // Sheet 관리
     @Published var activeSheet: HomeSheetType?
     @Published var showingDuplicateAlert = false

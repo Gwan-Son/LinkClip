@@ -16,6 +16,7 @@ enum HomeSheetType: Identifiable {
     case editLink(LinkItem)
     case summary(LinkItem)
     case reminder(LinkItem)
+    case batchTags([LinkItem])
 
     var id: String {
         switch self {
@@ -26,6 +27,8 @@ enum HomeSheetType: Identifiable {
         case .editLink(let link): return "editLink-\(link.id)"
         case .summary(let link): return "summary-\(link.id)"
         case .reminder(let link): return "reminder-\(link.id)"
+        case .batchTags(let links):
+            return "batchTags-\(links.map(\.id.uuidString).sorted().joined(separator: "-"))"
         }
     }
 }
@@ -225,11 +228,16 @@ struct HomeView: View {
 
     private func syncSummaries() async {
         let links = (try? modelContext.fetch(FetchDescriptor<LinkItem>())) ?? []
+        let availableTags = ((try? modelContext.fetch(FetchDescriptor<CategoryItem>())) ?? []).map(\.name)
         let pending = links.compactMap { link in
             UserDefaults.shared.summaryRecord(for: link.id) == nil ? nil : (link.id, link.url)
         }
         for (linkID, url) in pending {
-            _ = try? await SummaryAPI.sync(linkID: linkID, url: url)
+            _ = try? await SummaryAPI.sync(
+                linkID: linkID,
+                url: url,
+                availableTags: availableTags
+            )
         }
     }
 
@@ -300,6 +308,10 @@ struct HomeView: View {
         guard !links.isEmpty else { return }
 
         switch action {
+        case .manageTags:
+            state.activeSheet = .batchTags(Array(links))
+            state.toggleEditingMode()
+            return
         case .markRead:
             viewModel.setRead(links, enabled: true)
         case .markUnread:

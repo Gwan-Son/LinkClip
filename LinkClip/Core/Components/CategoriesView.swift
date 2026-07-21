@@ -63,6 +63,21 @@ struct HomeCategoriesView: View {
                     }
 
                     TagCapsule(
+                        title: "미분류",
+                        icon: "tag.slash",
+                        count: viewModel.uncategorizedCount,
+                        color: .mainColor,
+                        isSelected: viewModel.linkFilter == .uncategorized
+                    ) {
+                        if viewModel.linkFilter == .uncategorized {
+                            viewModel.linkFilter = .all
+                        } else {
+                            viewModel.selectedCategory = nil
+                            viewModel.linkFilter = .uncategorized
+                        }
+                    }
+
+                    TagCapsule(
                         title: "최근 7일",
                         icon: "calendar",
                         count: viewModel.recentCount,

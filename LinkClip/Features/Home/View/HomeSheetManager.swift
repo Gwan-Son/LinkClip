@@ -37,9 +37,15 @@ struct HomeSheetView: View {
                 viewModel.refreshDataIfNeeded()
             }
         case .summary(let link):
-            LinkSummaryView(link: link)
+            LinkSummaryView(
+                link: link,
+                onDelete: { viewModel.deleteLink(link) }
+            )
+                .onAppear { viewModel.markRead(link) }
         case .reminder(let link):
             ReadingReminderView(link: link)
+        case .batchTags(let links):
+            BatchTagEditView(links: links, onChange: onLinkSave)
         }
     }
 }

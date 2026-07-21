@@ -10,11 +10,16 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct ShareView: View {
+    @AppStorage(
+        UserDefaults.Keys.appearance,
+        store: UserDefaults.shared
+    ) private var appearance = AppAppearance.system
     @State private var title: String = ""
     @State private var personalMemo: String = ""
     @State private var url: URL?
     @State private var selectedCategories: Set<CategoryItem> = []
-    @State private var shouldRequestSummary = true
+    @State private var shouldRequestSummary: Bool
+    @State private var summaryUsage: SummaryUsage?
 
     // 저장완료 시 alert를 띄우기 위한 상태
     @State private var isSaved: Bool = false
@@ -37,6 +42,8 @@ struct ShareView: View {
     // 이 뷰를 ShareExtension에서 사용할 수 있도록 초기화
     init(url: URL, extensionContext: NSExtensionContext?, extensionTitle: String?) {
         self._url = State(initialValue: url)
+        self._shouldRequestSummary = State(initialValue: UserDefaults.shared.shareRequestsSummary)
+        self._summaryUsage = State(initialValue: UserDefaults.shared.summaryUsage)
         self.extensionContext = extensionContext
         if extensionTitle != nil {
             // title이 존재하면 제목으로 설정
@@ -160,11 +167,33 @@ struct ShareView: View {
                     }
                     
                     // AI 요약
-                    Toggle(isOn: $shouldRequestSummary) {
-                        Label("AI 요약 요청", systemImage: "sparkles")
-                            .font(.system(size: 18, weight: .semibold))
+                    VStack(alignment: .leading, spacing: 6) {
+                        Toggle(isOn: Binding(
+                            get: {
+                                shouldRequestSummary && summaryUsage?.remainingRequests != 0
+                            },
+                            set: {
+                                shouldRequestSummary = $0
+                                UserDefaults.shared.shareRequestsSummary = $0
+                            }
+                        )) {
+                            Label("AI 요약 요청", systemImage: "sparkles")
+                                .font(.system(size: 18, weight: .semibold))
+                        }
+                        .tint(.mainColor)
+                        .disabled(summaryUsage?.remainingRequests == 0)
+
+                        Group {
+                            if let remaining = summaryUsage?.remainingRequests {
+                                Text("오늘 요약 \(remaining)회 남음")
+                                    .foregroundStyle(remaining == 0 ? .red : .secondary)
+                            } else {
+                                Text("요약 횟수 확인 중…")
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .font(.caption)
                     }
-                    .tint(.mainColor)
 
                     // URL 정보
                     VStack(alignment: .leading, spacing: 12) {
@@ -199,6 +228,10 @@ struct ShareView: View {
             .background(Color(.systemGroupedBackground))
             .navigationTitle(LocalizedStringResource("URL 저장", defaultValue: "URL 저장"))
             .navigationBarTitleDisplayMode(.inline)
+            .task {
+                summaryUsage = (try? await SummaryAPI.refreshUsage())
+                    ?? UserDefaults.shared.summaryUsage
+            }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(LocalizedStringResource("btn_cancel", defaultValue: "취소")) {
@@ -260,6 +293,7 @@ struct ShareView: View {
                 }
             }
         }
+        .preferredColorScheme(appearance.colorScheme)
     }
 
     func loadCategories() {
@@ -355,10 +389,15 @@ struct ShareView: View {
             // 확장 프로그램이 종료돼도 본 앱에서 다시 접수할 수 있도록 먼저 pending으로 저장
             let linkID = itemToIndex.id
             if shouldRequestSummary,
+               summaryUsage?.remainingRequests != 0,
                UserDefaults.shared.summaryRecord(for: linkID) == nil {
                 SummaryAPI.markPending(linkID: linkID)
                 Task {
-                    try? await SummaryAPI.submit(linkID: linkID, url: urlString)
+                    try? await SummaryAPI.submit(
+                        linkID: linkID,
+                        url: urlString,
+                        availableTags: categories.map(\.name)
+                    )
                 }
             }
 

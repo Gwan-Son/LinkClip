@@ -9,11 +9,21 @@ import SwiftData
 import SwiftUI
 
 enum LinkFilter {
-    case all, favorites, summarized
+    case all, summarized, unread, recent
+}
+
+enum LibrarySection: String, CaseIterable, Identifiable {
+    case library, readLater, favorites
+
+    var id: Self { self }
 }
 
 @MainActor
 final class HomeViewModel: ObservableObject {
+    @Published var librarySection: LibrarySection = .library {
+        didSet { updateFilteredLinks() }
+    }
+
     @Published var linkFilter: LinkFilter = .all {
         didSet { updateFilteredLinks() }
     }
@@ -47,6 +57,8 @@ final class HomeViewModel: ObservableObject {
     // 모든 링크
     @Published private(set) var allLinks: [LinkItem] = []
     @Published private(set) var favoriteLinkIDs = UserDefaults.shared.favoriteLinkIDs
+    @Published private(set) var readLinkIDs = UserDefaults.shared.readLinkIDs
+    @Published private(set) var readLaterLinkIDs = UserDefaults.shared.readLaterLinkIDs
 
     private var modelContext: ModelContext?
     private var lastRefreshDate: Date?
@@ -59,6 +71,14 @@ final class HomeViewModel: ObservableObject {
         allLinks.filter {
             UserDefaults.shared.summaryRecord(for: $0.id)?.status == .completed
         }.count
+    }
+
+    var unreadCount: Int { allLinks.filter { !readLinkIDs.contains($0.id) }.count }
+    var readLaterCount: Int { allLinks.filter { readLaterLinkIDs.contains($0.id) }.count }
+    var recentCount: Int { allLinks.filter { $0.savedDate >= oneWeekAgo }.count }
+
+    private var oneWeekAgo: Date {
+        Calendar.current.date(byAdding: .day, value: -7, to: Date()) ?? Date()
     }
 
     init() {
@@ -78,6 +98,7 @@ final class HomeViewModel: ObservableObject {
 
     private func loadInitialData() {
         guard let context = modelContext else { return }
+        reloadUserState()
 
         do {
             // 모든 카테고리 로드
@@ -105,6 +126,15 @@ final class HomeViewModel: ObservableObject {
     func updateFilteredLinks() {
         var links = allLinks
 
+        switch librarySection {
+        case .library:
+            break
+        case .readLater:
+            links = links.filter { readLaterLinkIDs.contains($0.id) }
+        case .favorites:
+            links = links.filter { favoriteLinkIDs.contains($0.id) }
+        }
+
         // 카테고리 필터링
         if let selectedCategory = selectedCategory {
             links = links.filter { link in
@@ -115,12 +145,14 @@ final class HomeViewModel: ObservableObject {
         switch linkFilter {
         case .all:
             break
-        case .favorites:
-            links = links.filter { favoriteLinkIDs.contains($0.id) }
         case .summarized:
             links = links.filter {
                 UserDefaults.shared.summaryRecord(for: $0.id)?.status == .completed
             }
+        case .unread:
+            links = links.filter { !readLinkIDs.contains($0.id) }
+        case .recent:
+            links = links.filter { $0.savedDate >= oneWeekAgo }
         }
 
         let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -130,6 +162,8 @@ final class HomeViewModel: ObservableObject {
                 || link.url.localizedCaseInsensitiveContains(query)
                 || (link.personalMemo?.localizedCaseInsensitiveContains(query) ?? false)
                 || (link.siteName?.localizedCaseInsensitiveContains(query) ?? false)
+                || (UserDefaults.shared.summaryRecord(for: link.id)?.summary?
+                    .localizedCaseInsensitiveContains(query) ?? false)
                 || (link.categories?.contains {
                     $0.name.localizedCaseInsensitiveContains(query)
                 } ?? false)
@@ -166,6 +200,83 @@ final class HomeViewModel: ObservableObject {
             favoriteLinkIDs.insert(link.id)
         }
         UserDefaults.shared.favoriteLinkIDs = favoriteLinkIDs
+        updateFilteredLinks()
+    }
+
+    func setFavorite(_ links: Set<LinkItem>, enabled: Bool) {
+        let ids = Set(links.map(\.id))
+        if enabled {
+            favoriteLinkIDs.formUnion(ids)
+        } else {
+            favoriteLinkIDs.subtract(ids)
+        }
+        UserDefaults.shared.favoriteLinkIDs = favoriteLinkIDs
+        updateFilteredLinks()
+    }
+
+    func isRead(_ link: LinkItem) -> Bool {
+        readLinkIDs.contains(link.id)
+    }
+
+    func markRead(_ link: LinkItem) {
+        guard readLinkIDs.insert(link.id).inserted else { return }
+        readLaterLinkIDs.remove(link.id)
+        UserDefaults.shared.readLinkIDs = readLinkIDs
+        UserDefaults.shared.readLaterLinkIDs = readLaterLinkIDs
+        updateFilteredLinks()
+    }
+
+    func toggleRead(_ link: LinkItem) {
+        if readLinkIDs.contains(link.id) {
+            readLinkIDs.remove(link.id)
+        } else {
+            readLinkIDs.insert(link.id)
+            readLaterLinkIDs.remove(link.id)
+        }
+        UserDefaults.shared.readLinkIDs = readLinkIDs
+        UserDefaults.shared.readLaterLinkIDs = readLaterLinkIDs
+        updateFilteredLinks()
+    }
+
+    func setRead(_ links: Set<LinkItem>, enabled: Bool) {
+        let ids = Set(links.map(\.id))
+        if enabled {
+            readLinkIDs.formUnion(ids)
+            readLaterLinkIDs.subtract(ids)
+        } else {
+            readLinkIDs.subtract(ids)
+        }
+        UserDefaults.shared.readLinkIDs = readLinkIDs
+        UserDefaults.shared.readLaterLinkIDs = readLaterLinkIDs
+        updateFilteredLinks()
+    }
+
+    func isReadLater(_ link: LinkItem) -> Bool {
+        readLaterLinkIDs.contains(link.id)
+    }
+
+    func toggleReadLater(_ link: LinkItem) {
+        if readLaterLinkIDs.contains(link.id) {
+            readLaterLinkIDs.remove(link.id)
+        } else {
+            readLaterLinkIDs.insert(link.id)
+            readLinkIDs.remove(link.id)
+        }
+        UserDefaults.shared.readLaterLinkIDs = readLaterLinkIDs
+        UserDefaults.shared.readLinkIDs = readLinkIDs
+        updateFilteredLinks()
+    }
+
+    func setReadLater(_ links: Set<LinkItem>, enabled: Bool) {
+        let ids = Set(links.map(\.id))
+        if enabled {
+            readLaterLinkIDs.formUnion(ids)
+            readLinkIDs.subtract(ids)
+        } else {
+            readLaterLinkIDs.subtract(ids)
+        }
+        UserDefaults.shared.readLaterLinkIDs = readLaterLinkIDs
+        UserDefaults.shared.readLinkIDs = readLinkIDs
         updateFilteredLinks()
     }
 
@@ -254,7 +365,12 @@ final class HomeViewModel: ObservableObject {
             // 로컬 배열에서도 제거
             allLinks.removeAll { $0.id == linkID }
             favoriteLinkIDs.remove(linkID)
+            readLinkIDs.remove(linkID)
+            readLaterLinkIDs.remove(linkID)
             UserDefaults.shared.favoriteLinkIDs = favoriteLinkIDs
+            UserDefaults.shared.readLinkIDs = readLinkIDs
+            UserDefaults.shared.readLaterLinkIDs = readLaterLinkIDs
+            ReadingReminderService.cancel(linkID: linkID)
             UserDefaults.shared.removeSummaryRecord(for: linkID)
             updateFilteredLinks()
             Task { await SpotlightIndexingService().delete(linkId: linkID) }
@@ -300,6 +416,7 @@ final class HomeViewModel: ObservableObject {
 
     func refreshData() {
         guard let context = modelContext else { return }
+        reloadUserState()
 
         do {
             // 모든 링크 다시 로드
@@ -320,6 +437,12 @@ final class HomeViewModel: ObservableObject {
         } catch {
             print("데이터 리프레시 중 오류: \(error)")
         }
+    }
+
+    private func reloadUserState() {
+        favoriteLinkIDs = UserDefaults.shared.favoriteLinkIDs
+        readLinkIDs = UserDefaults.shared.readLinkIDs
+        readLaterLinkIDs = UserDefaults.shared.readLaterLinkIDs
     }
 }
 

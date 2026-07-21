@@ -145,17 +145,51 @@ extension UserDefaults {
         static let dataChanged = "dataChanged"
         static let lastChangeTimestamp = "lastChangeTimestamp"
         static let favoriteLinkIDs = "favoriteLinkIDs"
+        static let readLinkIDs = "readLinkIDs"
+        static let readLaterLinkIDs = "readLaterLinkIDs"
+        static let linkReminderDates = "linkReminderDates"
         static let categoryOrder = "categoryOrder"
         static let summaryInstallationID = "summaryInstallationID"
         static let summaryLinkIDs = "summaryLinkIDs"
         static let summaryAuthToken = "summaryAuthToken"
         static let summaryAuthExpiration = "summaryAuthExpiration"
         static let appAttestKeyID = "appAttestKeyID"
+        static let pendingSummaryNotificationID = "pendingSummaryNotificationID"
+        static let pendingNotificationType = "pendingNotificationType"
+        static let summaryUsage = "summaryUsage"
+        static let onboardingVersion = "onboardingVersion"
     }
 
     var favoriteLinkIDs: Set<UUID> {
         get { Set(stringArray(forKey: Keys.favoriteLinkIDs)?.compactMap(UUID.init) ?? []) }
         set { set(newValue.map(\.uuidString), forKey: Keys.favoriteLinkIDs) }
+    }
+
+    var readLinkIDs: Set<UUID> {
+        get { Set(stringArray(forKey: Keys.readLinkIDs)?.compactMap(UUID.init) ?? []) }
+        set { set(newValue.map(\.uuidString), forKey: Keys.readLinkIDs) }
+    }
+
+    var readLaterLinkIDs: Set<UUID> {
+        get { Set(stringArray(forKey: Keys.readLaterLinkIDs)?.compactMap(UUID.init) ?? []) }
+        set { set(newValue.map(\.uuidString), forKey: Keys.readLaterLinkIDs) }
+    }
+
+    var linkReminderDates: [UUID: Date] {
+        get {
+            guard let data = data(forKey: Keys.linkReminderDates),
+                  let values = try? JSONDecoder().decode([String: Date].self, from: data) else {
+                return [:]
+            }
+            return Dictionary(uniqueKeysWithValues: values.compactMap {
+                guard let id = UUID(uuidString: $0.key) else { return nil }
+                return (id, $0.value)
+            })
+        }
+        set {
+            let values = Dictionary(uniqueKeysWithValues: newValue.map { ($0.key.uuidString, $0.value) })
+            set(try? JSONEncoder().encode(values), forKey: Keys.linkReminderDates)
+        }
     }
 
     var categoryOrder: [UUID] {
@@ -181,6 +215,7 @@ extension UserDefaults {
         var ids = Set(stringArray(forKey: Keys.summaryLinkIDs) ?? [])
         ids.insert(record.linkID.uuidString)
         set(Array(ids), forKey: Keys.summaryLinkIDs)
+        NotificationCenter.default.post(name: .summaryStatusChanged, object: record.linkID)
     }
 
     func removeSummaryRecord(for linkID: UUID) {
@@ -195,6 +230,29 @@ extension UserDefaults {
             removeObject(forKey: "summary.\(id)")
         }
         removeObject(forKey: Keys.summaryLinkIDs)
+    }
+
+    func linkID(forSummaryIdentifier identifier: String) -> UUID? {
+        for value in stringArray(forKey: Keys.summaryLinkIDs) ?? [] {
+            guard let linkID = UUID(uuidString: value),
+                  let record = summaryRecord(for: linkID) else { continue }
+            if value == identifier || record.jobID == identifier { return linkID }
+        }
+        return nil
+    }
+
+    var summaryUsage: SummaryUsage? {
+        get {
+            data(forKey: Keys.summaryUsage)
+                .flatMap { try? JSONDecoder().decode(SummaryUsage.self, from: $0) }
+        }
+        set {
+            guard let newValue, let data = try? JSONEncoder().encode(newValue) else {
+                removeObject(forKey: Keys.summaryUsage)
+                return
+            }
+            set(data, forKey: Keys.summaryUsage)
+        }
     }
 
     // ShareExtension에서 데이터 변경 알림
@@ -216,12 +274,21 @@ extension UserDefaults {
     }
 }
 
+extension Notification.Name {
+    static let summaryStatusChanged = Notification.Name("SummaryStatusChanged")
+}
+
 enum SummaryStatus: String, Codable {
     case pending
     case queued
     case processing
     case completed
     case failed
+}
+
+struct SummaryUsage: Codable, Equatable {
+    let remainingRequests: Int
+    let resetAt: String?
 }
 
 struct SummaryRecord: Codable, Equatable, Identifiable {
@@ -231,16 +298,26 @@ struct SummaryRecord: Codable, Equatable, Identifiable {
     var status: SummaryStatus
     var summary: String?
     var error: String?
+    var errorCode: String? = nil
+    var remainingRequests: Int? = nil
+    var resetAt: String? = nil
     var updatedAt: Date
 }
 
 enum SummaryAPIError: LocalizedError {
-    case server(String)
+    case server(code: String?, message: String)
+    case network
 
     var errorDescription: String? {
         switch self {
-        case .server(let message): return message
+        case .server(_, let message): return message
+        case .network: return String(localized: "네트워크 연결을 확인해주세요.")
         }
+    }
+
+    var code: String? {
+        if case .server(let code, _) = self { return code }
+        return "network"
     }
 }
 
@@ -264,11 +341,47 @@ enum SummaryAPI {
         let status: SummaryStatus
         let summary: String?
         let error: String?
+        let remainingRequests: Int?
+        let resetAt: String?
+
+        enum CodingKeys: String, CodingKey {
+            case id, status, summary, error, remaining
+            case remainingRequests = "remaining_requests"
+            case resetAt = "reset_at"
+        }
+
+        init(from decoder: Decoder) throws {
+            let values = try decoder.container(keyedBy: CodingKeys.self)
+            id = try values.decode(String.self, forKey: .id)
+            status = try values.decode(SummaryStatus.self, forKey: .status)
+            summary = try values.decodeIfPresent(String.self, forKey: .summary)
+            error = try values.decodeIfPresent(String.self, forKey: .error)
+            remainingRequests = try values.decodeIfPresent(Int.self, forKey: .remainingRequests)
+                ?? values.decodeIfPresent(Int.self, forKey: .remaining)
+            resetAt = try values.decodeIfPresent(String.self, forKey: .resetAt)
+        }
     }
 
     private struct ErrorResponse: Decodable {
         let error: String
         let message: String?
+    }
+
+    private struct UsageResponse: Decodable {
+        let remainingRequests: Int
+        let resetAt: String?
+
+        enum CodingKeys: String, CodingKey {
+            case remaining, resetAt = "reset_at"
+            case remainingRequests = "remaining_requests"
+        }
+
+        init(from decoder: Decoder) throws {
+            let values = try decoder.container(keyedBy: CodingKeys.self)
+            remainingRequests = try values.decodeIfPresent(Int.self, forKey: .remainingRequests)
+                ?? values.decode(Int.self, forKey: .remaining)
+            resetAt = try values.decodeIfPresent(String.self, forKey: .resetAt)
+        }
     }
 
     static func markPending(linkID: UUID) {
@@ -297,9 +410,10 @@ enum SummaryAPI {
         let response: Response
         do {
             response = try await send(request)
-        } catch let error as SummaryAPIError {
-            saveFailure(linkID: linkID, error: error)
-            throw error
+        } catch {
+            let apiError = error as? SummaryAPIError ?? .network
+            saveFailure(linkID: linkID, error: apiError)
+            throw apiError
         }
         let record = SummaryRecord(
             linkID: linkID,
@@ -307,9 +421,12 @@ enum SummaryAPI {
             status: response.status,
             summary: response.summary,
             error: response.error,
+            remainingRequests: response.remainingRequests,
+            resetAt: response.resetAt,
             updatedAt: Date()
         )
         UserDefaults.shared.saveSummaryRecord(record)
+        saveUsage(remaining: response.remainingRequests, resetAt: response.resetAt)
         return record
     }
 
@@ -328,9 +445,10 @@ enum SummaryAPI {
         let response: Response
         do {
             response = try await send(request)
-        } catch let error as SummaryAPIError {
-            saveFailure(linkID: linkID, jobID: jobID, error: error)
-            throw error
+        } catch {
+            let apiError = error as? SummaryAPIError ?? .network
+            saveFailure(linkID: linkID, jobID: jobID, error: apiError)
+            throw apiError
         }
         let record = SummaryRecord(
             linkID: linkID,
@@ -338,10 +456,27 @@ enum SummaryAPI {
             status: response.status,
             summary: response.summary,
             error: response.error,
+            remainingRequests: response.remainingRequests ?? current.remainingRequests,
+            resetAt: response.resetAt ?? current.resetAt,
             updatedAt: Date()
         )
         UserDefaults.shared.saveSummaryRecord(record)
+        saveUsage(remaining: response.remainingRequests, resetAt: response.resetAt)
         return record
+    }
+
+    @discardableResult
+    static func refreshUsage() async throws -> SummaryUsage {
+        var request = URLRequest(url: try endpoint("usage"))
+        request.setValue(UserDefaults.shared.summaryInstallationID, forHTTPHeaderField: "X-Client-ID")
+        authorize(&request)
+        let response: UsageResponse = try await send(request)
+        let usage = SummaryUsage(
+            remainingRequests: response.remainingRequests,
+            resetAt: response.resetAt
+        )
+        UserDefaults.shared.summaryUsage = usage
+        return usage
     }
 
     static func endpoint(_ path: String) throws -> URL {
@@ -384,7 +519,10 @@ enum SummaryAPI {
     private static func send<T: Decodable>(_ request: URLRequest) async throws -> T {
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let httpResponse = response as? HTTPURLResponse else {
-            throw SummaryAPIError.server("서버 응답을 확인할 수 없습니다.")
+            throw SummaryAPIError.server(
+                code: "invalid_response",
+                message: String(localized: "서버 응답을 확인할 수 없습니다.")
+            )
         }
         guard 200..<300 ~= httpResponse.statusCode else {
             if httpResponse.statusCode == 401 {
@@ -392,18 +530,33 @@ enum SummaryAPI {
                 UserDefaults.shared.removeObject(forKey: UserDefaults.Keys.summaryAuthExpiration)
             }
             let error = try? JSONDecoder().decode(ErrorResponse.self, from: data)
-            throw SummaryAPIError.server(error?.message ?? message(for: error?.error))
+            throw SummaryAPIError.server(
+                code: error?.error,
+                message: message(for: error?.error, fallback: error?.message)
+            )
         }
-        return try JSONDecoder().decode(T.self, from: data)
+        do {
+            return try JSONDecoder().decode(T.self, from: data)
+        } catch {
+            throw SummaryAPIError.server(
+                code: "invalid_response",
+                message: String(localized: "서버 응답을 확인할 수 없습니다.")
+            )
+        }
     }
 
-    private static func message(for code: String?) -> String {
+    private static func message(for code: String?, fallback: String? = nil) -> String {
         switch code {
-        case "daily_limit": return "오늘 사용할 수 있는 요약 3회를 모두 사용했습니다."
-        case "server_daily_limit": return "오늘 서버의 요약 한도가 모두 사용됐습니다. 내일 다시 시도해주세요."
-        case "queue_full": return "요약 요청이 많습니다. 잠시 후 다시 시도해주세요."
-        case "not_found": return "요약 요청을 찾을 수 없습니다. 다시 요청해주세요."
-        default: return "요약 요청에 실패했습니다."
+        case "daily_limit":
+            return String(localized: "오늘 사용할 수 있는 요약 3회를 모두 사용했습니다.")
+        case "server_daily_limit":
+            return String(localized: "오늘 서버의 요약 한도가 모두 사용됐습니다. 내일 다시 시도해주세요.")
+        case "queue_full":
+            return String(localized: "요약 요청이 많습니다. 잠시 후 다시 시도해주세요.")
+        case "not_found":
+            return String(localized: "요약 요청을 찾을 수 없습니다. 다시 요청해주세요.")
+        default:
+            return fallback ?? String(localized: "요약 요청에 실패했습니다.")
         }
     }
 
@@ -414,8 +567,17 @@ enum SummaryAPI {
                 jobID: jobID,
                 status: .failed,
                 error: error.localizedDescription,
+                errorCode: error.code,
                 updatedAt: Date()
             )
+        )
+    }
+
+    private static func saveUsage(remaining: Int?, resetAt: String?) {
+        guard let remaining else { return }
+        UserDefaults.shared.summaryUsage = SummaryUsage(
+            remainingRequests: remaining,
+            resetAt: resetAt ?? UserDefaults.shared.summaryUsage?.resetAt
         )
     }
 }

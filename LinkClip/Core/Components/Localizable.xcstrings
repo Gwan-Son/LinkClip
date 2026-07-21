@@ -31,6 +31,9 @@
         }
       }
     },
+    "# %@" : {
+
+    },
     "#%@" : {
       "localizations" : {
         "en" : {
@@ -41,12 +44,32 @@
         }
       }
     },
+    "%@에 초기화" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Resets %@"
+          }
+        }
+      }
+    },
     "%lld" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld"
+          }
+        }
+      }
+    },
+    "%lld개 선택" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld selected"
           }
         }
       }
@@ -102,6 +125,36 @@
     },
     "AI 요약 요청" : {
 
+    },
+    "AI 요약 진행 중" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI summary in progress"
+          }
+        }
+      }
+    },
+    "AI 요약을 바탕으로 추천했어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suggested from the AI summary."
+          }
+        }
+      }
+    },
+    "AI가 긴 글의 핵심을 정리해드려요.\n태그, 즐겨찾기, 나중에 읽기로 관리할 수 있어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AI summarizes long articles. Organize links\nwith tags, favorites, and Read Later."
+          }
+        }
+      }
     },
     "alert_url_saved_message" : {
       "extractionState" : "stale",
@@ -280,6 +333,16 @@
         }
       }
     },
+    "LinkClip 시작하기" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start using LinkClip"
+          }
+        }
+      }
+    },
     "LinkClip 앱 문의" : {
       "localizations" : {
         "en" : {
@@ -365,6 +428,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Safari Share"
+          }
+        }
+      }
+    },
+    "Safari나 다른 앱에서 공유 버튼을 누르고\nLinkClip을 선택하면 링크가 저장됩니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tap Share in Safari or another app,\nthen choose LinkClip to save the link."
           }
         }
       }
@@ -604,6 +677,16 @@
         }
       }
     },
+    "검색" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search"
+          }
+        }
+      }
+    },
     "검색 결과가 없습니다" : {
 
     },
@@ -622,13 +705,87 @@
       }
     },
     "공유" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share"
+          }
+        }
+      }
+    },
+    "공유 버튼으로 나중에 읽을 링크를 모아보세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use the share button to collect links for later."
+          }
+        }
+      }
     },
     "기존 링크 수정" : {
 
     },
     "나의 메모" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My Note"
+          }
+        }
+      }
+    },
+    "나중에 읽기" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Read Later"
+          }
+        }
+      }
+    },
+    "나중에 읽기 해제" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove from Read Later"
+          }
+        }
+      }
+    },
+    "나중에 읽을 링크를\n한곳에 모아보세요" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Collect links to read later\nin one place"
+          }
+        }
+      }
+    },
+    "내일 다시 이용해주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please try again tomorrow."
+          }
+        }
+      }
+    },
+    "네트워크 연결을 확인해주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check your network connection."
+          }
+        }
+      }
     },
     "다른 검색어를 입력해보세요" : {
 
@@ -643,8 +800,48 @@
         }
       }
     },
+    "다시 시도" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try Again"
+          }
+        }
+      }
+    },
     "다시 요약" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Summarize Again"
+          }
+        }
+      }
+    },
+    "다음" : {
 
+    },
+    "닫기" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close"
+          }
+        }
+      }
+    },
+    "더보기" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "More"
+          }
+        }
+      }
     },
     "등록된 카테고리가 없습니다" : {
       "localizations" : {
@@ -658,6 +855,36 @@
     },
     "로딩 중..." : {
 
+    },
+    "로컬 AI가 요약하고 있습니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The local AI is summarizing."
+          }
+        }
+      }
+    },
+    "링크" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Links"
+          }
+        }
+      }
+    },
+    "링크 모음" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Link collection"
+          }
+        }
+      }
     },
     "링크 삭제" : {
       "localizations" : {
@@ -859,6 +1086,16 @@
         }
       }
     },
+    "보관함" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Library"
+          }
+        }
+      }
+    },
     "빠른 검색" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -866,6 +1103,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Quick Search"
+          }
+        }
+      }
+    },
+    "빠른 필터" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quick filters"
           }
         }
       }
@@ -930,6 +1177,36 @@
         }
       }
     },
+    "서버 응답을 확인할 수 없습니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The server response could not be verified."
+          }
+        }
+      }
+    },
+    "서버의 오늘 요약 한도가 소진됐습니다" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today's server summary limit has been reached"
+          }
+        }
+      }
+    },
+    "선택" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select"
+          }
+        }
+      }
+    },
     "설정" : {
       "localizations" : {
         "en" : {
@@ -939,6 +1216,9 @@
           }
         }
       }
+    },
+    "시작하기" : {
+
     },
     "썸네일" : {
       "localizations" : {
@@ -1023,7 +1303,14 @@
       }
     },
     "아직 요약이 없습니다" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Summary Yet"
+          }
+        }
+      }
     },
     "알림" : {
       "localizations" : {
@@ -1035,12 +1322,72 @@
         }
       }
     },
+    "알림 권한이 필요합니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notification permission is required."
+          }
+        }
+      }
+    },
+    "알림 시간" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminder Time"
+          }
+        }
+      }
+    },
+    "알림 오류" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminder Error"
+          }
+        }
+      }
+    },
+    "알림 취소" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel Reminder"
+          }
+        }
+      }
+    },
+    "앱 사용 방법" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "How to use LinkClip"
+          }
+        }
+      }
+    },
     "앱 평가하기" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Review"
+          }
+        }
+      }
+    },
+    "어디서든 바로 저장하세요" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save from anywhere"
           }
         }
       }
@@ -1078,6 +1425,56 @@
         }
       }
     },
+    "오늘 사용할 수 있는 요약 3회를 모두 사용했습니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You've used all 3 summaries available today."
+          }
+        }
+      }
+    },
+    "오늘 사용할 수 있는 요약 횟수가 1회 차감됩니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This will use one of today's summaries."
+          }
+        }
+      }
+    },
+    "오늘 서버의 요약 한도가 모두 사용됐습니다. 내일 다시 시도해주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today's server summary limit has been reached. Please try again tomorrow."
+          }
+        }
+      }
+    },
+    "오늘 요약 %lld회 남음" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld summaries left today"
+          }
+        }
+      }
+    },
+    "오늘 요약 횟수를 모두 사용했습니다" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You've used all of today's summaries"
+          }
+        }
+      }
+    },
     "완료" : {
       "localizations" : {
         "en" : {
@@ -1089,25 +1486,157 @@
       }
     },
     "요약 공유" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share Summary"
+          }
+        }
+      }
     },
     "요약 오류" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Summary Error"
+          }
+        }
+      }
     },
     "요약 완료" : {
 
     },
     "요약 요청" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Request Summary"
+          }
+        }
+      }
+    },
+    "요약 요청에 실패했습니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The summary request failed."
+          }
+        }
+      }
     },
     "요약 요청은 하루 3회까지 사용할 수 있습니다." : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can request up to 3 summaries per day."
+          }
+        }
+      }
+    },
+    "요약 요청을 접수하고 있습니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Submitting your summary request."
+          }
+        }
+      }
+    },
+    "요약 요청을 찾을 수 없습니다. 다시 요청해주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The summary request could not be found. Please request it again."
+          }
+        }
+      }
+    },
+    "요약 요청이 대기 중입니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your summary request is queued."
+          }
+        }
+      }
+    },
+    "요약 요청이 많습니다" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Too Many Summary Requests"
+          }
+        }
+      }
+    },
+    "요약 요청이 많습니다. 잠시 후 다시 시도해주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "There are too many summary requests. Please try again shortly."
+          }
+        }
+      }
+    },
+    "요약 중" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Summarizing"
+          }
+        }
+      }
+    },
+    "요약을 다시 요청할까요?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Request another summary?"
+          }
+        }
+      }
     },
     "요약하지 못했습니다" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to Summarize"
+          }
+        }
+      }
     },
     "원문 열기" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Article"
+          }
+        }
+      }
+    },
+    "웹사이트를 저장하고, AI 요약과 태그로\n간편하게 정리할 수 있어요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save websites and organize them easily\nwith AI summaries and tags."
+          }
+        }
+      }
     },
     "웹에서 흥미로운 컨텐츠를 발견하면 공유 버튼을 통해 바로 저장하세요." : {
       "extractionState" : "manual",
@@ -1182,6 +1711,76 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Terms"
+          }
+        }
+      }
+    },
+    "읽기 알림" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reading Reminder"
+          }
+        }
+      }
+    },
+    "읽기 알림 설정" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Set Reading Reminder"
+          }
+        }
+      }
+    },
+    "읽음으로 표시" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mark as Read"
+          }
+        }
+      }
+    },
+    "읽지 않음" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unread"
+          }
+        }
+      }
+    },
+    "읽지 않음으로 표시" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mark as Unread"
+          }
+        }
+      }
+    },
+    "잠시 후 다시 시도할 수 있습니다." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can try again shortly."
+          }
+        }
+      }
+    },
+    "잠시 후 다시 시도해주세요." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please try again shortly."
           }
         }
       }
@@ -1268,6 +1867,16 @@
     "저장한 링크 검색" : {
 
     },
+    "저장한 링크를 읽어볼까요?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ready to read your saved link?"
+          }
+        }
+      }
+    },
     "전체" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1347,6 +1956,17 @@
     "즐겨찾기 해제" : {
 
     },
+    "최근 7일" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last 7 Days"
+          }
+        }
+      }
+    },
     "최근 저장한 링크에요" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1354,6 +1974,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Recently saved links"
+          }
+        }
+      }
+    },
+    "추천 태그" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suggested Tags"
           }
         }
       }
@@ -1495,7 +2125,17 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tag"
+            "value" : "Tags"
+          }
+        }
+      }
+    },
+    "태그 관리" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manage tags"
           }
         }
       }
@@ -1544,6 +2184,16 @@
         }
       }
     },
+    "필요한 내용만\n빠르게 확인하세요" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "See only what matters,\nright away"
+          }
+        }
+      }
+    },
     "필터로 검색" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1567,7 +2217,14 @@
       }
     },
     "핵심 요약" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Key Summary"
+          }
+        }
+      }
     },
     "현재 아이콘" : {
       "localizations" : {

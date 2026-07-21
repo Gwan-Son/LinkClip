@@ -27,6 +27,7 @@ struct SettingView: View {
     @State private var showingExporter = false
     @State private var showingImporter = false
     @State private var backupDocument = LinkClipBackupDocument()
+    @State private var showingOnboarding = false
 
     // 앱 정보
     private let appVersion =
@@ -119,6 +120,12 @@ struct SettingView: View {
                 // 지원 섹션
                 Section(header: Text(LocalizedStringResource("support", defaultValue: "지원"))) {
                     Button {
+                        showingOnboarding = true
+                    } label: {
+                        Label("앱 사용 방법", systemImage: "questionmark.circle")
+                    }
+
+                    Button {
                         if MFMailComposeViewController.canSendMail() {
                             showingMailView = true
                         } else {
@@ -206,7 +213,7 @@ struct SettingView: View {
                         .listRowBackground(Color.clear)
                 }
             }
-            .tint(.blue)
+            .tint(.mainColor)
             .navigationTitle(String(localized: "설정"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -229,6 +236,9 @@ struct SettingView: View {
                     result: $mailResult, subjects: String(localized: "LinkClip 앱 문의"),
                     messageBody: "앱 버전: \(appVersion)")
             }
+            .fullScreenCover(isPresented: $showingOnboarding) {
+                OnboardingView(showsCloseButton: true) { showingOnboarding = false }
+            }
             .fileExporter(
                 isPresented: $showingExporter,
                 document: backupDocument,
@@ -249,6 +259,9 @@ struct SettingView: View {
             let categories = try modelContext.fetch(FetchDescriptor<CategoryItem>())
             let links = try modelContext.fetch(FetchDescriptor<LinkItem>())
             let favorites = UserDefaults.shared.favoriteLinkIDs
+            let readIDs = UserDefaults.shared.readLinkIDs
+            let readLaterIDs = UserDefaults.shared.readLaterLinkIDs
+            let reminderDates = UserDefaults.shared.linkReminderDates
             let backup = LinkClipBackup(
                 categories: categories.map {
                     .init(id: $0.id, name: $0.name, icon: $0.icon, color: $0.color, createdDate: $0.createdDate)
@@ -264,7 +277,10 @@ struct SettingView: View {
                         imageURL: $0.imageURL,
                         siteName: $0.siteName,
                         faviconURL: $0.faviconURL,
-                        isFavorite: favorites.contains($0.id)
+                        isFavorite: favorites.contains($0.id),
+                        isRead: readIDs.contains($0.id),
+                        isReadLater: readLaterIDs.contains($0.id),
+                        reminderDate: reminderDates[$0.id]
                     )
                 },
                 categoryOrder: UserDefaults.shared.categoryOrder
@@ -302,6 +318,8 @@ struct SettingView: View {
             let storedLinks = try modelContext.fetch(FetchDescriptor<LinkItem>())
             var linksByURL = Dictionary(uniqueKeysWithValues: storedLinks.map { ($0.url, $0) })
             var favoriteIDs = UserDefaults.shared.favoriteLinkIDs
+            var readIDs = UserDefaults.shared.readLinkIDs
+            var readLaterIDs = UserDefaults.shared.readLaterLinkIDs
             for item in backup.links {
                 let link = linksByURL[item.url] ?? LinkItem(url: item.url, title: item.title)
                 if linksByURL[item.url] == nil {
@@ -317,10 +335,23 @@ struct SettingView: View {
                 link.siteName = item.siteName
                 link.faviconURL = item.faviconURL
                 if item.isFavorite { favoriteIDs.insert(link.id) }
+                if item.isRead == true { readIDs.insert(link.id) }
+                if item.isReadLater == true { readLaterIDs.insert(link.id) }
+                if let reminderDate = item.reminderDate, reminderDate > Date() {
+                    Task {
+                        try? await ReadingReminderService.schedule(
+                            linkID: link.id,
+                            title: link.title,
+                            date: reminderDate
+                        )
+                    }
+                }
             }
 
             try modelContext.save()
             UserDefaults.shared.favoriteLinkIDs = favoriteIDs
+            UserDefaults.shared.readLinkIDs = readIDs
+            UserDefaults.shared.readLaterLinkIDs = readLaterIDs
             UserDefaults.shared.categoryOrder = backup.categoryOrder.compactMap { categoriesByID[$0]?.id }
             NotificationCenter.default.post(name: .dataReset, object: nil)
             showToast("백업을 가져왔습니다.")
@@ -345,6 +376,9 @@ struct SettingView: View {
 
             try modelContext.save()
             UserDefaults.shared.favoriteLinkIDs = []
+            UserDefaults.shared.readLinkIDs = []
+            UserDefaults.shared.readLaterLinkIDs = []
+            ReadingReminderService.cancelAll()
             UserDefaults.shared.removeAllSummaryRecords()
 
             await SpotlightIndexingService().deleteAll()
@@ -491,6 +525,9 @@ private struct BackupLink: Codable {
     let siteName: String?
     let faviconURL: String?
     let isFavorite: Bool
+    let isRead: Bool?
+    let isReadLater: Bool?
+    let reminderDate: Date?
 }
 
 private struct LinkClipBackupDocument: FileDocument {

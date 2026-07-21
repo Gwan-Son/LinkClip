@@ -8,6 +8,10 @@
 import SwiftUI
 
 extension Color {
+    static let mainColor = Color(hex: "E98A3A")
+    static let appBackground = Color(uiColor: .systemGroupedBackground)
+    static let cardBackground = Color(uiColor: .secondarySystemGroupedBackground)
+
     init(hex: String) {
         let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
         var int: UInt64 = 0

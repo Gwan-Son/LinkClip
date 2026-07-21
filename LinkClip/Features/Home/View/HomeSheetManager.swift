@@ -38,6 +38,8 @@ struct HomeSheetView: View {
             }
         case .summary(let link):
             LinkSummaryView(link: link)
+        case .reminder(let link):
+            ReadingReminderView(link: link)
         }
     }
 }

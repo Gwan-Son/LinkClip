@@ -9,12 +9,6 @@ import SwiftData
 import SwiftUI
 import UniformTypeIdentifiers
 
-// LinkClip 앱 테마 색상
-extension Color {
-    // Share Extension에서는 asset catalog 접근이 제한되므로 직접 색상 값 사용
-    static let mainColor = Color(hex: "F2A65A")
-}
-
 struct ShareView: View {
     @State private var title: String = ""
     @State private var personalMemo: String = ""

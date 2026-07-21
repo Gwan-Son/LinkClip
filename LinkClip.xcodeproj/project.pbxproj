@@ -390,11 +390,11 @@
 		9F2852262D646B730001803F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APP_ATTEST_ENVIRONMENT = development;
+				APS_ENVIRONMENT = development;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkClip/App/LinkClip.entitlements;
-				APP_ATTEST_ENVIRONMENT = development;
-				APS_ENVIRONMENT = development;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkClip/Preview/Preview Content\"";
@@ -416,9 +416,9 @@
 				MARKETING_VERSION = 1.3;
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = kr.gwanson.LinkClip;
-				SWIFT_OBJC_BRIDGING_HEADER = "ShareViewController/ShareViewController-Bridging-Header.h";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "ShareViewController/ShareViewController-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -427,11 +427,11 @@
 		9F2852272D646B730001803F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				APP_ATTEST_ENVIRONMENT = production;
+				APS_ENVIRONMENT = production;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = LinkClip/App/LinkClip.entitlements;
-				APP_ATTEST_ENVIRONMENT = production;
-				APS_ENVIRONMENT = production;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"LinkClip/Preview/Preview Content\"";
@@ -453,9 +453,9 @@
 				MARKETING_VERSION = 1.3;
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = kr.gwanson.LinkClip;
-				SWIFT_OBJC_BRIDGING_HEADER = "ShareViewController/ShareViewController-Bridging-Header.h";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "ShareViewController/ShareViewController-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -478,10 +478,10 @@
 				);
 				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = kr.gwanson.LinkClip.ShareViewController;
-				SWIFT_OBJC_BRIDGING_HEADER = "ShareViewController/ShareViewController-Bridging-Header.h";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "ShareViewController/ShareViewController-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -504,10 +504,10 @@
 				);
 				MARKETING_VERSION = 1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = kr.gwanson.LinkClip.ShareViewController;
-				SWIFT_OBJC_BRIDGING_HEADER = "ShareViewController/ShareViewController-Bridging-Header.h";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "ShareViewController/ShareViewController-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

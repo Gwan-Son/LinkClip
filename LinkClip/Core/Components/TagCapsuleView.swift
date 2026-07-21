@@ -17,10 +17,10 @@ struct TagCapsule: View {
 
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 8) {
+            HStack(spacing: 7) {
                 Image(systemName: icon)
                     .font(.system(size: 14))
-                    .foregroundColor(isSelected ? .white : color)
+                    .foregroundStyle(isSelected ? .white : color)
 
                 Text(title)
                     .font(.system(size: 14, weight: .medium))
@@ -34,19 +34,13 @@ struct TagCapsule: View {
                         )
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 10)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 9)
             .background(
                 Capsule()
-                    .fill(isSelected ? color : color.opacity(0.1))
-                    .overlay(
-                        Capsule()
-                            .stroke(
-                                isSelected ? .clear : color.opacity(0.3),
-                                lineWidth: 1
-                            )
-                    )
+                    .fill(isSelected ? color : Color.cardBackground)
             )
         }
+        .buttonStyle(.plain)
     }
 }

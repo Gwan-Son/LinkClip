@@ -7,53 +7,51 @@
 
 import SwiftUI
 
+enum HomeBatchAction {
+    case markRead, markUnread
+    case addToReadLater, removeFromReadLater
+    case addToFavorites, removeFromFavorites
+}
+
 struct HomeEditToolbarView: View {
     @ObservedObject var state: HomeState
-    let filteredLinks: [LinkItem]
-    let onSelectAllToggle: () -> Void
+    @State private var showingBatchActions = false
+    let onBatchAction: (HomeBatchAction) -> Void
     let onShareAttempt: () -> Void
     let onDeleteAttempt: () -> Void
 
     var body: some View {
         VStack {
             Spacer()
-            HStack {
-                Button(action: onSelectAllToggle) {
-                    Text(state.selectedLinks.isEmpty ?
-                         LocalizedStringResource("모두 선택", defaultValue: "모두 선택") :
-                         LocalizedStringResource("모두 해제", defaultValue: "모두 해제"))
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(.primary)
-                }
-
-                Spacer()
-
-                Text("\(state.selectedLinks.count)개 선택됨")
-                    .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(.primary)
-
-                Spacer()
-
+            HStack(spacing: 0) {
                 Button(action: onShareAttempt) {
-                    Image(systemName: "square.and.arrow.up")
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(state.selectedLinks.isEmpty ? .secondary : .blue)
+                    Label("공유", systemImage: "square.and.arrow.up")
+                        .frame(maxWidth: .infinity)
                 }
+                .disabled(state.selectedLinks.isEmpty)
 
-                Spacer()
+                Button {
+                    showingBatchActions = true
+                } label: {
+                    Label("더보기", systemImage: "ellipsis.circle")
+                        .frame(maxWidth: .infinity)
+                }
+                .disabled(state.selectedLinks.isEmpty)
 
                 Button(action: onDeleteAttempt) {
-                    Text(LocalizedStringResource("삭제", defaultValue: "삭제"))
-                        .font(.system(size: 16, weight: .medium))
-                        .foregroundColor(
-                            state.selectedLinks.isEmpty ? .secondary : .red
-                        )
+                    Label("삭제", systemImage: "trash")
+                        .frame(maxWidth: .infinity)
                 }
+                .tint(.red)
+                .disabled(state.selectedLinks.isEmpty)
             }
+            .font(.subheadline.weight(.semibold))
+            .labelStyle(.titleAndIcon)
+            .tint(.mainColor)
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
             .background {
-                Color(.secondarySystemGroupedBackground)
+                Color.cardBackground
                     .shadow(
                         color: Color.black.opacity(0.1),
                         radius: 8,
@@ -65,5 +63,18 @@ struct HomeEditToolbarView: View {
             .transition(.move(edge: .bottom))
         }
         .ignoresSafeArea(.keyboard)
+        .confirmationDialog(
+            "\(state.selectedLinks.count)개 선택됨",
+            isPresented: $showingBatchActions,
+            titleVisibility: .visible
+        ) {
+            Button("읽음으로 표시") { onBatchAction(.markRead) }
+            Button("읽지 않음으로 표시") { onBatchAction(.markUnread) }
+            Button("나중에 읽기") { onBatchAction(.addToReadLater) }
+            Button("나중에 읽기 해제") { onBatchAction(.removeFromReadLater) }
+            Button("즐겨찾기") { onBatchAction(.addToFavorites) }
+            Button("즐겨찾기 해제") { onBatchAction(.removeFromFavorites) }
+            Button("취소", role: .cancel) { }
+        }
     }
 }

@@ -15,6 +15,7 @@ enum HomeSheetType: Identifiable {
     case addLink
     case editLink(LinkItem)
     case summary(LinkItem)
+    case reminder(LinkItem)
 
     var id: String {
         switch self {
@@ -24,6 +25,7 @@ enum HomeSheetType: Identifiable {
         case .addLink: return "addLink"
         case .editLink(let link): return "editLink-\(link.id)"
         case .summary(let link): return "summary-\(link.id)"
+        case .reminder(let link): return "reminder-\(link.id)"
         }
     }
 }
@@ -34,6 +36,13 @@ struct HomeView: View {
     @StateObject private var viewModel = HomeViewModel()
 
     @StateObject private var state = HomeState()
+    @State private var showingSearch = false
+    @FocusState private var searchFocused: Bool
+
+    private var areAllVisibleLinksSelected: Bool {
+        !viewModel.filteredLinks.isEmpty &&
+        Set(viewModel.filteredLinks).isSubset(of: state.selectedLinks)
+    }
 
     private var searchSection: some View {
         HStack(spacing: 10) {
@@ -46,6 +55,7 @@ struct HomeView: View {
             )
             .textInputAutocapitalization(.never)
             .autocorrectionDisabled()
+            .focused($searchFocused)
 
             if viewModel.isSearching {
                 Button {
@@ -61,55 +71,30 @@ struct HomeView: View {
         }
         .padding(.horizontal, 14)
         .frame(height: 46)
-        .background(Color(.secondarySystemBackground))
+        .background(Color.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 14))
         .padding(.horizontal, 20)
         .padding(.bottom, 12)
-        .background(Color(.systemGroupedBackground))
-    }
-
-    // 플로팅 편집 버튼
-    private var floatingEditButton: some View {
-        VStack {
-            Spacer()
-            HStack {
-                Spacer()
-                Button {
-                    withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
-                        state.toggleEditingMode()
-                    }
-                } label: {
-                    ZStack {
-                        Circle()
-                            .fill(state.isEditing ? Color.red : Color(hex: "F2A65A"))
-                            .frame(width: 56, height: 56)
-                            .shadow(color: Color.black.opacity(0.3), radius: 4, x: 0, y: 2)
-
-                        Image(systemName: state.isEditing ? "xmark" : "pencil")
-                            .font(.system(size: 20, weight: .bold))
-                            .foregroundColor(.white)
-                            .rotationEffect(state.isEditing ? .degrees(180) : .degrees(0))
-                            .scaleEffect(state.isEditing ? 0.8 : 1.0)
-                    }
-                }
-                .padding(.trailing, 20)
-                .padding(.bottom, 60)
-            }
-        }
-        .ignoresSafeArea(.keyboard)
+        .background(Color.appBackground)
     }
 
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
                 HomeHeaderView(
-                    onCategoryManagementTap: { state.activeSheet = .categoryManagement },
+                    isEditing: state.isEditing,
+                    selectedCount: state.selectedLinks.count,
+                    areAllSelected: areAllVisibleLinksSelected,
+                    canEdit: !viewModel.filteredLinks.isEmpty,
+                    onSearchTap: { toggleSearch() },
+                    onEditingTap: { withAnimation { state.toggleEditingMode() } },
+                    onSelectAllTap: { handleSelectAllToggle() },
                     onSettingsTap: { state.activeSheet = .settings }
                 )
 
                 ScrollView {
                     VStack(spacing: 0) {
-                        if !state.isEditing {
+                        if !state.isEditing && showingSearch {
                             searchSection
                         }
 
@@ -117,7 +102,10 @@ struct HomeView: View {
                             HomeCategoriesView(
                                 viewModel: viewModel,
                                 isEditing: state.isEditing,
-                                onAddCategoryTap: { state.activeSheet = .addCategory }
+                                onAddCategoryTap: { state.activeSheet = .addCategory },
+                                onCategoryManagementTap: {
+                                    state.activeSheet = .categoryManagement
+                                }
                             )
                             .padding(.top, 10)
                         }
@@ -126,7 +114,8 @@ struct HomeView: View {
                             viewModel: viewModel,
                             state: state,
                             onEditLink: { link in state.activeSheet = .editLink(link) },
-                            onSummarize: { link in state.activeSheet = .summary(link) }
+                            onSummarize: { link in state.activeSheet = .summary(link) },
+                            onReminder: { link in state.activeSheet = .reminder(link) }
                         )
                     }
                 }
@@ -136,29 +125,26 @@ struct HomeView: View {
             if state.isEditing {
                 HomeEditToolbarView(
                     state: state,
-                    filteredLinks: viewModel.allLinks,
-                    onSelectAllToggle: { handleSelectAllToggle() },
+                    onBatchAction: { handleBatchAction($0) },
                     onShareAttempt: { handleShareAttempt() },
                     onDeleteAttempt: { handleDeleteAttempt() }
                 )
             }
 
-            // 플로팅 편집 버튼
-            if !viewModel.filteredLinks.isEmpty {
-                floatingEditButton
-            }
         }
-        .background(Color(.systemGroupedBackground).ignoresSafeArea())
+        .background(Color.appBackground.ignoresSafeArea())
         .navigationBarHidden(true)
         .onAppear {
             viewModel.setContext(modelContext)
-            Task { await syncSummaries() }
+            Task {
+                await syncSummaries()
+                await AppAttestManager.shared.prepareSession()
+                _ = try? await SummaryAPI.refreshUsage()
+            }
+            handlePendingNotification()
         }
         .onDisappear {
             viewModel.searchText = ""
-        }
-        .onChange(of: state.isEditing) { _, isEditing in
-            if isEditing { viewModel.searchText = "" }
         }
         .onChange(of: scenePhase) { oldPhase, newPhase in
             if newPhase == .active {
@@ -171,7 +157,11 @@ struct HomeView: View {
                     viewModel.refreshDataIfNeeded()
                 }
                 Task { await syncSummaries() }
+                handlePendingNotification()
             }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .summaryNotificationTapped)) { _ in
+            handlePendingNotification()
         }
         .alert(LocalizedStringResource("중복된 카테고리 이름", defaultValue: "중복된 카테고리 이름"), isPresented: $state.showingDuplicateAlert) {
             Button(LocalizedStringResource("확인", defaultValue: "확인"), role: .cancel) { }
@@ -223,6 +213,16 @@ struct HomeView: View {
 
     // MARK: - Helper Functions
 
+    private func toggleSearch() {
+        withAnimation { showingSearch.toggle() }
+        if showingSearch {
+            Task { @MainActor in searchFocused = true }
+        } else {
+            searchFocused = false
+            viewModel.searchText = ""
+        }
+    }
+
     private func syncSummaries() async {
         let links = (try? modelContext.fetch(FetchDescriptor<LinkItem>())) ?? []
         let pending = links.compactMap { link in
@@ -233,12 +233,37 @@ struct HomeView: View {
         }
     }
 
+    private func handlePendingNotification() {
+        guard let identifier = UserDefaults.shared.string(
+            forKey: UserDefaults.Keys.pendingSummaryNotificationID
+        ) else { return }
+        let linkID = UUID(uuidString: identifier)
+            ?? UserDefaults.shared.linkID(forSummaryIdentifier: identifier)
+        guard let linkID else { return }
+        let notificationType = UserDefaults.shared.string(
+            forKey: UserDefaults.Keys.pendingNotificationType
+        )
+        UserDefaults.shared.removeObject(forKey: UserDefaults.Keys.pendingSummaryNotificationID)
+        UserDefaults.shared.removeObject(forKey: UserDefaults.Keys.pendingNotificationType)
+        guard let link = try? modelContext.fetch(
+            FetchDescriptor<LinkItem>(predicate: #Predicate { $0.id == linkID })
+        ).first else { return }
+        if notificationType == "reading_reminder", let url = URL(string: link.url) {
+            viewModel.markRead(link)
+            ReadingReminderService.cancel(linkID: link.id)
+            UIApplication.shared.open(url)
+        } else {
+            state.activeSheet = .summary(link)
+        }
+    }
+
     private func handleSelectAllToggle() {
         withAnimation {
-            if state.selectedLinks.isEmpty {
-                state.selectedLinks = Set(viewModel.allLinks)
+            let visibleLinks = Set(viewModel.filteredLinks)
+            if visibleLinks.isSubset(of: state.selectedLinks) {
+                state.selectedLinks.subtract(visibleLinks)
             } else {
-                state.clearSelection()
+                state.selectedLinks.formUnion(visibleLinks)
             }
         }
     }
@@ -268,6 +293,27 @@ struct HomeView: View {
             activityVC.popoverPresentationController?.sourceView = rootVC.view
             rootVC.present(activityVC, animated: true)
         }
+    }
+
+    private func handleBatchAction(_ action: HomeBatchAction) {
+        let links = state.selectedLinks
+        guard !links.isEmpty else { return }
+
+        switch action {
+        case .markRead:
+            viewModel.setRead(links, enabled: true)
+        case .markUnread:
+            viewModel.setRead(links, enabled: false)
+        case .addToReadLater:
+            viewModel.setReadLater(links, enabled: true)
+        case .removeFromReadLater:
+            viewModel.setReadLater(links, enabled: false)
+        case .addToFavorites:
+            viewModel.setFavorite(links, enabled: true)
+        case .removeFromFavorites:
+            viewModel.setFavorite(links, enabled: false)
+        }
+        state.clearSelection()
     }
 
     private func handleDeleteAttempt() {

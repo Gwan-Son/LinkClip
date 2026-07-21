@@ -12,55 +12,48 @@ struct HomeLinksView: View {
     @ObservedObject var state: HomeState
     let onEditLink: (LinkItem) -> Void
     let onSummarize: (LinkItem) -> Void
+    let onReminder: (LinkItem) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             if !state.isEditing && !viewModel.allLinks.isEmpty {
                 HStack {
+                    Text("링크")
+                        .font(.headline)
+
+                    Spacer()
+
                     Text(
                         String(
                             format: String(localized: "%lld개의 링크"),
                             viewModel.filteredLinks.count
                         )
                     )
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundColor(.secondary)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 }
                 .padding(.horizontal, 20)
             }
 
-            LazyVStack(spacing: 10) {
-                    if (state.isEditing ? viewModel.allLinks : viewModel.filteredLinks).isEmpty {
-                        VStack(spacing: 12) {
-                            Image(systemName: "link.badge.plus")
-                                .font(.system(size: 48))
-                                .foregroundColor(.secondary.opacity(0.5))
-
-                            Text(
+            LazyVStack(spacing: 12) {
+                    if viewModel.filteredLinks.isEmpty {
+                        ContentUnavailableView(
+                            viewModel.isSearching ? "검색 결과가 없습니다" :
+                            viewModel.selectedCategory != nil ? "이 태그에 링크가 없습니다" :
+                            "저장된 링크가 없습니다",
+                            systemImage: viewModel.isSearching ? "magnifyingglass" : "tray",
+                            description: Text(
                                 viewModel.isSearching ?
-                                LocalizedStringResource("검색 결과가 없습니다", defaultValue: "검색 결과가 없습니다") :
+                                LocalizedStringResource("다른 검색어를 입력해보세요", defaultValue: "다른 검색어를 입력해보세요") :
                                 viewModel.selectedCategory != nil ?
-                                LocalizedStringResource("이 태그에 링크가 없습니다", defaultValue: "이 태그에 링크가 없습니다") :
-                                LocalizedStringResource("저장된 링크가 없습니다", defaultValue: "저장된 링크가 없습니다")
+                                LocalizedStringResource("다른 태그를 선택해보세요", defaultValue: "다른 태그를 선택해보세요") :
+                                LocalizedStringResource("공유 버튼으로 나중에 읽을 링크를 모아보세요.", defaultValue: "공유 버튼으로 나중에 읽을 링크를 모아보세요.")
                             )
-                            .font(.system(size: 16))
-                            .foregroundColor(.secondary)
-
-                            if viewModel.isSearching {
-                                Text(LocalizedStringResource("다른 검색어를 입력해보세요", defaultValue: "다른 검색어를 입력해보세요"))
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.secondary.opacity(0.7))
-                            } else if viewModel.selectedCategory != nil {
-                                Text(LocalizedStringResource("다른 태그를 선택해보세요", defaultValue: "다른 태그를 선택해보세요"))
-                                    .font(.system(size: 14))
-                                    .foregroundColor(.secondary.opacity(0.7))
-                            }
-                        }
+                        )
                         .frame(maxWidth: .infinity, minHeight: 200)
-                        .padding(.vertical, 40)
                     } else {
                         ForEach(
-                            state.isEditing ? viewModel.allLinks : viewModel.filteredLinks,
+                            viewModel.filteredLinks,
                             id: \.id
                         ) { link in
                             if state.isEditing {
@@ -77,15 +70,18 @@ struct HomeLinksView: View {
                                         .font(.system(size: 20))
                                         .foregroundColor(
                                             state.selectedLinks
-                                                .contains(link) ? .blue : .gray
+                                                .contains(link) ? .mainColor : .gray
                                         )
                                         .frame(width: 44, height: 44)
                                     }
 
                                     // 링크 내용
-                                    LinkRow(link: link) {
-                                        // 편집 모드에서는 탭으로 선택/해제
-                                        state.toggleLinkSelection(link)
+                                    LinkRow(
+                                        link: link,
+                                        isRead: viewModel.isRead(link),
+                                        isReadLater: viewModel.isReadLater(link)
+                                    ) {
+                                        // 전체 행의 탭 제스처에서 선택 처리
                                     } onCopy: {
                                         // 편집 모드에서는 복사 비활성화
                                     } onEdit: {
@@ -105,9 +101,12 @@ struct HomeLinksView: View {
                                 LinkRow(
                                     link: link,
                                     searchText: viewModel.searchText,
-                                    isFavorite: viewModel.isFavorite(link)
+                                    isFavorite: viewModel.isFavorite(link),
+                                    isRead: viewModel.isRead(link),
+                                    isReadLater: viewModel.isReadLater(link)
                                 ) {
                                     if let url = URL(string: link.url) {
+                                        viewModel.markRead(link)
                                         UIApplication.shared.open(url)
                                     }
                                 } onCopy: {
@@ -119,6 +118,12 @@ struct HomeLinksView: View {
                                     state.linkPendingDeletion = link
                                 } onFavorite: {
                                     viewModel.toggleFavorite(link)
+                                } onRead: {
+                                    viewModel.toggleRead(link)
+                                } onReadLater: {
+                                    viewModel.toggleReadLater(link)
+                                } onReminder: {
+                                    onReminder(link)
                                 } onSummary: {
                                     onSummarize(link)
                                 }
@@ -129,7 +134,7 @@ struct HomeLinksView: View {
                     }
             }
             .padding(.horizontal, 20)
-            .padding(.bottom, 100)
+            .padding(.bottom, state.isEditing ? 100 : 32)
         }
     }
 }

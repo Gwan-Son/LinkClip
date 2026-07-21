@@ -48,7 +48,9 @@ actor AppAttestManager {
     private func attest(keyID: String) async throws {
         let challenge = try await fetchChallenge()
         let clientID = UserDefaults.shared.summaryInstallationID
-        let challengeData = Data(base64Encoded: challenge)!
+        guard let challengeData = Data(base64Encoded: challenge) else {
+            throw URLError(.cannotDecodeContentData)
+        }
         let attestation = try await DCAppAttestService.shared.attestKey(
             keyID, clientDataHash: Data(SHA256.hash(data: challengeData))
         )

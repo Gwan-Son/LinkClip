@@ -11,93 +11,142 @@ struct LinkRow: View {
     let link: LinkItem
     var searchText = ""
     var isFavorite = false
+    var isRead = false
+    var isReadLater = false
     let onTap: () -> Void
     let onCopy: () -> Void
     let onEdit: () -> Void
     let onDelete: () -> Void
     var onFavorite: () -> Void = {}
+    var onRead: () -> Void = {}
+    var onReadLater: () -> Void = {}
+    var onReminder: (() -> Void)?
     var onSummary: (() -> Void)?
+    @State private var summaryStatus: SummaryStatus?
+    @State private var summaryText: String?
 
     var body: some View {
-        HStack(spacing: 12) {
-            // 썸네일 또는 파비콘 또는 기본 아이콘
-            ZStack {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.gray.opacity(0.1))
-                    .frame(width: 64, height: 64)
-
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 10) {
                 CachedAsyncImage(
-                    primaryURL: link.imageURL.flatMap(URL.init),
-                    fallbackURL: link.faviconURL.flatMap(URL.init)
+                    primaryURL: link.faviconURL.flatMap(URL.init),
+                    fallbackURL: link.imageURL.flatMap(URL.init)
                 )
-                .frame(width: 64, height: 64)
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .frame(width: 32, height: 32)
+                .background(Color.primary.opacity(0.05), in: RoundedRectangle(cornerRadius: 8))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+
+                Text(siteLabel)
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+
+                Spacer()
+
+                if summaryStatus == .pending || summaryStatus == .queued || summaryStatus == .processing {
+                    HStack(spacing: 5) {
+                        ProgressView().controlSize(.mini)
+                        Text("요약 중")
+                    }
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .accessibilityLabel("AI 요약 진행 중")
+                } else if summaryStatus == .completed {
+                    Image(systemName: "sparkles")
+                        .foregroundStyle(Color.mainColor)
+                        .accessibilityLabel("요약 완료")
+                }
+
+                if isFavorite {
+                    Image(systemName: "star.fill")
+                        .foregroundStyle(Color.mainColor)
+                        .accessibilityLabel("즐겨찾기")
+                }
             }
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text(highlighted(link.title))
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(.primary)
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundStyle(.primary)
                     .lineLimit(2)
 
-                if let memo = link.personalMemo, !memo.isEmpty {
+                if let summary = summaryPreview {
+                    Text(highlighted(summary))
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                } else if let memo = link.personalMemo, !memo.isEmpty {
                     Text(highlighted(memo))
-                        .font(.system(size: 14))
-                        .foregroundColor(.secondary)
-                        .lineLimit(1)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
                 }
+            }
 
-                if link.siteName != nil || !(link.categories ?? []).isEmpty {
-                    HStack(spacing: 6) {
-                        if let siteName = link.siteName, !siteName.isEmpty {
-                            Text(siteName)
-                        }
-
-                        ForEach((link.categories ?? []).prefix(2)) { category in
-                            Text("#\(category.name)")
-                        }
-                    }
-                    .font(.system(size: 12))
-                    .foregroundColor(.secondary)
-                    .lineLimit(1)
-                }
-
+            HStack(spacing: 8) {
                 Text(
                     link.savedDate
                         .formatted(.relative(presentation: .named))
                 )
-                .font(.system(size: 12))
-                .foregroundColor(.gray)
-            }
+                .foregroundStyle(.tertiary)
 
-            Spacer()
-
-            VStack(spacing: 10) {
-                if UserDefaults.shared.summaryRecord(for: link.id)?.status == .completed {
-                    Image(systemName: "sparkles")
-                        .foregroundStyle(Color(hex: "F2A65A"))
-                        .accessibilityLabel("요약 완료")
-                } else if isFavorite {
-                    Image(systemName: "star.fill")
-                        .foregroundStyle(Color(hex: "F2A65A"))
-                        .accessibilityLabel("즐겨찾기")
+                if !isRead {
+                    Label("읽지 않음", systemImage: "circle.fill")
+                        .foregroundStyle(Color.mainColor)
                 }
 
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(.tertiary)
+                if isReadLater {
+                    Label("나중에 읽기", systemImage: "bookmark.fill")
+                        .foregroundStyle(Color.mainColor)
+                }
+
+                Spacer(minLength: 4)
+
+                ForEach((link.categories ?? []).prefix(2)) { category in
+                    Text("#\(category.name)")
+                        .foregroundStyle(Color(hex: category.safeColor))
+                }
             }
+            .font(.caption)
+            .lineLimit(1)
         }
-        .padding(14)
-        .background(Color(.secondarySystemGroupedBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 18))
-        .overlay {
-            RoundedRectangle(cornerRadius: 18)
-                .stroke(Color.primary.opacity(0.05))
-        }
+        .padding(16)
+        .background(Color.cardBackground)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
         .contentShape(Rectangle())
+        .onAppear {
+            let record = UserDefaults.shared.summaryRecord(for: link.id)
+            summaryStatus = record?.status
+            summaryText = record?.summary
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .summaryStatusChanged)) { notification in
+            guard notification.object as? UUID == link.id else { return }
+            let record = UserDefaults.shared.summaryRecord(for: link.id)
+            summaryStatus = record?.status
+            summaryText = record?.summary
+        }
         .onTapGesture(perform: onTap)
         .contextMenu {
+            Button(action: onRead) {
+                Label(
+                    isRead ? "읽지 않음으로 표시" : "읽음으로 표시",
+                    systemImage: isRead ? "circle" : "checkmark.circle"
+                )
+            }
+
+            Button(action: onReadLater) {
+                Label(
+                    isReadLater ? "나중에 읽기 해제" : "나중에 읽기",
+                    systemImage: isReadLater ? "bookmark.slash" : "bookmark"
+                )
+            }
+
+            if let onReminder {
+                Button(action: onReminder) {
+                    Label("읽기 알림 설정", systemImage: "bell")
+                }
+            }
+
             Button(action: onFavorite) {
                 Label(
                     isFavorite ? "즐겨찾기 해제" : "즐겨찾기",
@@ -163,5 +212,17 @@ struct LinkRow: View {
         }
         result += AttributedString(String(remaining))
         return result
+    }
+
+    private var siteLabel: String {
+        if let siteName = link.siteName, !siteName.isEmpty { return siteName }
+        return URL(string: link.url)?.host ?? link.url
+    }
+
+    private var summaryPreview: String? {
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let summary = summaryText, !summary.isEmpty else { return nil }
+        if !query.isEmpty && !summary.localizedCaseInsensitiveContains(query) { return nil }
+        return summary
     }
 }

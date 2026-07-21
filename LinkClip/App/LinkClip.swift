@@ -14,10 +14,18 @@ struct LinkClip: App {
 
     let sharedModelContainer = createSharedModelContainer()
 
+    init() {
+        let defaults = UserDefaults.shared
+        if defaults.object(forKey: UserDefaults.Keys.onboardingVersion) == nil,
+           defaults.string(forKey: UserDefaults.Keys.summaryInstallationID) != nil {
+            defaults.set(2, forKey: UserDefaults.Keys.onboardingVersion)
+        }
+    }
+
     var body: some Scene {
 
         WindowGroup {
-            HomeView()
+            OnboardingGateView()
                 .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
                     Task { await AppAttestManager.shared.prepareSession() }
                 }

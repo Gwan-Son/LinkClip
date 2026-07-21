@@ -8,58 +8,56 @@
 import SwiftUI
 
 struct HomeHeaderView: View {
-    let onCategoryManagementTap: () -> Void
+    let isEditing: Bool
+    let selectedCount: Int
+    let areAllSelected: Bool
+    let canEdit: Bool
+    let onSearchTap: () -> Void
+    let onEditingTap: () -> Void
+    let onSelectAllTap: () -> Void
     let onSettingsTap: () -> Void
 
     var body: some View {
-        HStack {
-            Text("LinkClip")
-                .font(.system(size: 34, weight: .bold, design: .rounded))
-                .foregroundStyle(.primary)
+        HStack(spacing: 14) {
+            if isEditing {
+                Button("취소", action: onEditingTap)
 
-            Spacer()
+                Spacer()
 
-            // 카테고리 관리 버튼
-            Button(action: onCategoryManagementTap) {
-                Image(systemName: "tag")
-                    .font(.system(size: 20))
-                    .foregroundStyle(.primary)
-                    .frame(width: 44, height: 44)
-                    .background(
-                        Circle()
-                            .fill(Color(.secondarySystemBackground))
-                            .overlay(
-                                Circle()
-                                    .stroke(
-                                        Color.black.opacity(0.05),
-                                        lineWidth: 1
-                                    )
-                            )
-                    )
-            }
+                Text("\(selectedCount)개 선택")
+                    .font(.headline)
 
-            // 설정 버튼
-            Button(action: onSettingsTap) {
-                Image(systemName: "gear")
-                    .font(.system(size: 20))
-                    .foregroundStyle(.primary)
-                    .frame(width: 44, height: 44)
-                    .background(
-                        Circle()
-                            .fill(Color(.secondarySystemBackground))
-                            .overlay(
-                                Circle()
-                                    .stroke(
-                                        Color.black.opacity(0.05),
-                                        lineWidth: 1
-                                    )
-                            )
-                    )
+                Spacer()
+
+                Button(areAllSelected ? "모두 해제" : "모두 선택", action: onSelectAllTap)
+                    .font(.subheadline.weight(.semibold))
+            } else {
+                Text("보관함")
+                    .font(.system(size: 30, weight: .bold, design: .rounded))
+
+                Spacer()
+
+                Button(action: onSearchTap) {
+                    Image(systemName: "magnifyingglass")
+                }
+                .accessibilityLabel("검색")
+
+                Button("선택", action: onEditingTap)
+                    .font(.subheadline.weight(.semibold))
+                    .disabled(!canEdit)
+
+                Button(action: onSettingsTap) {
+                    Image(systemName: "gearshape")
+                }
+                .accessibilityLabel("설정")
             }
         }
+        .buttonStyle(.plain)
+        .tint(.mainColor)
+        .frame(minHeight: 44)
         .padding(.horizontal, 20)
         .padding(.top, 10)
         .padding(.bottom, 12)
-        .background(Color(.systemGroupedBackground))
+        .background(Color.appBackground)
     }
 }

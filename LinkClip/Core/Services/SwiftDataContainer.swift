@@ -158,6 +158,9 @@ extension UserDefaults {
         static let pendingNotificationType = "pendingNotificationType"
         static let summaryUsage = "summaryUsage"
         static let onboardingVersion = "onboardingVersion"
+        static let defaultSortOption = "defaultSortOption"
+        static let appearance = "appearance"
+        static let shareRequestsSummary = "shareRequestsSummary"
     }
 
     var favoriteLinkIDs: Set<UUID> {
@@ -197,6 +200,16 @@ extension UserDefaults {
         set { set(newValue.map(\.uuidString), forKey: Keys.categoryOrder) }
     }
 
+    var defaultSortOptionRawValue: String {
+        get { string(forKey: Keys.defaultSortOption) ?? "dateNewest" }
+        set { set(newValue, forKey: Keys.defaultSortOption) }
+    }
+
+    var shareRequestsSummary: Bool {
+        get { object(forKey: Keys.shareRequestsSummary) as? Bool ?? true }
+        set { set(newValue, forKey: Keys.shareRequestsSummary) }
+    }
+
     var summaryInstallationID: String {
         if let value = string(forKey: Keys.summaryInstallationID) { return value }
         let value = UUID().uuidString
@@ -215,7 +228,9 @@ extension UserDefaults {
         var ids = Set(stringArray(forKey: Keys.summaryLinkIDs) ?? [])
         ids.insert(record.linkID.uuidString)
         set(Array(ids), forKey: Keys.summaryLinkIDs)
-        NotificationCenter.default.post(name: .summaryStatusChanged, object: record.linkID)
+        DispatchQueue.main.async {
+            NotificationCenter.default.post(name: .summaryStatusChanged, object: record.linkID)
+        }
     }
 
     func removeSummaryRecord(for linkID: UUID) {
@@ -291,12 +306,18 @@ struct SummaryUsage: Codable, Equatable {
     let resetAt: String?
 }
 
+struct SuggestedSummaryTag: Codable, Equatable {
+    let name: String
+    let confidence: Double?
+}
+
 struct SummaryRecord: Codable, Equatable, Identifiable {
     var id: UUID { linkID }
     let linkID: UUID
     var jobID: String?
     var status: SummaryStatus
     var summary: String?
+    var suggestedTags: [SuggestedSummaryTag]? = nil
     var error: String?
     var errorCode: String? = nil
     var remainingRequests: Int? = nil
@@ -328,11 +349,13 @@ enum SummaryAPI {
         let url: String
         let clientID: String
         let force: Bool
+        let availableTags: [String]
 
         enum CodingKeys: String, CodingKey {
             case url
             case clientID = "client_id"
             case force
+            case availableTags = "available_tags"
         }
     }
 
@@ -340,12 +363,14 @@ enum SummaryAPI {
         let id: String
         let status: SummaryStatus
         let summary: String?
+        let suggestedTags: [SuggestedSummaryTag]?
         let error: String?
         let remainingRequests: Int?
         let resetAt: String?
 
         enum CodingKeys: String, CodingKey {
             case id, status, summary, error, remaining
+            case suggestedTags = "suggested_tags"
             case remainingRequests = "remaining_requests"
             case resetAt = "reset_at"
         }
@@ -355,6 +380,7 @@ enum SummaryAPI {
             id = try values.decode(String.self, forKey: .id)
             status = try values.decode(SummaryStatus.self, forKey: .status)
             summary = try values.decodeIfPresent(String.self, forKey: .summary)
+            suggestedTags = try values.decodeIfPresent([SuggestedSummaryTag].self, forKey: .suggestedTags)
             error = try values.decodeIfPresent(String.self, forKey: .error)
             remainingRequests = try values.decodeIfPresent(Int.self, forKey: .remainingRequests)
                 ?? values.decodeIfPresent(Int.self, forKey: .remaining)
@@ -395,7 +421,12 @@ enum SummaryAPI {
     }
 
     @discardableResult
-    static func submit(linkID: UUID, url: String, force: Bool = false) async throws -> SummaryRecord {
+    static func submit(
+        linkID: UUID,
+        url: String,
+        force: Bool = false,
+        availableTags: [String] = []
+    ) async throws -> SummaryRecord {
         var request = URLRequest(url: try endpoint("summaries"))
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -403,7 +434,8 @@ enum SummaryAPI {
             SubmitBody(
                 url: url,
                 clientID: UserDefaults.shared.summaryInstallationID,
-                force: force
+                force: force,
+                availableTags: Array(availableTags.prefix(50))
             )
         )
         authorize(&request)
@@ -420,6 +452,7 @@ enum SummaryAPI {
             jobID: response.id,
             status: response.status,
             summary: response.summary,
+            suggestedTags: response.suggestedTags,
             error: response.error,
             remainingRequests: response.remainingRequests,
             resetAt: response.resetAt,
@@ -431,10 +464,14 @@ enum SummaryAPI {
     }
 
     @discardableResult
-    static func sync(linkID: UUID, url: String) async throws -> SummaryRecord? {
+    static func sync(
+        linkID: UUID,
+        url: String,
+        availableTags: [String] = []
+    ) async throws -> SummaryRecord? {
         guard let current = UserDefaults.shared.summaryRecord(for: linkID) else { return nil }
         if current.status == .pending || current.jobID == nil {
-            return try await submit(linkID: linkID, url: url)
+            return try await submit(linkID: linkID, url: url, availableTags: availableTags)
         }
         guard current.status == .queued || current.status == .processing,
               let jobID = current.jobID else { return current }
@@ -455,6 +492,7 @@ enum SummaryAPI {
             jobID: response.id,
             status: response.status,
             summary: response.summary,
+            suggestedTags: response.suggestedTags ?? current.suggestedTags,
             error: response.error,
             remainingRequests: response.remainingRequests ?? current.remainingRequests,
             resetAt: response.resetAt ?? current.resetAt,

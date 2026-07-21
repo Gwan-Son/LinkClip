@@ -11,6 +11,10 @@ import SwiftUI
 @main
 struct LinkClip: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+    @AppStorage(
+        UserDefaults.Keys.appearance,
+        store: UserDefaults.shared
+    ) private var appearance = AppAppearance.system
 
     let sharedModelContainer = createSharedModelContainer()
 
@@ -26,6 +30,7 @@ struct LinkClip: App {
 
         WindowGroup {
             OnboardingGateView()
+                .preferredColorScheme(appearance.colorScheme)
                 .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
                     Task { await AppAttestManager.shared.prepareSession() }
                 }

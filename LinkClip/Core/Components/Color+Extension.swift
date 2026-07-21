@@ -7,6 +7,28 @@
 
 import SwiftUI
 
+enum AppAppearance: String, CaseIterable, Identifiable {
+    case system, light, dark
+
+    var id: Self { self }
+
+    var displayName: LocalizedStringResource {
+        switch self {
+        case .system: "시스템"
+        case .light: "라이트"
+        case .dark: "다크"
+        }
+    }
+
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .system: nil
+        case .light: .light
+        case .dark: .dark
+        }
+    }
+}
+
 extension Color {
     static let mainColor = Color(hex: "E98A3A")
     static let appBackground = Color(uiColor: .systemGroupedBackground)

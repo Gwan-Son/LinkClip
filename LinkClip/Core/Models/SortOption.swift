@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-enum SortOption: CaseIterable, Identifiable {
+enum SortOption: String, CaseIterable, Identifiable {
     case dateNewest
     case dateOldest
     case titleAtoZ
@@ -28,4 +28,8 @@ enum SortOption: CaseIterable, Identifiable {
             return LocalizedStringResource("sort_title_za", defaultValue: "제목 (Z-A)")
         }
     }
+}
+
+extension Notification.Name {
+    static let sortOptionChanged = Notification.Name("SortOptionChanged")
 }

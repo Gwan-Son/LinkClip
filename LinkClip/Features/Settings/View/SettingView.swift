@@ -9,15 +9,15 @@ import MessageUI
 import SwiftData
 import SwiftUI
 import UniformTypeIdentifiers
+import UserNotifications
 
 struct SettingView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.scenePhase) private var scenePhase
     @State private var isReindexing: Bool = false
     @State private var isReloadingThumbnails: Bool = false
 
-    // 알림창 상태 관리
-    @State private var showingResetAlert: Bool = false
     @State private var showingMailView: Bool = false
     @State private var mailResult: Result<MFMailComposeResult, Error>? = nil
 
@@ -28,6 +28,16 @@ struct SettingView: View {
     @State private var showingImporter = false
     @State private var backupDocument = LinkClipBackupDocument()
     @State private var showingOnboarding = false
+    @State private var usage = UserDefaults.shared.summaryUsage
+    @State private var summaryServiceAvailable: Bool?
+    @State private var notificationStatus: UNAuthorizationStatus = .notDetermined
+    @State private var defaultSortOption = SortOption(
+        rawValue: UserDefaults.shared.defaultSortOptionRawValue
+    ) ?? .dateNewest
+    @AppStorage(
+        UserDefaults.Keys.appearance,
+        store: UserDefaults.shared
+    ) private var appearance = AppAppearance.system
 
     // 앱 정보
     private let appVersion =
@@ -37,66 +47,90 @@ struct SettingView: View {
     var body: some View {
         NavigationStack {
             List {
-                // 앱 정보 섹션
                 Section {
-                    HStack {
+                    HStack(spacing: 14) {
                         Image("SettingImage")
                             .resizable()
-                            .cornerRadius(20)
-                            .frame(width: 50, height: 50)
-                            .foregroundColor(.blue)
-                            .padding(.trailing, 10)
+                            .frame(width: 64, height: 64)
+                            .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
 
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .leading, spacing: 4) {
                             Text("LinkClip")
-                                .font(.headline)
-
-                            Text(
-                                {
-                                    let format = String(localized: "버전 %@ (%@)", defaultValue: "버전 %1$@ (%2$@)")
-                                    return String(format: format, locale: .current, appVersion, buildNumber)
-                                }()
-                            )
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
+                                .font(.title3.bold())
+                            Text("나만의 링크 보관함")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                            Text(versionDescription)
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
                         }
                     }
-                    .padding(.vertical, 8)
+                    .padding(.vertical, 10)
                 }
 
-                // 데이터 관리 섹션
-                Section(header: Text(LocalizedStringResource("manage_data", defaultValue: "데이터 관리"))) {
-                    Button {
-                        Task { await reindexAll() }
+                Section {
+                    LabeledContent {
+                        HStack(spacing: 6) {
+                            Circle()
+                                .fill(summaryServiceAvailable == false ? Color.red : Color.green)
+                                .frame(width: 7, height: 7)
+                            Text(summaryServiceStatus)
+                        }
+                        .foregroundStyle(.secondary)
                     } label: {
-                        HStack {
-                            Image(
-                                systemName: isReindexing
-                                ? "arrow.triangle.2.circlepath.circle.fill" : "arrow.triangle.2.circlepath"
-                            )
-                            .foregroundColor(.blue)
-                            Text(String(localized: isReindexing ? "Spotlight 재색인 중..." : "Spotlight 재색인"))
+                        Label("요약 서비스", systemImage: "sparkles")
+                    }
+
+                    LabeledContent {
+                        Text(usage.map { "\($0.remainingRequests)회" } ?? "-")
+                            .foregroundStyle(.secondary)
+                    } label: {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Label("오늘 남은 요약", systemImage: "gauge.with.dots.needle.33percent")
+                            if let usageResetDescription {
+                                Text(usageResetDescription)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     }
 
-                    Button {
-                        Task { await reloadThumbnails() }
-                    } label: {
-                        HStack {
-                            Image(
-                                systemName: isReloadingThumbnails
-                                ? "photo.circle.fill" : "photo.circle"
-                            )
-                            .foregroundColor(.green)
-                            Text(String(localized: isReloadingThumbnails ?
-                                        LocalizedStringResource("썸네일 다시 로딩 중...", defaultValue: "썸네일 다시 로딩 중...") :
-                                        LocalizedStringResource("썸네일 다시 로딩", defaultValue: "썸네일 다시 로딩")))
+                    Button(action: openNotificationSettings) {
+                        LabeledContent {
+                            Text(notificationStatusDescription)
+                                .foregroundStyle(.secondary)
+                        } label: {
+                            Label("요약·읽기 알림", systemImage: "bell")
                         }
                     }
+                } header: {
+                    Text("AI 요약")
+                } footer: {
+                    Text("요약을 위해 링크 URL과 웹페이지 내용이 LinkClip 요약 서버로 전송됩니다.")
+                }
 
-                    Button {
-                        exportBackup()
+                Section("사용 환경") {
+                    Picker("기본 정렬", selection: $defaultSortOption) {
+                        ForEach(SortOption.allCases) { option in
+                            Text(option.displayName).tag(option)
+                        }
+                    }
+                    .onChange(of: defaultSortOption) { _, option in
+                        UserDefaults.shared.defaultSortOptionRawValue = option.rawValue
+                        NotificationCenter.default.post(name: .sortOptionChanged, object: nil)
+                    }
+
+                    Picker(selection: $appearance) {
+                        ForEach(AppAppearance.allCases) { appearance in
+                            Text(appearance.displayName).tag(appearance)
+                        }
                     } label: {
+                        Label("모양", systemImage: "circle.lefthalf.filled")
+                    }
+                }
+
+                Section(LocalizedStringResource("manage_data", defaultValue: "데이터 관리")) {
+                    Button(action: exportBackup) {
                         Label("백업 내보내기", systemImage: "square.and.arrow.up")
                     }
 
@@ -106,50 +140,34 @@ struct SettingView: View {
                         Label("백업 가져오기", systemImage: "square.and.arrow.down")
                     }
 
-                    Button(role: .destructive) {
-                        showingResetAlert = true
+                    NavigationLink {
+                        AdvancedDataManagementView(
+                            isReindexing: $isReindexing,
+                            isReloadingThumbnails: $isReloadingThumbnails,
+                            onReindex: reindexAll,
+                            onReloadThumbnails: reloadThumbnails,
+                            onReset: resetAllData
+                        )
                     } label: {
-                        HStack {
-                            Image(systemName: "trash")
-                                .foregroundColor(.red)
-                            Text(LocalizedStringResource("reset_saved_url", defaultValue: "저장된 URL 초기화"))
-                        }
+                        Label("고급 데이터 관리", systemImage: "wrench.and.screwdriver")
                     }
                 }
 
-                // 지원 섹션
-                Section(header: Text(LocalizedStringResource("support", defaultValue: "지원"))) {
+                Section("도움말") {
                     Button {
                         showingOnboarding = true
                     } label: {
                         Label("앱 사용 방법", systemImage: "questionmark.circle")
                     }
 
-                    Button {
-                        if MFMailComposeViewController.canSendMail() {
-                            showingMailView = true
-                        } else {
-                            // 메일을 보낼 수 없는 경우 클립보드에 이메일 주소 복사
-                            UIPasteboard.general.string = "id1593572580@gmail.com"
-
-                            // 토스트 메시지 표시
-                            toastMessage = String(localized: "이메일 주소 복사")
-                            withAnimation {
-                                showingToast = true
-                            }
-                        }
-                    } label: {
+                    Button(action: contactSupport) {
                         HStack {
-                            Image(systemName: "envelope")
-                                .foregroundColor(.blue)
-                            Text(String(localized: "문의하기"))
-
+                            Label("문의하기", systemImage: "envelope")
                             Spacer()
-
                             if !MFMailComposeViewController.canSendMail() {
-                                Text(String(localized: "이메일 주소 복사"))
+                                Text("이메일 주소 복사")
                                     .font(.caption)
-                                    .foregroundColor(.secondary)
+                                    .foregroundStyle(.secondary)
                             }
                         }
                     }
@@ -160,15 +178,7 @@ struct SettingView: View {
                                 "https://raw.githubusercontent.com/Gwan-Son/LinkClip/refs/heads/main/privacy/privacy.md"
                         )!
                     ) {
-                        HStack {
-                            Image(systemName: "hand.raised")
-                                .foregroundColor(.blue)
-                            Text(String(localized: "개인정보 처리방침"))
-                            Spacer()
-                            Image(systemName: "arrow.up.right")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
+                        Label("개인정보 처리방침", systemImage: "hand.raised")
                     }
 
                     Link(
@@ -177,36 +187,16 @@ struct SettingView: View {
                                 "https://raw.githubusercontent.com/Gwan-Son/LinkClip/refs/heads/main/privacy/service.md"
                         )!
                     ) {
-                        HStack {
-                            Image(systemName: "doc.text")
-                                .foregroundColor(.blue)
-                            Text(String(localized: "이용약관"))
-                            Spacer()
-                            Image(systemName: "arrow.up.right")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
+                        Label("이용약관", systemImage: "doc.text")
                     }
-                }
 
-                // 앱 정보 섹션
-                Section(header: Text(String(localized: "정보"))) {
                     Link(destination: URL(string: "https://apps.apple.com/app/id6744954526?action=write-review")!) {
-                        HStack {
-                            Image(systemName: "star")
-                                .foregroundColor(.yellow)
-                            Text(String(localized: "앱 평가하기"))
-                            Spacer()
-                            Image(systemName: "arrow.up.right")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
+                        Label("앱 평가하기", systemImage: "star")
                     }
                 }
 
-                // 푸터 정보
                 Section {
-                    Text(String(localized: "@ 2025 Linkclip. All rights reserved."))
+                    Text(copyrightDescription)
                         .font(.footnote)
                         .foregroundColor(.secondary)
                         .frame(maxWidth: .infinity, alignment: .center)
@@ -223,21 +213,15 @@ struct SettingView: View {
                     }
                 }
             }
-            .alert(String(localized: "모든 URL을 삭제하시겠습니까?"), isPresented: $showingResetAlert) {
-                Button(String(localized: "취소"), role: .cancel) {}
-                Button(String(localized: "삭제"), role: .destructive) {
-                    Task { await resetAllData() }
-                }
-            } message: {
-                Text(String(localized: "이 작업은 되돌릴 수 없습니다."))
-            }
             .sheet(isPresented: $showingMailView) {
                 MailView(
                     result: $mailResult, subjects: String(localized: "LinkClip 앱 문의"),
                     messageBody: "앱 버전: \(appVersion)")
             }
             .fullScreenCover(isPresented: $showingOnboarding) {
-                OnboardingView(showsCloseButton: true) { showingOnboarding = false }
+                OnboardingView(showsCloseButton: true, offersStarterTags: false) {
+                    showingOnboarding = false
+                }
             }
             .fileExporter(
                 isPresented: $showingExporter,
@@ -251,6 +235,88 @@ struct SettingView: View {
                 importBackup(result)
             }
             .toast(isShowing: $showingToast, message: toastMessage)
+            .task { await refreshSettingsStatus() }
+            .onChange(of: scenePhase) { _, phase in
+                guard phase == .active else { return }
+                Task { await refreshNotificationStatus() }
+            }
+        }
+        .preferredColorScheme(appearance.colorScheme)
+    }
+
+    private var versionDescription: String {
+        let format = String(localized: "버전 %@ (%@)", defaultValue: "버전 %1$@ (%2$@)")
+        return String(format: format, locale: .current, appVersion, buildNumber)
+    }
+
+    private var copyrightDescription: String {
+        String(
+            format: String(localized: "© 2025–%@ LinkClip"),
+            String(Calendar.current.component(.year, from: Date()))
+        )
+    }
+
+    private var summaryServiceStatus: LocalizedStringKey {
+        switch summaryServiceAvailable {
+        case true: "정상"
+        case false: "연결 확인 필요"
+        case nil: "확인 중"
+        }
+    }
+
+    private var usageResetDescription: String? {
+        guard let resetAt = usage?.resetAt,
+              let date = ISO8601DateFormatter().date(from: resetAt) else { return nil }
+        return String(
+            format: String(localized: "%@에 초기화"),
+            date.formatted(date: .omitted, time: .shortened)
+        )
+    }
+
+    private var notificationStatusDescription: LocalizedStringKey {
+        switch notificationStatus {
+        case .authorized, .provisional, .ephemeral: "켜짐"
+        case .denied: "꺼짐"
+        case .notDetermined: "설정 필요"
+        @unknown default: "확인 필요"
+        }
+    }
+
+    private func refreshSettingsStatus() async {
+        await refreshNotificationStatus()
+        do {
+            usage = try await SummaryAPI.refreshUsage()
+            summaryServiceAvailable = true
+        } catch {
+            usage = UserDefaults.shared.summaryUsage
+            summaryServiceAvailable = false
+        }
+    }
+
+    private func refreshNotificationStatus() async {
+        notificationStatus = await UNUserNotificationCenter.current()
+            .notificationSettings().authorizationStatus
+    }
+
+    private func openNotificationSettings() {
+        if notificationStatus == .notDetermined {
+            Task {
+                await PushNotificationService.enable()
+                notificationStatus = await UNUserNotificationCenter.current()
+                    .notificationSettings().authorizationStatus
+            }
+            return
+        }
+        guard let url = URL(string: UIApplication.openNotificationSettingsURLString) else { return }
+        UIApplication.shared.open(url)
+    }
+
+    private func contactSupport() {
+        if MFMailComposeViewController.canSendMail() {
+            showingMailView = true
+        } else {
+            UIPasteboard.general.string = "id1593572580@gmail.com"
+            showToast("이메일 주소 복사")
         }
     }
 
@@ -373,11 +439,15 @@ struct SettingView: View {
             for item in items {
                 modelContext.delete(item)
             }
+            for category in try modelContext.fetch(FetchDescriptor<CategoryItem>()) {
+                modelContext.delete(category)
+            }
 
             try modelContext.save()
             UserDefaults.shared.favoriteLinkIDs = []
             UserDefaults.shared.readLinkIDs = []
             UserDefaults.shared.readLaterLinkIDs = []
+            UserDefaults.shared.categoryOrder = []
             ReadingReminderService.cancelAll()
             UserDefaults.shared.removeAllSummaryRecords()
 
@@ -491,6 +561,70 @@ struct SettingView: View {
                 toastMessage = String(localized: "썸네일 다시 로딩 중 오류가 발생했습니다.")
                 withAnimation { showingToast = true }
             }
+        }
+    }
+}
+
+private struct AdvancedDataManagementView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Binding var isReindexing: Bool
+    @Binding var isReloadingThumbnails: Bool
+    let onReindex: () async -> Void
+    let onReloadThumbnails: () async -> Void
+    let onReset: () async -> Void
+
+    @State private var showingResetAlert = false
+
+    private var isBusy: Bool { isReindexing || isReloadingThumbnails }
+
+    var body: some View {
+        List {
+            Section {
+                Button {
+                    Task { await onReindex() }
+                } label: {
+                    Label(
+                        isReindexing ? "Spotlight 재색인 중..." : "Spotlight 재색인",
+                        systemImage: "magnifyingglass"
+                    )
+                }
+                .disabled(isBusy)
+
+                Button {
+                    Task { await onReloadThumbnails() }
+                } label: {
+                    Label(
+                        isReloadingThumbnails ? "썸네일 다시 로딩 중..." : "썸네일 다시 로딩",
+                        systemImage: "photo"
+                    )
+                }
+                .disabled(isBusy)
+            } footer: {
+                Text("검색 결과나 썸네일이 정상적으로 표시되지 않을 때만 사용하세요.")
+            }
+
+            Section {
+                Button("모든 저장 데이터 삭제", role: .destructive) {
+                    showingResetAlert = true
+                }
+            } header: {
+                Text("위험 영역")
+            } footer: {
+                Text("저장한 링크, 태그, 요약, 읽기 상태와 알림이 모두 삭제됩니다.")
+            }
+        }
+        .navigationTitle("고급 데이터 관리")
+        .navigationBarTitleDisplayMode(.inline)
+        .alert("모든 저장 데이터를 삭제할까요?", isPresented: $showingResetAlert) {
+            Button("취소", role: .cancel) { }
+            Button("모두 삭제", role: .destructive) {
+                Task {
+                    await onReset()
+                    dismiss()
+                }
+            }
+        } message: {
+            Text("이 작업은 되돌릴 수 없습니다.")
         }
     }
 }

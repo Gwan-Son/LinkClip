@@ -5,3 +5,5 @@ implementation_plan.md
 .DS_Store
 xcuserdata/
 Server
+AppStorePreviews
+.todo-inspector.json

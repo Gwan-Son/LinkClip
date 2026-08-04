@@ -32,8 +32,10 @@
 
 # 👀 미리 보기
 <div>
- <img src="https://github.com/user-attachments/assets/ccead617-92e8-4164-a6b4-605580afa188" width=45%>
- <img src="https://github.com/user-attachments/assets/8ea5a813-0741-40b0-9dc0-e132c85c97b3" width=45%>
+ <img src="https://github.com/user-attachments/assets/630a979c-48d6-4838-bfa0-95d977c12ee3" width=20%>
+ <img src="https://github.com/user-attachments/assets/beecdc6b-e854-4d2d-b2f1-12b015c43174" width=20%>
+ <img src="https://github.com/user-attachments/assets/e9d91172-ef9c-412c-a2a9-5158f52ccfe5" width=20%>
+ <img src="https://github.com/user-attachments/assets/a26bcf5c-cb42-4665-8e10-7d818a24980c" width=20%>
 </div>
 
 # 📐 아키텍처 요약

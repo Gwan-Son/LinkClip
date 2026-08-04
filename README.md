@@ -12,6 +12,7 @@
 - [💻 개발 환경](#-개발-환경)
 - [👀 미리 보기](#-미리-보기)
 - [📐 아키텍처 요약](#-아키텍처-요약)
+- [✨ AI 요약](#-ai-요약)
 - [📝개발 내용](#-개발-내용)
 - [📁 파일 구조](#-파일-구조)
 
@@ -96,6 +97,26 @@ graph TB
     class E,F data
     class G,H service
 ```
+
+# ✨ AI 요약
+
+저장한 한국어·영어 웹페이지의 본문을 추출하고 핵심 내용을 요약합니다.
+
+- Share Extension으로 링크를 저장하면 요약 작업이 비동기로 접수됩니다.
+- 앱에서는 `대기 중`, `요약 중`, `완료`, `실패` 상태를 확인하고 다시 요청할 수 있습니다.
+- 앱을 다시 열거나 활성화하면 완료된 요약을 자동으로 동기화합니다.
+- 설치 기기별로 하루 3회까지 사용할 수 있습니다.
+
+```mermaid
+flowchart LR
+    A[링크 저장] --> B[Oracle Cloud 요약 API]
+    B --> C[웹페이지 본문 추출]
+    C --> D[llama.cpp + Qwen3 1.7B]
+    D --> E[요약 결과 저장]
+    E --> F[LinkClip에서 결과 동기화]
+```
+
+요약은 Apple Intelligence나 외부 유료 AI API 대신 Oracle Cloud의 로컬 LLM으로 처리합니다. 요약 요청 시 URL과 웹페이지 본문이 LinkClip 요약 서버로 전송되며, 내부망 주소 차단과 요청 크기 제한을 적용합니다. 서버 구성은 [`Server`](./Server) 디렉터리에서 확인할 수 있습니다.
 
 # 📝 개발 내용
 
@@ -190,7 +211,8 @@ graph TB
 │   │   │   ├── HomeLinksView.swift
 │   │   │   ├── HomeSheetManager.swift
 │   │   │   ├── HomeState.swift
-│   │   │   └── HomeView.swift
+│   │   │   ├── HomeView.swift
+│   │   │   └── LinkSummaryView.swift
 │   │   └── ViewModel
 │   │       └── HomeViewModel.swift
 │   ├── Settings
@@ -230,5 +252,4 @@ graph TB
             ├── 58.png
             └── Contents.json
 
-31 directories, 67 files
 ```
